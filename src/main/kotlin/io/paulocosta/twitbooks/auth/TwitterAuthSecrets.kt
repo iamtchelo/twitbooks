@@ -1,5 +1,6 @@
 package io.paulocosta.twitbooks.auth
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
@@ -12,10 +13,10 @@ class TwitterAuthSecrets {
     @Value("\${consumer.secret}")
     lateinit var consumerSecret: String
 
-    @Value("\${api.key}")
-    lateinit var apiKey: String
+    @Value("\${access.token}")
+    lateinit var accessToken: String
 
-    @Value("\${api.secret}")
-    lateinit var apiSecret: String
+    @Value("\${access.token.secret}")
+    lateinit var accessTokenSecret: String
 
 }

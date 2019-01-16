@@ -9,14 +9,14 @@ lateinit var secrets: TwitterAuthSecrets
 
 @Component
 class TwitterAuth {
-    fun auth() {
+    fun auth(): Boolean {
         val twitterTemplate = TwitterTemplate(
                 secrets.consumerKey,
                 secrets.consumerSecret,
-                secrets.apiKey,
-                secrets.apiSecret
+                secrets.accessToken,
+                secrets.accessTokenSecret
         )
-        twitterTemplate.searchOperations()
+        return twitterTemplate.isAuthorized
     }
 
 }
