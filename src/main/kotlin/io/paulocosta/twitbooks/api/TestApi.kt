@@ -6,12 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@Autowired
-lateinit var twitterAuth: TwitterAuth
 
 @RestController
 @RequestMapping("/test")
 class TestApi {
+
+    @Autowired
+    lateinit var twitterAuth: TwitterAuth
 
     @GetMapping
     fun testAuthenticity(): String {

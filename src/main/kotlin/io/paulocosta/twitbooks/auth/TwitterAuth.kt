@@ -4,11 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.social.twitter.api.impl.TwitterTemplate
 import org.springframework.stereotype.Component
 
-@Autowired
-lateinit var secrets: TwitterAuthSecrets
-
 @Component
 class TwitterAuth {
+
+    @Autowired
+    lateinit var secrets: TwitterAuthSecrets
+
     fun auth(): Boolean {
         val twitterTemplate = TwitterTemplate(
                 secrets.consumerKey,
