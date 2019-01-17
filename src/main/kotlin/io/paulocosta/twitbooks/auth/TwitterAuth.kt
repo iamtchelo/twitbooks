@@ -10,14 +10,19 @@ class TwitterAuth {
     @Autowired
     lateinit var secrets: TwitterAuthSecrets
 
-    fun auth(): Boolean {
-        val twitterTemplate = TwitterTemplate(
+    private var template: TwitterTemplate? = null
+
+    private fun auth(): TwitterTemplate {
+        return TwitterTemplate(
                 secrets.consumerKey,
                 secrets.consumerSecret,
                 secrets.accessToken,
                 secrets.accessTokenSecret
         )
-        return twitterTemplate.isAuthorized
+    }
+
+    fun getTemplate(): TwitterTemplate {
+        return template ?: auth()
     }
 
 }

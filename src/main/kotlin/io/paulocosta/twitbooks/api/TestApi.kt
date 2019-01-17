@@ -16,8 +16,8 @@ class TestApi {
 
     @GetMapping
     fun testAuthenticity(): String {
-        val authenticated = twitterAuth.auth()
-        return "authenticated: $authenticated"
+        val template = twitterAuth.getTemplate()
+        return "authenticated: ${template.isAuthorized}"
     }
 
 }
