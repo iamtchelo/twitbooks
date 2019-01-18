@@ -50,6 +50,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/kotlin" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
+      <excludePattern pattern="elm-stuff" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -128,11 +129,11 @@
     <orderEntry type="library" name="Maven: org.springframework.social:spring-social-twitter:1.1.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.8" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.social:spring-social-config:1.1.0.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.social:spring-social-web:1.1.0.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-crypto:5.1.3.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.8" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.social:spring-social-core:1.1.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.social:spring-social-web:1.1.6.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-crypto:5.1.3.RELEASE" level="project" />
   </component>
 </module>

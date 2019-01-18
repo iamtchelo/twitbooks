@@ -1,6 +1,7 @@
 package io.paulocosta.twitbooks.auth
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.social.twitter.api.Twitter
 import org.springframework.social.twitter.api.impl.TwitterTemplate
 import org.springframework.stereotype.Component
 
@@ -19,9 +20,10 @@ class TwitterAuth {
                 secrets.accessToken,
                 secrets.accessTokenSecret
         )
+        //return TwitterTemplate(secrets.consumerKey, secrets.consumerSecret)
     }
 
-    fun getTemplate(): TwitterTemplate {
+    fun getTwitter(): Twitter {
         return template ?: auth()
     }
 
