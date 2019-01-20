@@ -82,3 +82,5 @@ tmp/
 
 # Vagrant
 .vagrant/
+
+*.iml

@@ -2,9 +2,7 @@ package io.paulocosta.twitbooks.api
 
 import io.paulocosta.twitbooks.auth.TwitterAuth
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.social.twitter.api.RateLimitStatus
-import org.springframework.social.twitter.api.ResourceFamily
-import org.springframework.social.twitter.api.SearchResults
+import org.springframework.social.twitter.api.*
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -33,6 +31,12 @@ class TestApi {
     fun testSearch(): SearchResults? {
         val twitter = twitterAuth.getTwitter()
         return twitter.searchOperations().search("#spring")
+    }
+
+    @GetMapping("/4")
+    fun testGetFriendList(): CursoredList<TwitterProfile>? {
+        val twitter = twitterAuth.getTwitter()
+        return twitter.friendOperations().friends
     }
 
 }
