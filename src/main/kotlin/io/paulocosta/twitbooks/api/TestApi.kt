@@ -24,7 +24,7 @@ class TestApi {
     @GetMapping("/2")
     fun testRateLimit(): MutableMap<ResourceFamily, MutableList<RateLimitStatus>>? {
         val template = twitterAuth.getTwitter()
-        return template.userOperations().getRateLimitStatus(ResourceFamily.SEARCH)
+        return template.userOperations().getRateLimitStatus(ResourceFamily.STATUSES)
     }
 
     @GetMapping("/3")
@@ -43,6 +43,12 @@ class TestApi {
     fun testGetFriendsIds(): CursoredList<Long>? {
         val twitter = twitterAuth.getTwitter()
         return twitter.friendOperations().friendIds
+    }
+
+    @GetMapping("/6")
+    fun testGetFriendTweets(): MutableList<Tweet>? {
+        val twitter = twitterAuth.getTwitter()
+        return twitter.timelineOperations().getUserTimeline(2420931980)
     }
 
 }
