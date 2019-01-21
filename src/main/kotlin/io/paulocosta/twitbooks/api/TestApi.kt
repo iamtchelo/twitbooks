@@ -39,4 +39,10 @@ class TestApi {
         return twitter.friendOperations().friends
     }
 
+    @GetMapping("/5")
+    fun testGetFriendsIds(): CursoredList<Long>? {
+        val twitter = twitterAuth.getTwitter()
+        return twitter.friendOperations().friendIds
+    }
+
 }
