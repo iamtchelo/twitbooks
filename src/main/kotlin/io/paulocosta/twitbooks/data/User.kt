@@ -1,3 +1,12 @@
 package io.paulocosta.twitbooks.data
 
-data class Friend(val id: Long)
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
+
+@Entity
+@Table(name = "friends")
+data class Friend(
+        @Id
+        val id: Long
+)
