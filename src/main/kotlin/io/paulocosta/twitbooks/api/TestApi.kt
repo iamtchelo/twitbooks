@@ -64,4 +64,11 @@ class TestApi {
         return "ok"
 
     }
+
+    @GetMapping("/8")
+    fun testUserLookupByName(): MutableList<TwitterProfile>? {
+        val twitter = twitterAuth.getTwitter()
+        return twitter.userOperations().getUsers("jessitron")
+    }
+
 }
