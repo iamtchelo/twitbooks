@@ -1,11 +1,9 @@
 package io.paulocosta.twitbooks.data
 
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
+import javax.persistence.*
 
 @Entity
+@Table(name = "messages")
 data class Message(
         @Id val id: Long,
         val text: String,
