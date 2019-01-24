@@ -20,7 +20,6 @@ class TwitterAuth {
                 secrets.accessToken,
                 secrets.accessTokenSecret
         )
-        //return TwitterTemplate(secrets.consumerKey, secrets.consumerSecret)
     }
 
     fun getTwitter(): Twitter {

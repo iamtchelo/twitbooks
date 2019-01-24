@@ -1,4 +1,4 @@
-package io.paulocosta.twitbooks.api
+package io.paulocosta.twitbooks.controller
 
 import io.paulocosta.twitbooks.auth.TwitterAuth
 import io.paulocosta.twitbooks.data.Friend

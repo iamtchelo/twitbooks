@@ -1,4 +1,4 @@
-package io.paulocosta.twitbooks.api
+package io.paulocosta.twitbooks.controller
 
 import io.paulocosta.twitbooks.auth.TwitterAuth
 import org.springframework.beans.factory.annotation.Autowired
