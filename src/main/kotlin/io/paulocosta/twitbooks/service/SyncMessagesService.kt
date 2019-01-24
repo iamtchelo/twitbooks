@@ -1,5 +1,8 @@
 package io.paulocosta.twitbooks.service
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+
 /**
  * Service dedicated to sync messages from friends. I'm still
  * unsure on the exact method of obtaining data. I could start
@@ -12,6 +15,10 @@ package io.paulocosta.twitbooks.service
  *
  * For an MVP one I think the first approach could be better.
  * **/
-
+@Service
 class SyncMessagesService {
+
+    @Autowired
+    lateinit var rateLimitService: RateLimitService
+
 }
