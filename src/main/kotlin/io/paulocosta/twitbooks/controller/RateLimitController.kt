@@ -1,6 +1,6 @@
 package io.paulocosta.twitbooks.controller
 
-import io.paulocosta.twitbooks.data.RateLimit
+import io.paulocosta.twitbooks.entity.RateLimit
 import io.paulocosta.twitbooks.service.RateLimitService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping

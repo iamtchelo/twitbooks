@@ -1,8 +1,7 @@
 package io.paulocosta.twitbooks.controller
 
 import io.paulocosta.twitbooks.auth.TwitterAuth
-import io.paulocosta.twitbooks.data.Friend
-import io.paulocosta.twitbooks.data.FriendsRepository
+import io.paulocosta.twitbooks.repository.FriendsRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.social.twitter.api.*
 import org.springframework.web.bind.annotation.GetMapping

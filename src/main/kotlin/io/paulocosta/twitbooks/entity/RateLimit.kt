@@ -1,4 +1,4 @@
-package io.paulocosta.twitbooks.data
+package io.paulocosta.twitbooks.entity
 
 import java.util.*
 

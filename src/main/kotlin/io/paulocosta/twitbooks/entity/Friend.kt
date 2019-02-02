@@ -1,4 +1,4 @@
-package io.paulocosta.twitbooks.data
+package io.paulocosta.twitbooks.entity
 
 import javax.persistence.Entity
 import javax.persistence.Id
