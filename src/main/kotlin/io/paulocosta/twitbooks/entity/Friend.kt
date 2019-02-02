@@ -9,5 +9,7 @@ import javax.persistence.Table
 data class Friend(
         @Id
         val id: Long,
-        val twitterId: Long
+        val twitterId: Long,
+        val name: String,
+        val screenName: String
 )

@@ -1,2 +1,1 @@
-INSERT INTO friends ("id", "twitter_id")
-VALUES (1, 25103);
+INSERT INTO friends ("id", "twitter_id", "name", "screen_name") VALUES (1, 25103, 'Jessica Kerr', 'jessitron');
