@@ -2,6 +2,7 @@ package io.paulocosta.twitbooks.service
 
 import io.paulocosta.twitbooks.auth.TwitterProvider
 import io.paulocosta.twitbooks.entity.RateLimit
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.social.twitter.api.RateLimitStatus
 import org.springframework.social.twitter.api.ResourceFamily

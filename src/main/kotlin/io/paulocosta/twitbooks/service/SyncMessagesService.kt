@@ -1,6 +1,7 @@
 package io.paulocosta.twitbooks.service
 
 import io.paulocosta.twitbooks.repository.FriendsRepository
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -16,13 +17,22 @@ import org.springframework.stereotype.Service
  *
  * For an MVP one I think the first approach could be better.
  * **/
+
+private val logger = KotlinLogging.logger {}
+
 @Service
 class SyncMessagesService @Autowired constructor(
-        val rateLimitService: RateLimitService,
-        val friendsRepository: FriendsRepository) {
+        val friendsRepository: FriendsRepository,
+        val messageService: MessageService) {
 
-    fun sync() {
+    // should extract this probably
+    fun fetchMessages() {
         val users = friendsRepository.findAll()
+
+        users.forEach {
+            val messages = messageService.getMessagesFromUser(it.twitterId, it.screenName)
+        }
+
     }
 
 }

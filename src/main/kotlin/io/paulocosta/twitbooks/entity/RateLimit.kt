@@ -6,5 +6,11 @@ data class RateLimit(
         val quarterOfHourLimit: Int,
         val remainingHits: Int,
         val resetTimeInSeconds: Long,
-        val resetTime: Date)
+        val resetTime: Date) {
+
+    fun exceeded(): Boolean {
+        return remainingHits == 0
+    }
+
+}
 
