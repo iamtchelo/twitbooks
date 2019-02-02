@@ -1,6 +1,6 @@
 package io.paulocosta.twitbooks.service
 
-import io.paulocosta.twitbooks.auth.TwitterAuth
+import io.paulocosta.twitbooks.auth.TwitterProvider
 import io.paulocosta.twitbooks.entity.RateLimit
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.social.twitter.api.RateLimitStatus
@@ -24,7 +24,7 @@ class RateLimitService {
     }
 
     @Autowired
-    lateinit var twitterAuth: TwitterAuth
+    lateinit var twitterProvider: TwitterProvider
 
     fun getTimelineRateLimits(): RateLimit {
         return getRateLimit(getRateLimit(ResourceFamily.STATUSES))
@@ -49,7 +49,7 @@ class RateLimitService {
     }
 
     private fun getRateLimit(resourceFamily: ResourceFamily): MutableMap<ResourceFamily, MutableList<RateLimitStatus>>? {
-        return twitterAuth.getTwitter()
+        return twitterProvider.getTwitter()
                 .userOperations()
                 .getRateLimitStatus(resourceFamily)
     }

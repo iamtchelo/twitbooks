@@ -1,5 +1,6 @@
 package io.paulocosta.twitbooks.service
 
+import io.paulocosta.twitbooks.repository.FriendsRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -16,6 +17,12 @@ import org.springframework.stereotype.Service
  * For an MVP one I think the first approach could be better.
  * **/
 @Service
-class SyncMessagesService @Autowired constructor(val rateLimitService: RateLimitService) {
+class SyncMessagesService @Autowired constructor(
+        val rateLimitService: RateLimitService,
+        val friendsRepository: FriendsRepository) {
+
+    fun sync() {
+        val users = friendsRepository.findAll()
+    }
 
 }

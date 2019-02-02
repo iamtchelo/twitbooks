@@ -6,7 +6,7 @@ import org.springframework.social.twitter.api.impl.TwitterTemplate
 import org.springframework.stereotype.Component
 
 @Component
-class TwitterAuth {
+class TwitterProvider {
 
     @Autowired
     lateinit var secrets: TwitterAuthSecrets
