@@ -60,7 +60,7 @@ class TestApi {
     fun testDatabaseConnection(): String {
         val twitter = twitterAuth.getTwitter()
         val friendsIds = twitter.friendOperations().friendIds
-        friendRepository.saveAll(friendsIds.map { Friend(it) })
+        //friendRepository.saveAll(friendsIds.map { Friend(it) })
         return "ok"
 
     }

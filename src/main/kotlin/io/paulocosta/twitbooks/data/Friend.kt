@@ -8,5 +8,6 @@ import javax.persistence.Table
 @Table(name = "friends")
 data class Friend(
         @Id
-        val id: Long
+        val id: Long,
+        val twitterId: Long
 )
