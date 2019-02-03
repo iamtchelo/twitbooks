@@ -1,6 +1,7 @@
 package io.paulocosta.twitbooks.service
 
 import io.paulocosta.twitbooks.auth.TwitterProvider
+import io.paulocosta.twitbooks.entity.Friend
 import io.paulocosta.twitbooks.entity.Message
 import io.paulocosta.twitbooks.repository.MessageRepository
 import mu.KotlinLogging
@@ -22,18 +23,18 @@ class MessageService @Autowired constructor(
         const val PAGE_SIZE = 10
     }
 
-    fun getMessagesFromUser(userTwitterId: Long, screenName: String): List<Message> {
-        val oldestMessage: Message? = messageRepository.findOldestMessage(userTwitterId)
+    fun getMessagesFromUser(friend: Friend): List<Message> {
+        val oldestMessage: Message? = messageRepository.findOldestMessage(friend.twitterId)
 
         val messages = when(oldestMessage) {
             null -> {
-                logger.info { "No messages present for user $screenName. Retrieving current timeline" }
-                getMessagesFromUserTimeline(screenName)
+                logger.info { "No messages present for user ${friend.screenName}. Retrieving current timeline" }
+                getMessagesFromUserTimeline(friend)
             }
             else -> {
-                logger.info { "No messages present for user $screenName. Retrieving Tweets from id $userTwitterId" }
+                logger.info { "No messages present for user ${friend.screenName}. Retrieving Tweets from id ${friend.twitterId}" }
                 getMessagesFromUserTimeline(
-                        screenName,
+                        friend,
                         oldestMessage.twitterId,
                         oldestMessage.twitterId)
             }
@@ -42,17 +43,17 @@ class MessageService @Autowired constructor(
         return messages
     }
 
-    private fun getMessagesFromUserTimeline(screenName: String): List<Message> {
+    private fun getMessagesFromUserTimeline(friend: Friend): List<Message> {
         validate()
-        val tweets = twitterProvider.getTwitter().timelineOperations().getUserTimeline(screenName, PAGE_SIZE)
-        return tweets.map { toMessage(it) }
+        val tweets = twitterProvider.getTwitter().timelineOperations().getUserTimeline(friend.screenName, PAGE_SIZE)
+        return tweets.map { toMessage(it, friend) }
     }
 
-    private fun getMessagesFromUserTimeline(screenName: String, sinceId: Long, maxId: Long): List<Message> {
+    private fun getMessagesFromUserTimeline(friend: Friend, sinceId: Long, maxId: Long): List<Message> {
         validate()
         val tweets = twitterProvider.getTwitter()
-                .timelineOperations().getUserTimeline(screenName, PAGE_SIZE, sinceId, maxId)
-        return tweets.map { toMessage(it) }
+                .timelineOperations().getUserTimeline(friend.screenName, PAGE_SIZE, sinceId, maxId)
+        return tweets.map { toMessage(it, friend) }
     }
 
     private fun validate() {
@@ -63,8 +64,8 @@ class MessageService @Autowired constructor(
         }
     }
 
-    fun toMessage(tweet: Tweet): Message {
-        return Message(null, tweet.text, tweet.id, tweet.isRetweet, tweet.createdAt)
+    fun toMessage(tweet: Tweet, friend: Friend): Message {
+        return Message(null, tweet.text, tweet.id, tweet.isRetweet, tweet.createdAt, friend)
     }
 
 }

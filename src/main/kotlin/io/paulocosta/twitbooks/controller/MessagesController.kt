@@ -1,5 +1,6 @@
 package io.paulocosta.twitbooks.controller
 
+import io.paulocosta.twitbooks.entity.Friend
 import io.paulocosta.twitbooks.entity.Message
 import io.paulocosta.twitbooks.service.MessageService
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +14,8 @@ class MessagesController @Autowired constructor(val messageService: MessageServi
 
     @GetMapping
     fun get(): List<Message> {
-        return messageService.getMessagesFromUser(25103L, "jessitron")
+        val friend = Friend(1, 25103, "Jess", "jessitron")
+        return messageService.getMessagesFromUser(friend)
     }
 
 }

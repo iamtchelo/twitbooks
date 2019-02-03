@@ -31,7 +31,7 @@ class SyncMessagesService @Autowired constructor(
         val users = friendsRepository.findAll()
 
         users.forEach {
-            val messages = messageService.getMessagesFromUser(it.twitterId, it.screenName)
+            val messages = messageService.getMessagesFromUser(it)
             messageRepository.saveAll(messages)
         }
 
