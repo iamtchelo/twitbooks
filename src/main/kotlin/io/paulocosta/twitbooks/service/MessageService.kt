@@ -24,7 +24,7 @@ class MessageService @Autowired constructor(
     }
 
     fun getMessagesFromUser(friend: Friend): List<Message> {
-        val oldestMessage: Message? = messageRepository.findOldestMessage(friend.twitterId)
+        val oldestMessage: Message? = messageRepository.findFirstByFriendIdOrderByCreatedAt(friend.id)
 
         val messages = when(oldestMessage) {
             null -> {
@@ -52,7 +52,7 @@ class MessageService @Autowired constructor(
     private fun getMessagesFromUserTimeline(friend: Friend, sinceId: Long, maxId: Long): List<Message> {
         validate()
         val tweets = twitterProvider.getTwitter()
-                .timelineOperations().getUserTimeline(friend.screenName, PAGE_SIZE, sinceId, maxId)
+                .timelineOperations().getUserTimeline(friend.screenName, PAGE_SIZE, 0, maxId - 1)
         return tweets.map { toMessage(it, friend) }
     }
 

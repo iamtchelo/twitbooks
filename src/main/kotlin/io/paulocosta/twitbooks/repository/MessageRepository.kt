@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository
 @Repository
 interface MessageRepository : JpaRepository<Message, Long> {
 
-    @Query("SELECT twitterId FROM Message WHERE friend.id = ?1 ORDER BY createdAt ASC")
-    fun findOldestMessage(friendId: Long): Message?
+//    @Query("SELECT twitterId FROM Message WHERE friend.id = ?1 ORDER BY createdAt ASC")
+//    fun findOldestMessage(friendId: Long): Message?
+    fun findFirstByFriendIdOrderByCreatedAt(friendId: Long): Message?
 
 }
