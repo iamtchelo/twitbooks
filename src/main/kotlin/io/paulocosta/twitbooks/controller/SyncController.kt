@@ -1,19 +1,19 @@
 package io.paulocosta.twitbooks.controller
 
-import io.paulocosta.twitbooks.entity.Message
-import io.paulocosta.twitbooks.service.MessageService
+import io.paulocosta.twitbooks.service.SyncMessagesService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/messages")
-class MessagesController @Autowired constructor(val messageService: MessageService) {
+@RequestMapping("/sync")
+class SyncController @Autowired constructor(val syncMessagesService: SyncMessagesService) {
 
     @GetMapping
-    fun get(): List<Message> {
-        return messageService.getMessagesFromUser(25103L, "jessitron")
+    fun sync(): String {
+        syncMessagesService.sync()
+        return "OK"
     }
 
 }

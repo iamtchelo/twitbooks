@@ -1,6 +1,7 @@
 package io.paulocosta.twitbooks.service
 
 import io.paulocosta.twitbooks.repository.FriendsRepository
+import io.paulocosta.twitbooks.repository.MessageRepository
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -23,14 +24,15 @@ private val logger = KotlinLogging.logger {}
 @Service
 class SyncMessagesService @Autowired constructor(
         val friendsRepository: FriendsRepository,
-        val messageService: MessageService) {
+        val messageService: MessageService,
+        val messageRepository: MessageRepository) {
 
-    // should extract this probably
-    fun fetchMessages() {
+    fun sync() {
         val users = friendsRepository.findAll()
 
         users.forEach {
             val messages = messageService.getMessagesFromUser(it.twitterId, it.screenName)
+            messageRepository.saveAll(messages)
         }
 
     }

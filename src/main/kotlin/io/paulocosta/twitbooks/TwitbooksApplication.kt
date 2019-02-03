@@ -6,9 +6,13 @@ import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
 @EnableScheduling
-class TwitbooksApplication
-
-fun main(args: Array<String>) {
-    runApplication<TwitbooksApplication>(*args)
+class TwitbooksApplication {
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            runApplication<TwitbooksApplication>(*args)
+        }
+    }
 }
+
 
