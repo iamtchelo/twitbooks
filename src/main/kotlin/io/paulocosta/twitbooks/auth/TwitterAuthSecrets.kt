@@ -6,16 +6,16 @@ import org.springframework.stereotype.Component
 @Component
 class TwitterAuthSecrets {
 
-    @Value("\${consumer.key}")
+    @Value("\${consumer.key:''}")
     lateinit var consumerKey: String
 
-    @Value("\${consumer.secret}")
+    @Value("\${consumer.secret:''}")
     lateinit var consumerSecret: String
 
-    @Value("\${access.token}")
+    @Value("\${access.token:''}")
     lateinit var accessToken: String
 
-    @Value("\${access.token.secret}")
+    @Value("\${access.token.secret:''}")
     lateinit var accessTokenSecret: String
 
 }
