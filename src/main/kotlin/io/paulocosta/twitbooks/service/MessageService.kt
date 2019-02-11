@@ -24,7 +24,8 @@ class MessageService @Autowired constructor(
     }
 
     fun getMessagesFromUser(friend: Friend): List<Message> {
-        val oldestMessage: Message? = messageRepository.findFirstByFriendIdOrderByCreatedAt(friend.id)
+        val oldestMessage: Message? = messageRepository.findFirstByFriendIdOrderByCreatedAt(
+                friend.id ?: throw IllegalStateException("Friend must be provided"))
 
         val messages = when(oldestMessage) {
             null -> {

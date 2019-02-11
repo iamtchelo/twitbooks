@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service
 private val logger = KotlinLogging.logger {}
 
 @Service
-class SyncMessagesService @Autowired constructor(
+class SyncService @Autowired constructor(
         val friendsRepository: FriendsRepository,
         val messageService: MessageService,
         val messageRepository: MessageRepository) {

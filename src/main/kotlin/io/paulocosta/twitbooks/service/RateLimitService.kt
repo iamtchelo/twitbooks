@@ -2,7 +2,6 @@ package io.paulocosta.twitbooks.service
 
 import io.paulocosta.twitbooks.auth.TwitterProvider
 import io.paulocosta.twitbooks.entity.RateLimit
-import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.social.twitter.api.RateLimitStatus
 import org.springframework.social.twitter.api.ResourceFamily
@@ -28,10 +27,14 @@ class RateLimitService {
     lateinit var twitterProvider: TwitterProvider
 
     fun getTimelineRateLimits(): RateLimit {
-        return getRateLimit(getRateLimit(ResourceFamily.STATUSES))
+        return parseResponse(getRateLimit(ResourceFamily.STATUSES))
     }
 
-    private fun getRateLimit(result: MutableMap<ResourceFamily, MutableList<RateLimitStatus>>?): RateLimit {
+    fun getFriendRateLimits(): RateLimit {
+        return parseResponse(getRateLimit(ResourceFamily.FRIENDS))
+    }
+
+    private fun parseResponse(result: MutableMap<ResourceFamily, MutableList<RateLimitStatus>>?): RateLimit {
         val statuses: MutableList<RateLimitStatus>? = result?.get(ResourceFamily.STATUSES)
         val rateLimitStatus = statuses?.filter { it.endpoint ==  USER_TIMELINE_ENDPOINT } ?: emptyList()
         if (rateLimitStatus.isEmpty()) {
@@ -40,6 +43,13 @@ class RateLimitService {
         return toRateLimit(rateLimitStatus[0])
     }
 
+    private fun getRateLimit(resourceFamily: ResourceFamily): MutableMap<ResourceFamily, MutableList<RateLimitStatus>>? {
+        return twitterProvider.getTwitter()
+                .userOperations()
+                .getRateLimitStatus(resourceFamily)
+    }
+
+
     private fun toRateLimit(limit: RateLimitStatus): RateLimit {
         return RateLimit(
                 limit.quarterOfHourLimit,
@@ -47,12 +57,6 @@ class RateLimitService {
                 limit.resetTimeInSeconds,
                 limit.resetTime
         )
-    }
-
-    private fun getRateLimit(resourceFamily: ResourceFamily): MutableMap<ResourceFamily, MutableList<RateLimitStatus>>? {
-        return twitterProvider.getTwitter()
-                .userOperations()
-                .getRateLimitStatus(resourceFamily)
     }
 
 }

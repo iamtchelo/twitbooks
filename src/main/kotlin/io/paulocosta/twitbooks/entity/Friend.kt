@@ -7,7 +7,7 @@ import javax.persistence.*
 data class Friend(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long,
+        var id: Long? = null,
         val twitterId: Long,
         val name: String,
         val screenName: String
