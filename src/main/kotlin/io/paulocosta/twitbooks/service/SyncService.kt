@@ -23,18 +23,27 @@ private val logger = KotlinLogging.logger {}
 
 @Service
 class SyncService @Autowired constructor(
-        val friendsRepository: FriendsRepository,
-        val messageService: MessageService,
-        val messageRepository: MessageRepository) {
+        val userService: UserService,
+        val messageService: MessageService) {
 
     fun sync() {
-        val users = friendsRepository.findAll()
+        logger.info { "Starting sync" }
+        syncUsers()
+/*        val users = friendsRepository.findAll()
 
         users.forEach {
             val messages = messageService.getMessagesFromUser(it)
             messageRepository.saveAll(messages)
-        }
+        }*/
 
+    }
+
+    private fun syncUsers() {
+        logger.info { "Syncing users" }
+         when (userService.hasUsers()) {
+             true -> logger.info { "Users already present! Skipping user sync" }
+             false -> syncUsers()
+         }
     }
 
 }

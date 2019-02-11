@@ -11,16 +11,24 @@ class UserService @Autowired constructor(
         val twitterProvider: TwitterProvider,
         val friendsRepository: FriendsRepository) {
 
-    fun saveUsers() {
+    /**
+     * TODO: check how to iterate the cursor here
+     **/
+    fun syncUsers() {
         val friends = twitterProvider.getTwitter().friendOperations().friends
         saveFriends(friends)
     }
 
-    fun saveFriends(profiles: List<TwitterProfile>) {
+    fun hasUsers(): Boolean {
+        return friendsRepository.count() > 0
+    }
+
+    private fun saveFriends(profiles: List<TwitterProfile>) {
         val friends = profiles.map { toFriend(it) }
         friendsRepository.saveAll(friends)
     }
-    fun toFriend(profile: TwitterProfile): Friend {
+
+    private fun toFriend(profile: TwitterProfile): Friend {
         return Friend(
                 null,
                 profile.id,
