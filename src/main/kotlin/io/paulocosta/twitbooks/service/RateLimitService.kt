@@ -13,7 +13,7 @@ import java.lang.IllegalStateException
  * has available. Current endpoints used:
  *
  * - statuses/user_timeline
- *
+ * - statuses/friends
  *
  * **/
 @Service
@@ -21,34 +21,34 @@ class RateLimitService {
 
     companion object {
         const val USER_TIMELINE_ENDPOINT = "/statuses/user_timeline"
+        const val FRIENDS_ENDPOINT = "/friends/list"
     }
 
     @Autowired
     lateinit var twitterProvider: TwitterProvider
 
     fun getTimelineRateLimits(): RateLimit {
-        return parseResponse(getRateLimit(ResourceFamily.STATUSES))
+        return getRateLimit(ResourceFamily.STATUSES, USER_TIMELINE_ENDPOINT)
     }
 
     fun getFriendRateLimits(): RateLimit {
-        return parseResponse(getRateLimit(ResourceFamily.FRIENDS))
+        return getRateLimit(ResourceFamily.FRIENDS, FRIENDS_ENDPOINT)
     }
 
-    private fun parseResponse(result: MutableMap<ResourceFamily, MutableList<RateLimitStatus>>?): RateLimit {
-        val statuses: MutableList<RateLimitStatus>? = result?.get(ResourceFamily.STATUSES)
-        val rateLimitStatus = statuses?.filter { it.endpoint ==  USER_TIMELINE_ENDPOINT } ?: emptyList()
+    private fun getRateLimit(
+            resourceFamily: ResourceFamily, endpoint: String): RateLimit {
+
+        val response = twitterProvider.getTwitter()
+                .userOperations()
+                .getRateLimitStatus(resourceFamily)
+
+        val statuses: MutableList<RateLimitStatus>? = response?.get(resourceFamily)
+        val rateLimitStatus = statuses?.filter { it.endpoint ==  endpoint } ?: emptyList()
         if (rateLimitStatus.isEmpty()) {
             throw IllegalStateException("Could not obtain rate limit")
         }
         return toRateLimit(rateLimitStatus[0])
     }
-
-    private fun getRateLimit(resourceFamily: ResourceFamily): MutableMap<ResourceFamily, MutableList<RateLimitStatus>>? {
-        return twitterProvider.getTwitter()
-                .userOperations()
-                .getRateLimitStatus(resourceFamily)
-    }
-
 
     private fun toRateLimit(limit: RateLimitStatus): RateLimit {
         return RateLimit(

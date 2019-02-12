@@ -17,7 +17,7 @@ class TestApi {
     @GetMapping("/2")
     fun testRateLimit(): MutableMap<ResourceFamily, MutableList<RateLimitStatus>>? {
         val template = twitterProvider.getTwitter()
-        return template.userOperations().getRateLimitStatus(ResourceFamily.STATUSES)
+        return template.userOperations().getRateLimitStatus(ResourceFamily.STATUSES, ResourceFamily.FRIENDS)
     }
 
     @GetMapping("/3")

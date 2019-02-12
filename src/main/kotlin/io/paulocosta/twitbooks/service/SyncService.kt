@@ -1,7 +1,5 @@
 package io.paulocosta.twitbooks.service
 
-import io.paulocosta.twitbooks.repository.FriendsRepository
-import io.paulocosta.twitbooks.repository.MessageRepository
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -41,8 +39,11 @@ class SyncService @Autowired constructor(
     private fun syncUsers() {
         logger.info { "Syncing users" }
          when (userService.hasUsers()) {
-             true -> logger.info { "Users already present! Skipping user sync" }
-             false -> syncUsers()
+             true -> logger.info { "Users already present. Skipping user sync!" }
+             false -> {
+                logger.info { "No users found. Fetching them now!" }
+                 userService.syncUsers()
+             }
          }
     }
 
