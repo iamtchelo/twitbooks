@@ -8,21 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.social.twitter.api.CursoredList
 import org.springframework.social.twitter.api.TwitterProfile
 import org.springframework.stereotype.Service
-import java.lang.IllegalStateException
 
 private val logger = KotlinLogging.logger {}
 
 sealed class FriendRequestStatus
 
-object RateLimited : FriendRequestStatus()
+data class RateLimited(var cursorId: Long? = null) : FriendRequestStatus()
 object CursorEnd: FriendRequestStatus()
 data class HasMore(val cursorId: Long): FriendRequestStatus()
 
-object RateLimitError
-
-enum class SyncStatus {
-    FAIL, SUCCESS
-}
+// object RateLimitError
 
 @Service
 class UserService @Autowired constructor(
@@ -30,32 +25,29 @@ class UserService @Autowired constructor(
         val twitterProvider: TwitterProvider,
         val friendsRepository: FriendsRepository) {
 
-    /**
-     * TODO: check how to iterate the cursor here
-     **/
-    fun syncUsers(): SyncStatus {
-        return when (iterateCursor()) {
-            RateLimited -> SyncStatus.FAIL
-            CursorEnd -> SyncStatus.SUCCESS
-            is HasMore -> SyncStatus.FAIL
-        }
+    fun fullSync(): FriendRequestStatus {
+        return iterateCursor()
+    }
+
+    fun cursorSync(cursorId: Long?): FriendRequestStatus {
+        return iterateCursor(cursorId)
     }
 
     private fun iterateCursor(cursorId: Long? = null): FriendRequestStatus {
         val response = handleFriendsResponse(getNextFriendRequest(cursorId))
         return when (response) {
-            is RateLimited -> RateLimited
+            is RateLimited -> RateLimited(response.cursorId)
             is HasMore -> iterateCursor(response.cursorId)
             is CursorEnd -> CursorEnd
         }
     }
 
-    private fun getNextFriendRequest(cursorId: Long?): Either<CursoredList<TwitterProfile>, RateLimitError> {
+    private fun getNextFriendRequest(cursorId: Long?): Either<CursoredList<TwitterProfile>, RateLimited> {
         val rateLimit = rateLimitService.getFriendRateLimits()
         return when (rateLimit.exceeded()) {
             true -> {
                 logger.info { "Rate limit exceeded on friends API" }
-                Either.right(RateLimitError)
+                Either.right(RateLimited(cursorId))
             }
             false -> {
                 return when (cursorId) {
@@ -66,7 +58,7 @@ class UserService @Autowired constructor(
         }
     }
 
-    private fun handleFriendsResponse(response: Either<CursoredList<TwitterProfile>, RateLimitError>): FriendRequestStatus {
+    private fun handleFriendsResponse(response: Either<CursoredList<TwitterProfile>, RateLimited>): FriendRequestStatus {
         return when (response) {
             is Either.Left -> {
                 val friendsResponse = response.a
@@ -77,14 +69,8 @@ class UserService @Autowired constructor(
                     CursorEnd
                 }
             }
-            is Either.Right -> {
-                RateLimited
-            }
+            is Either.Right -> { response.b }
         }
-    }
-
-    fun hasUsers(): Boolean {
-        return friendsRepository.count() > 0
     }
 
     private fun saveFriends(profiles: List<TwitterProfile>) {
