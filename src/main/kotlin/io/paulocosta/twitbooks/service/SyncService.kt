@@ -3,6 +3,7 @@ package io.paulocosta.twitbooks.service
 import io.paulocosta.twitbooks.entity.Status
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 
 /**
@@ -26,6 +27,11 @@ class SyncService @Autowired constructor(
         val friendSyncStatusService: FriendSyncStatusService,
         val messageService: MessageService) {
 
+    companion object {
+        const val SYNC_DELAY_MILLIS = 4L * 36L * 100000L
+    }
+
+    @Scheduled(fixedDelay = SYNC_DELAY_MILLIS)
     fun sync() {
         logger.info { "Starting sync" }
         syncUsers()
