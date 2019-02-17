@@ -2,12 +2,15 @@ package io.paulocosta.twitbooks.service
 
 import arrow.core.Either
 import io.paulocosta.twitbooks.auth.TwitterProvider
-import io.paulocosta.twitbooks.entity.Friend import io.paulocosta.twitbooks.repository.FriendsRepository
+import io.paulocosta.twitbooks.entity.Friend
+import io.paulocosta.twitbooks.entity.MessageSyncStrategy
+import io.paulocosta.twitbooks.repository.FriendsRepository
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.social.twitter.api.CursoredList
 import org.springframework.social.twitter.api.TwitterProfile
 import org.springframework.stereotype.Service
+import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
@@ -84,7 +87,18 @@ class UserService @Autowired constructor(
                 null,
                 profile.id,
                 profile.name,
-                profile.screenName)
+                profile.screenName,
+                MessageSyncStrategy.DEPTH)
+    }
+
+    fun updateMessageSyncMode(friend: Friend, messageSyncStrategy: MessageSyncStrategy) {
+        friendsRepository.save(Friend(
+                friend.id, friend.twitterId, friend.name, friend.screenName, messageSyncStrategy
+        ))
+    }
+
+    fun findFriendById(id: Long): Optional<Friend> {
+        return friendsRepository.findById(id)
     }
 
 }
