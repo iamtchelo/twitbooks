@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.social.twitter.api.Tweet
 import org.springframework.stereotype.Service
-import java.lang.IllegalStateException
 
 private val logger = KotlinLogging.logger {}
 
@@ -41,38 +40,74 @@ class MessageService @Autowired constructor(
         }
     }
 
-    private fun newestSync(friend: Friend): MessageSyncResult {
-        val newestMessage = messageRepository.getNewestMessages(friend.id!!, PageRequest.of(0, 1)).firstOrNull()
-        logger.info { "starting newest messages sync. Current newest message for user ${friend.screenName} is ${newestMessage?.twitterId}" }
-        val result = getNewestTimelineMessages(friend, newestMessage ?: throw IllegalStateException("Cannot do newest sync without any messages"))
-        return when (result) {
-            is Either.Left -> {
-                val messages = result.a.messages
-                return if (messages.isEmpty()) {
-                    logger.info { "No more message updates. Stopping sync for user ${friend.screenName}" }
-                    MessageSyncResult.RESULT_OK
-                } else {
-                    logger.info { "Saving newer messages. Attempting to sync again." }
-                    newestSync(friend)
+    private fun newestSync(friend: Friend, lowestId: Long? = null, newestMessage: Message? = null): MessageSyncResult {
+        when (lowestId) {
+            null -> {
+                logger.info { "Getting current user timeline to see if there's any new messages" }
+                val msg = messageRepository.getNewestMessages(friend.id, PageRequest.of(0, 1)).first()
+                val result = getCurrentUserTimeline(friend)
+                when (result) {
+                    is Either.Left -> {
+                        val messages = result.a.messages
+                        return if (messages.isEmpty()) {
+                            logger.info { "User has no messages on timeline" }
+                            MessageSyncResult.RESULT_OK
+                        } else {
+                            messageRepository.saveAll(messages)
+                            if (messages.size == PAGE_SIZE) {
+                                newestSync(friend, messages.last().id, msg)
+                            } else {
+                                MessageSyncResult.RESULT_OK
+                            }
+                        }
+                    }
+                    is Either.Right -> {
+                        logger.info { "Could not get further messages due to being rate limited." }
+                        return MessageSyncResult.ERROR
+                    }
                 }
             }
-            is Either.Right -> {
-                logger.info { "Could not get further messages due to being rate limited." }
-                return MessageSyncResult.ERROR
+            else -> {
+                logger.info { "Timeline contains more than 200 new requests" }
+                if (lowestId < newestMessage!!.id) {
+                    logger.info { "Already synchronized" }
+                    return MessageSyncResult.RESULT_OK
+                } else {
+                    val result = getNewestTimelineMessages(friend, lowestId, newestMessage.id)
+                    when (result) {
+                        is Either.Left -> {
+                            val messages = result.a.messages
+                            return if (messages.isEmpty()) {
+                                logger.info { "User has no messages on timeline" }
+                                MessageSyncResult.RESULT_OK
+                            } else {
+                                messageRepository.saveAll(messages)
+                                if (messages.size == PAGE_SIZE) {
+                                    newestSync(friend, messages.last().id, newestMessage)
+                                } else {
+                                    MessageSyncResult.RESULT_OK
+                                }
+                            }
+                        }
+                        is Either.Right -> {
+                            return MessageSyncResult.ERROR
+                        }
+                    }
+                }
             }
         }
     }
 
     private fun depthSync(friend: Friend): MessageSyncResult {
-        val oldestMessage = messageRepository.getOldestMessages(friend.id!!, PageRequest.of(0, 1)).firstOrNull()
-        logger.info { "starting depth sync. Current oldest message for user ${friend.screenName} is ${oldestMessage?.twitterId}" }
+        val oldestMessage = messageRepository.getOldestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()
+        logger.info { "starting depth sync. Current oldest message for user ${friend.screenName} is ${oldestMessage?.id}" }
         val result = when (oldestMessage) {
             null -> {
                 logger.info { "No messages present from current user. Getting current timeline" }
                 getCurrentUserTimeline(friend)
             }
             else -> {
-                logger.info { "Getting older messages from user. From id ${oldestMessage.twitterId}" }
+                logger.info { "Getting older messages from user. From id ${oldestMessage.id}" }
                 getDepthTimelineMessages(friend, oldestMessage)
             }
         }
@@ -109,7 +144,7 @@ class MessageService @Autowired constructor(
         return if (isRateLimited()) {
             Either.right(RateLimited())
         } else {
-            val messageId = message.twitterId
+            val messageId = message.id
             val tweets = twitterProvider.getTwitter()
                     .timelineOperations().getUserTimeline(friend.screenName, PAGE_SIZE,
                             MINIMUM_DEPTH_ALLOWED_ID, messageId - 1L)
@@ -117,15 +152,14 @@ class MessageService @Autowired constructor(
         }
     }
 
-    private fun getNewestTimelineMessages(friend: Friend, message: Message): Either<MessageResult, RateLimited> {
+    private fun getNewestTimelineMessages(friend: Friend, minId: Long, maxId: Long): Either<MessageResult, RateLimited> {
         getCurrentUserTimeline(friend)
         return if (isRateLimited()) {
             Either.right(RateLimited())
         } else {
-            val messageId = message.twitterId
             val tweets = twitterProvider.getTwitter()
                     .timelineOperations().getUserTimeline(friend.screenName, PAGE_SIZE,
-                            messageId, 0)
+                            maxId, minId)
             Either.left(MessageResult(tweets.map { toMessage(it, friend) }))
         }
     }
@@ -133,7 +167,7 @@ class MessageService @Autowired constructor(
     private fun isRateLimited(): Boolean = rateLimitService.getTimelineRateLimits().exceeded()
 
     fun toMessage(tweet: Tweet, friend: Friend): Message {
-        return Message(null, tweet.text, tweet.id, tweet.isRetweet, tweet.createdAt, friend)
+        return Message(tweet.id, tweet.text, tweet.isRetweet, tweet.createdAt, friend)
     }
 
 }

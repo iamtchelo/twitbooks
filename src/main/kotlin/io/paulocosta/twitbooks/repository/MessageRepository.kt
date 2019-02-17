@@ -10,10 +10,10 @@ import org.springframework.stereotype.Repository
 @Repository
 interface MessageRepository : JpaRepository<Message, Long> {
 
-    @Query("select message from Message message where message.friend.id = ?1 order by message.twitterId asc")
+    @Query("select message from Message message where message.friend.id = ?1 order by message.id asc")
     fun getOldestMessages(friendId: Long, pageable: Pageable): Page<Message>
 
-    @Query("select message from Message message where message.friend.id = ?1 order by message.twitterId desc")
+    @Query("select message from Message message where message.friend.id = ?1 order by message.id desc")
     fun getNewestMessages(friendId: Long, pageable: Pageable): Page<Message>
 
 }

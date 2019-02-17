@@ -10,9 +10,7 @@ enum class MessageSyncStrategy {
 @Table(name = "friends")
 data class Friend(
         @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long? = null,
-        val twitterId: Long,
+        val id: Long,
         val name: String,
         val screenName: String,
         @Enumerated(EnumType.STRING)

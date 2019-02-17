@@ -84,7 +84,6 @@ class UserService @Autowired constructor(
 
     private fun toFriend(profile: TwitterProfile): Friend {
         return Friend(
-                null,
                 profile.id,
                 profile.name,
                 profile.screenName,
@@ -93,7 +92,7 @@ class UserService @Autowired constructor(
 
     fun updateMessageSyncMode(friend: Friend, messageSyncStrategy: MessageSyncStrategy) {
         friendsRepository.save(Friend(
-                friend.id, friend.twitterId, friend.name, friend.screenName, messageSyncStrategy
+                friend.id, friend.name, friend.screenName, messageSyncStrategy
         ))
     }
 

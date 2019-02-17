@@ -34,7 +34,7 @@ class SyncService @Autowired constructor(
 
     private fun syncMessages() {
         // TODO leaving 0 for now while I figure out message sync
-        val user = userService.findFriendById(1)
+        val user = userService.findFriendById(858798637073256449)
         messageService.syncMessages(user.get())
     }
 

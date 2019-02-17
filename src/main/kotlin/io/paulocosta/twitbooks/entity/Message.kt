@@ -6,12 +6,9 @@ import javax.persistence.*
 @Entity
 @Table(name = "messages")
 data class Message(
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Id val id: Long? = null,
+        @Id val id: Long,
 
         val text: String,
-
-        val twitterId: Long,
 
         val retweet: Boolean,
 
