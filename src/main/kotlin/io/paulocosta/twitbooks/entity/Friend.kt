@@ -10,5 +10,7 @@ data class Friend(
         var id: Long? = null,
         val twitterId: Long,
         val name: String,
-        val screenName: String
+        val screenName: String,
+        @OneToOne(mappedBy = "friend", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], optional = true)
+        val messageSyncStatus: MessageSyncStatus? = null
 )

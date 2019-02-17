@@ -17,13 +17,12 @@ data class RateLimited(var cursorId: Long? = null) : FriendRequestStatus()
 object CursorEnd: FriendRequestStatus()
 data class HasMore(val cursorId: Long): FriendRequestStatus()
 
-// object RateLimitError
 
 @Service
 class UserService @Autowired constructor(
-        val rateLimitService: RateLimitService,
-        val twitterProvider: TwitterProvider,
-        val friendsRepository: FriendsRepository) {
+        private val rateLimitService: RateLimitService,
+        private val twitterProvider: TwitterProvider,
+        private val friendsRepository: FriendsRepository) {
 
     fun fullSync(): FriendRequestStatus {
         return iterateCursor()
@@ -32,6 +31,8 @@ class UserService @Autowired constructor(
     fun cursorSync(cursorId: Long?): FriendRequestStatus {
         return iterateCursor(cursorId)
     }
+
+    fun getAllUsers(): List<Friend> = friendsRepository.findAll()
 
     private fun iterateCursor(cursorId: Long? = null): FriendRequestStatus {
         val response = handleFriendsResponse(getNextFriendRequest(cursorId))

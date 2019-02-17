@@ -1,6 +1,5 @@
 package io.paulocosta.twitbooks.service
 
-import io.paulocosta.twitbooks.entity.FriendSyncStatus
 import io.paulocosta.twitbooks.entity.Status
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,13 +29,13 @@ class SyncService @Autowired constructor(
     fun sync() {
         logger.info { "Starting sync" }
         syncUsers()
-/*        val users = friendsRepository.findAll()
+        syncMessages()
+    }
 
-        users.forEach {
-            val messages = messageService.getMessagesFromUser(it)
-            messageRepository.saveAll(messages)
-        }*/
-
+    private fun syncMessages() {
+        // TODO leaving 0 for now while I figure out message sync
+        val users = userService.getAllUsers()[0]
+        messageService.syncMessages(users)
     }
 
     private fun syncUsers() {
