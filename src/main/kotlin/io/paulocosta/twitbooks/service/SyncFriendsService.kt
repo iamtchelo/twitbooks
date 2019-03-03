@@ -26,9 +26,18 @@ class SyncFriendsService @Autowired constructor(
         } else {
             val latestSync = friendSyncStatusService.getLatestFriendSyncStatus()
             return when (latestSync.status) {
-                Status.ABSENT -> doSync(rateLimit, null)
-                Status.SUCCESS -> SyncResult.SUCCESS
-                Status.FAILED -> doSync(rateLimit, latestSync.cursorId)
+                Status.ABSENT -> {
+                    logger.info { "No previous user sync status present. Starting full sync" }
+                    doSync(rateLimit, null)
+                }
+                Status.SUCCESS -> {
+                    logger.info { "Previous user sync was successful. Skipping further synchronization" }
+                    SyncResult.SUCCESS
+                }
+                Status.FAILED -> {
+                    logger.info { "Previous sync failed. Attempt to synchronize with previous cursor" }
+                    doSync(rateLimit, latestSync.cursorId)
+                }
             }
         }
     }
