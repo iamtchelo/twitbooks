@@ -59,7 +59,7 @@ class MessageService @Autowired constructor(
     }
 
     fun depthSync(friend: Friend, rateLimit: RateLimit): SyncResult {
-        logger.info { "Starting depth sync" }
+        logger.info { "Starting depth sync for user ${friend.screenName}" }
         var hits = 0
         while (hits < rateLimit.remainingHits) {
             val oldestMessage = messageRepository.getOldestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()
