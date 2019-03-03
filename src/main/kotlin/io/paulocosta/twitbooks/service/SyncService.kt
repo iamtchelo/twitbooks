@@ -1,6 +1,7 @@
 package io.paulocosta.twitbooks.service
 
 import io.paulocosta.twitbooks.entity.Status
+import io.paulocosta.twitbooks.entity.SyncResult
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -48,7 +49,7 @@ class SyncService @Autowired constructor(
 
     private fun syncMessages() {
         for (it in userService.getAllUsers()) {
-            if (messageService.syncMessages(it) == MessageSyncResult.ERROR) {
+            if (messageService.syncMessages(it) == SyncResult.ERROR) {
                 break
             }
         }

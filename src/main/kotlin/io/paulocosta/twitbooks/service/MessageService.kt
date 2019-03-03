@@ -11,10 +11,6 @@ import org.springframework.stereotype.Service
 
 private val logger = KotlinLogging.logger {}
 
-enum class MessageSyncResult {
-    RESULT_OK, ERROR
-}
-
 @Service
 class MessageService @Autowired constructor(
         val twitterProvider: TwitterProvider,
@@ -27,11 +23,11 @@ class MessageService @Autowired constructor(
         const val MINIMUM_DEPTH_ALLOWED_ID = 0L
     }
 
-    fun syncMessages(friend: Friend): MessageSyncResult {
+    fun syncMessages(friend: Friend): SyncResult {
         logger.info { "Starting message sync" }
         val rateLimit = getRateLimit()
         if (rateLimit.exceeded()) {
-            return MessageSyncResult.ERROR
+            return SyncResult.ERROR
         }
         return when (friend.messageSyncStrategy) {
             MessageSyncStrategy.DEPTH -> depthSync(friend, rateLimit)
@@ -39,7 +35,7 @@ class MessageService @Autowired constructor(
         }
     }
 
-    fun newestSync(friend: Friend, rateLimit: RateLimit): MessageSyncResult {
+    fun newestSync(friend: Friend, rateLimit: RateLimit): SyncResult {
         logger.info { "Starting newest sync" }
         var hits = 0
         var startId = 0L
@@ -53,15 +49,15 @@ class MessageService @Autowired constructor(
             }
 
             if (messages.isEmpty()) {
-                return MessageSyncResult.RESULT_OK
+                return SyncResult.SUCCESS
             }
             startId = messages.last().id
             messageRepository.saveAll(messages)
         }
-        return MessageSyncResult.ERROR
+        return SyncResult.ERROR
     }
 
-    fun depthSync(friend: Friend, rateLimit: RateLimit): MessageSyncResult {
+    fun depthSync(friend: Friend, rateLimit: RateLimit): SyncResult {
         logger.info { "Starting depth sync" }
         var hits = 0
         while (hits < rateLimit.remainingHits) {
@@ -78,11 +74,11 @@ class MessageService @Autowired constructor(
             }
             if (messages.isEmpty()) {
                 logger.info { "There are no more old messages available for this user" }
-                return MessageSyncResult.RESULT_OK
+                return SyncResult.SUCCESS
             }
             messageRepository.saveAll(messages)
         }
-        return MessageSyncResult.ERROR
+        return SyncResult.SUCCESS
     }
 
     private fun getCurrentUserTimeline(friend: Friend): MessageResult {
