@@ -41,12 +41,13 @@ class MessageService @Autowired constructor(
         var startId = 0L
         val endId = messageRepository.getNewestMessages(friend.id, PageRequest.of(0, 1)).first().id
         while (hits < rateLimit.remainingHits) {
-            hits++
             val messages = if (hits == 0) {
                 getCurrentUserTimeline(friend).messages
             } else {
                 getNewestTimelineMessages(friend, startId, endId).messages
             }
+
+            hits++
 
             if (messages.isEmpty()) {
                 return SyncResult.SUCCESS
@@ -61,7 +62,6 @@ class MessageService @Autowired constructor(
         logger.info { "Starting depth sync" }
         var hits = 0
         while (hits < rateLimit.remainingHits) {
-            hits++
             val oldestMessage = messageRepository.getOldestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()
             val messages = when (oldestMessage) {
                 null -> {
@@ -77,6 +77,7 @@ class MessageService @Autowired constructor(
                 return SyncResult.SUCCESS
             }
             messageRepository.saveAll(messages)
+            hits++
         }
         return SyncResult.SUCCESS
     }

@@ -1,10 +1,9 @@
 package io.paulocosta.twitbooks.entity
 
-import java.time.Instant
 import javax.persistence.*
 
 enum class Status {
-    SUCCESS, RATE_LIMITED, FAILED
+    SUCCESS, FAILED, ABSENT
 }
 
 @Entity
@@ -15,8 +14,6 @@ data class FriendSyncStatus(
 
         @Enumerated(value = EnumType.STRING)
         val status: Status,
-
-        val syncWhen: Instant,
 
         var cursorId: Long? = null
 )

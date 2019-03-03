@@ -1,6 +1,5 @@
 package io.paulocosta.twitbooks.service
 
-import io.paulocosta.twitbooks.entity.Status
 import io.paulocosta.twitbooks.entity.SyncResult
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,7 +25,7 @@ private val logger = KotlinLogging.logger {}
 @Service
 class SyncService @Autowired constructor(
         val userService: UserService,
-        val friendSyncStatusService: FriendSyncStatusService,
+        val syncFriendsService: SyncFriendsService,
         val messageService: MessageService) {
 
     @Value("\${sync.enabled}")
@@ -41,7 +40,7 @@ class SyncService @Autowired constructor(
         if (syncEnabled) {
             logger.info { "Starting sync" }
             syncUsers()
-            syncMessages()
+             syncMessages()
         } else {
             logger.info { "Sync disabled by config property" }
         }
@@ -56,38 +55,13 @@ class SyncService @Autowired constructor(
     }
 
     private fun syncUsers() {
-        logger.info { "Syncing users" }
-        val syncStatus = friendSyncStatusService.getLastestFriendSyncStatus()
-        when (syncStatus) {
-            null -> handleUserSyncResult(userService.fullSync())
-            else -> when (syncStatus.status) {
-                Status.SUCCESS -> {
-                    logger.info { "Previous sync status was successful. Not syncing users now" }
-                }
-                Status.RATE_LIMITED -> {
-                    logger.info { "Previous user status was rate limit. Attempting to continue sync using previous cursor" }
-                    handleUserSyncResult(userService.cursorSync(syncStatus.cursorId))
-                }
-                Status.FAILED -> {
-                    logger.info { "Previous sync failed for some unknown reason. Stopping sync until the issue is known." }
-                }
-            }
-        }
-    }
-
-    private fun handleUserSyncResult(result: FriendRequestStatus) {
+        val result = syncFriendsService.sync()
         when (result) {
-            is RateLimited -> {
-                logger.info { "User sync request has been rate limited. Saving cursor for later sync attempt" }
-                friendSyncStatusService.createRateLimitEvent(result.cursorId)
+            SyncResult.SUCCESS -> {
+                logger.info { "User sync finished successfully" }
             }
-            is CursorEnd -> {
-                logger.info { "Synchronization was successful! Saving status." }
-                friendSyncStatusService.createSuccessEvent()
-            }
-            else -> {
-                logger.info { "Something went wrong during sync! Saving status." }
-                friendSyncStatusService.createSyncFailedEvent()
+            SyncResult.ERROR -> {
+                logger.info { "User sync finished with error" }
             }
         }
     }

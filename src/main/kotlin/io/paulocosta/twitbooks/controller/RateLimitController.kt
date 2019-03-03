@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RestController
  * has available. Current endpoints used:
  *
  * - statuses/user_timeline
- *
- *
  * **/
 
 @RestController("/limits")

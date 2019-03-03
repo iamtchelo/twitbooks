@@ -5,25 +5,25 @@ import io.paulocosta.twitbooks.entity.Status
 import io.paulocosta.twitbooks.repository.FriendSyncStatusRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.time.Instant
 
 @Service
 class FriendSyncStatusService @Autowired constructor(val friendSyncStatusRepository: FriendSyncStatusRepository) {
 
-    fun getLastestFriendSyncStatus(): FriendSyncStatus? = friendSyncStatusRepository.findFirstByOrderBySyncWhenDesc()
-
-    fun createSyncFailedEvent() {
-        val status = FriendSyncStatus(null, Status.FAILED, Instant.now(), null)
-        friendSyncStatusRepository.save(status)
+    fun getLatestFriendSyncStatus(): FriendSyncStatus {
+        val status = friendSyncStatusRepository.findFirstByOrderByIdDesc()
+        return when (status) {
+            null -> FriendSyncStatus(status = Status.ABSENT)
+            else -> status
+        }
     }
 
-    fun createRateLimitEvent(cursorId: Long?) {
-        val status = FriendSyncStatus(null, Status.RATE_LIMITED, Instant.now(), cursorId)
+    fun createSyncFailedEvent(cursorId: Long?) {
+        val status = FriendSyncStatus(null, Status.FAILED, cursorId)
         friendSyncStatusRepository.save(status)
     }
 
     fun createSuccessEvent() {
-        val status = FriendSyncStatus(null, Status.SUCCESS, Instant.now(), null)
+        val status = FriendSyncStatus(null, Status.SUCCESS, null)
         friendSyncStatusRepository.save(status)
     }
 
