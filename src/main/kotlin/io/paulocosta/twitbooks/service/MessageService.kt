@@ -40,6 +40,7 @@ class MessageService @Autowired constructor(
     }
 
     fun newestSync(friend: Friend, rateLimit: RateLimit): MessageSyncResult {
+        logger.info { "Starting newest sync" }
         var hits = 0
         var startId = 0L
         val endId = messageRepository.getNewestMessages(friend.id, PageRequest.of(0, 1)).first().id
@@ -61,24 +62,25 @@ class MessageService @Autowired constructor(
     }
 
     fun depthSync(friend: Friend, rateLimit: RateLimit): MessageSyncResult {
+        logger.info { "Starting depth sync" }
         var hits = 0
         while (hits < rateLimit.remainingHits) {
             hits++
             val oldestMessage = messageRepository.getOldestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()
-            when (oldestMessage) {
+            val messages = when (oldestMessage) {
                 null -> {
-                    logger.info { "There are no oldest messages. Should not be doing depth sync" }
-                    return MessageSyncResult.ERROR
+                    logger.info { "There is no oldest message. Getting current timeline" }
+                    getCurrentUserTimeline(friend).messages
                 }
                 else -> {
-                    val messages = getDepthTimelineMessages(friend, oldestMessage).messages
-                    if (messages.isEmpty()) {
-                        logger.info { "There are no more old messages available for this user" }
-                        return MessageSyncResult.RESULT_OK
-                    }
-                    messageRepository.saveAll(messages)
+                    getDepthTimelineMessages(friend, oldestMessage).messages
                 }
             }
+            if (messages.isEmpty()) {
+                logger.info { "There are no more old messages available for this user" }
+                return MessageSyncResult.RESULT_OK
+            }
+            messageRepository.saveAll(messages)
         }
         return MessageSyncResult.ERROR
     }
