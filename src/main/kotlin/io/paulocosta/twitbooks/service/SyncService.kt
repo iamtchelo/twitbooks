@@ -42,7 +42,7 @@ class SyncService @Autowired constructor(
             syncUsers()
             syncMessages()
         } else {
-            logger.info { "Sync disable by config property" }
+            logger.info { "Sync disabled by config property" }
         }
     }
 
