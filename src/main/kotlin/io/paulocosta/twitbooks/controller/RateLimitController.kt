@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController
 class RateLimitController @Autowired constructor(val rateLimitService: RateLimitService) {
 
     @GetMapping
-    fun getLimits(): RateLimit {
-        return rateLimitService.getTimelineRateLimits()
+    fun getLimits(): List<RateLimit> {
+        return listOf(rateLimitService.getFriendRateLimits(), rateLimitService.getTimelineRateLimits())
     }
 
 }
