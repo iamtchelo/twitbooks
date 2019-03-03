@@ -40,7 +40,7 @@ class SyncService @Autowired constructor(
         if (syncEnabled) {
             logger.info { "Starting sync" }
             syncUsers()
-             syncMessages()
+            syncMessages()
         } else {
             logger.info { "Sync disabled by config property" }
         }
