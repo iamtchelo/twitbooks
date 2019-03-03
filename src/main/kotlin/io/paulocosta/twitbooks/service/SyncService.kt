@@ -47,8 +47,10 @@ class SyncService @Autowired constructor(
     }
 
     private fun syncMessages() {
-        userService.getAllUsers().forEach {
-            messageService.syncMessages(it)
+        for (it in userService.getAllUsers()) {
+            if (messageService.syncMessages(it) == MessageSyncResult.ERROR) {
+                break
+            }
         }
     }
 
