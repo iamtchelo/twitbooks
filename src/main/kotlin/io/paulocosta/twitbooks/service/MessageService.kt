@@ -5,7 +5,9 @@ import io.paulocosta.twitbooks.entity.*
 import io.paulocosta.twitbooks.repository.MessageRepository
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.social.twitter.api.Tweet
 import org.springframework.stereotype.Service
 
@@ -21,6 +23,10 @@ class MessageService @Autowired constructor(
         // Maximum number supported by the API
         const val PAGE_SIZE = 200
         const val MINIMUM_DEPTH_ALLOWED_ID = 0L
+    }
+
+    fun getAllMessages(friendId: Long, pageable: Pageable): Page<Message> {
+        return messageRepository.getAllByFriendOrderByIdAsc(friendId, pageable)
     }
 
     fun syncMessages(friend: Friend): SyncResult {
