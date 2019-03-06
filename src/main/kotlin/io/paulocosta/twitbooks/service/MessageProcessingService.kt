@@ -4,10 +4,8 @@ import io.paulocosta.twitbooks.goodreads.GoodreadsResponse
 import io.paulocosta.twitbooks.goodreads.GoodreadsService
 import io.reactivex.Observable
 import mu.KotlinLogging
-import opennlp.tools.langdetect.LanguageDetectorFactory
 import opennlp.tools.ngram.NGramUtils
 import opennlp.tools.tokenize.SimpleTokenizer
-import opennlp.tools.tokenize.Tokenizer
 import opennlp.tools.util.normalizer.TwitterCharSequenceNormalizer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
