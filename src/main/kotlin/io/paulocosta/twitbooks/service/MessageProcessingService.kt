@@ -25,8 +25,6 @@ class MessageProcessingService @Autowired constructor(
             val page = messageService.getAllMessages(friend.id, PageRequest.of(1, 100))
             val messages = page.content
             messages.forEach { message ->
-                //val nGrams = customLanguageDetector.contextGenerator.getContext(it.text)
-                //nGrams
                 val normalizedText = normalizeText(message.text)
                 val tokenizer = SimpleTokenizer.INSTANCE
                 val tokens = tokenizer.tokenize(normalizedText).filter { it.first().isUpperCase() }.toTypedArray()
@@ -38,8 +36,17 @@ class MessageProcessingService @Autowired constructor(
         }
     }
 
-//    fun getNgrams(text: String): Observable<String> {
-//    }
+    fun getNgrams(tokens: Array<String>): Observable<String> {
+        val nGramStreams = arrayOf(1..6).map { i ->
+            val ngrams = NGramUtils.getNGrams(tokens, i.step)
+            val joinedNgrams = mutableListOf<String>()
+            ngrams.forEach {
+                joinedNgrams.add(it.joinToString(separator = " "))
+            }
+            Observable.fromIterable(joinedNgrams)
+        }
+        return Observable.concat(nGramStreams)
+    }
 
     fun normalizeText(text: String): String {
         return TwitterCharSequenceNormalizer.getInstance().normalize(text).toString().trim()
