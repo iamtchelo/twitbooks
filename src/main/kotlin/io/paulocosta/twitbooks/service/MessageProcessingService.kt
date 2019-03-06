@@ -1,6 +1,9 @@
 package io.paulocosta.twitbooks.service
 
+import io.paulocosta.twitbooks.goodreads.GoodreadsResponse
+import io.paulocosta.twitbooks.goodreads.GoodreadsService
 import io.reactivex.Observable
+import mu.KotlinLogging
 import opennlp.tools.langdetect.LanguageDetectorFactory
 import opennlp.tools.ngram.NGramUtils
 import opennlp.tools.tokenize.SimpleTokenizer
@@ -10,11 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import java.util.concurrent.TimeUnit
+
+private val logger = KotlinLogging.logger {}
 
 @Service
 class MessageProcessingService @Autowired constructor(
         val messageService: MessageService,
-        val userService: UserService) {
+        val userService: UserService,
+        val goodreadsService: GoodreadsService) {
 
     @Value("\${clear.data:false}")
     var clearData: Boolean = false
@@ -27,13 +34,20 @@ class MessageProcessingService @Autowired constructor(
             messages.forEach { message ->
                 val normalizedText = normalizeText(message.text)
                 val tokenizer = SimpleTokenizer.INSTANCE
+                /**
+                 * The uppercase filter will greatly reduce the dimension and vastly improve the speed of this thing.
+                 **/
                 val tokens = tokenizer.tokenize(normalizedText).filter { it.first().isUpperCase() }.toTypedArray()
-
-//                val bigrams = NGramUtils.getNGrams(tokens, 2)
-//                val trigrams = NGramUtils.getNGrams(tokens, 3)
-//                trigrams
+                getNgrams(tokens)
+                        .debounce(1, TimeUnit.SECONDS)
+                        .flatMapSingle { goodreadsService.search(it) }
+                        .subscribe({ processGoodreadsResponse(it) }, {logger.error { it }})
             }
         }
+    }
+
+    fun processGoodreadsResponse(goodreadsResponse: GoodreadsResponse) {
+        // TODO process message
     }
 
     fun getNgrams(tokens: Array<String>): Observable<String> {
