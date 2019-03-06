@@ -16,6 +16,6 @@ interface MessageRepository : JpaRepository<Message, Long> {
     @Query("select message from Message message where message.friend.id = ?1 order by message.id desc")
     fun getNewestMessages(friendId: Long, pageable: Pageable): Page<Message>
 
-    fun getAllByFriendOrderByIdAsc(friendId: Long, pageable: Pageable): Page<Message>
+    fun getAllByFriendIdOrderByIdAsc(friendId: Long, pageable: Pageable): Page<Message>
 
 }

@@ -26,7 +26,7 @@ class MessageService @Autowired constructor(
     }
 
     fun getAllMessages(friendId: Long, pageable: Pageable): Page<Message> {
-        return messageRepository.getAllByFriendOrderByIdAsc(friendId, pageable)
+        return messageRepository.getAllByFriendIdOrderByIdAsc(friendId, pageable)
     }
 
     fun syncMessages(friend: Friend): SyncResult {
