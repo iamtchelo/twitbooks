@@ -4,9 +4,9 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 @Root(strict = false)
-public class Book {
+public class GoodreadsBook {
 
-    public Book() {}
+    public GoodreadsBook() {}
 
     @Element(name = "title")
     private String title;

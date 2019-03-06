@@ -9,13 +9,13 @@ public class Work {
     public Work() {}
 
     @Element(name = "best_book")
-    private Book bestBook;
+    private GoodreadsBook bestGoodreadsBook;
 
-    public Book getBestBook() {
-        return bestBook;
+    public GoodreadsBook getBestGoodreadsBook() {
+        return bestGoodreadsBook;
     }
 
-    public void setBestBook(Book bestBook) {
-        this.bestBook = bestBook;
+    public void setBestGoodreadsBook(GoodreadsBook bestGoodreadsBook) {
+        this.bestGoodreadsBook = bestGoodreadsBook;
     }
 }
