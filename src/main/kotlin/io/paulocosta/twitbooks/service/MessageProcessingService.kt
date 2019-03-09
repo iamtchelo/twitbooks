@@ -37,9 +37,8 @@ class MessageProcessingService @Autowired constructor(
                  **/
                 val tokens = tokenizer.tokenize(normalizedText).filter { it.first().isUpperCase() }.toTypedArray()
                 getNgrams(tokens)
-                        .debounce(1, TimeUnit.SECONDS)
-                        .flatMapSingle { goodreadsService.search(it) }
-                        .subscribe({ processGoodreadsResponse(it) }, {logger.error { it }})
+                        .filter { it.isNotBlank() }
+                        .subscribe { logger.info(it) }
             }
         }
     }
@@ -49,8 +48,8 @@ class MessageProcessingService @Autowired constructor(
     }
 
     fun getNgrams(tokens: Array<String>): Observable<String> {
-        val nGramStreams = arrayOf(1..6).map { i ->
-            val ngrams = NGramUtils.getNGrams(tokens, i.step)
+        val nGramStreams = (1..tokens.size).map { i ->
+            val ngrams = NGramUtils.getNGrams(tokens, i)
             val joinedNgrams = mutableListOf<String>()
             ngrams.forEach {
                 joinedNgrams.add(it.joinToString(separator = " "))
