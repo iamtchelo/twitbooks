@@ -21,12 +21,20 @@ class MessageService @Autowired constructor(
 
     companion object {
         // Maximum number supported by the API
-        const val PAGE_SIZE = 200
+        const val TIMELINE_PAGE_SIZE = 200
         const val MINIMUM_DEPTH_ALLOWED_ID = 0L
     }
 
     fun getAllMessages(friendId: Long, pageable: Pageable): Page<Message> {
         return messageRepository.getAllByFriendIdOrderByIdAsc(friendId, pageable)
+    }
+
+    fun getUnprocessedMessages(friendId: Long, pageable: Pageable): Page<Message> {
+        return messageRepository.getUnprocessedMessages(friendId, pageable)
+    }
+
+    fun getUnprocessedMessageCount(friendId: Long): Int {
+        return messageRepository.getUnprocessedMessageCount(friendId)
     }
 
     fun syncMessages(friend: Friend): SyncResult {
@@ -93,21 +101,21 @@ class MessageService @Autowired constructor(
     }
 
     private fun getCurrentUserTimeline(friend: Friend): MessageResult {
-        val tweets = twitterProvider.getTwitter().timelineOperations().getUserTimeline(friend.screenName, PAGE_SIZE)
+        val tweets = twitterProvider.getTwitter().timelineOperations().getUserTimeline(friend.screenName, TIMELINE_PAGE_SIZE)
         return MessageResult(tweets.map { toMessage(it, friend) })
     }
 
     private fun getDepthTimelineMessages(friend: Friend, message: Message): MessageResult {
             val messageId = message.id
             val tweets = twitterProvider.getTwitter()
-                    .timelineOperations().getUserTimeline(friend.screenName, PAGE_SIZE,
+                    .timelineOperations().getUserTimeline(friend.screenName, TIMELINE_PAGE_SIZE,
                             MINIMUM_DEPTH_ALLOWED_ID, messageId - 1L)
             return MessageResult(tweets.map { toMessage(it, friend) })
     }
 
     private fun getNewestTimelineMessages(friend: Friend, minId: Long, maxId: Long): MessageResult {
         val tweets = twitterProvider.getTwitter()
-                .timelineOperations().getUserTimeline(friend.screenName, PAGE_SIZE,
+                .timelineOperations().getUserTimeline(friend.screenName, TIMELINE_PAGE_SIZE,
                         maxId, minId)
         return MessageResult(tweets.map { toMessage(it, friend) })
     }

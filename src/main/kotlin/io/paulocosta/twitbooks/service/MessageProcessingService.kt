@@ -2,6 +2,7 @@ package io.paulocosta.twitbooks.service
 
 import io.paulocosta.twitbooks.entity.Book
 import io.paulocosta.twitbooks.entity.Message
+import io.paulocosta.twitbooks.extensions.fdiv
 import io.paulocosta.twitbooks.goodreads.GoodreadsResponse
 import io.paulocosta.twitbooks.goodreads.GoodreadsService
 import io.reactivex.Observable
@@ -28,24 +29,33 @@ class MessageProcessingService @Autowired constructor(
     @Value("\${clear.data:false}")
     var clearData: Boolean = false
 
+    companion object {
+        const val pageSize: Int = 100
+    }
+
     fun process() {
         val users = userService.getAllUsers()
         users.forEach { friend ->
-            // TODO iterate this properly
-            val page = messageService.getAllMessages(friend.id, PageRequest.of(1, 100))
-            val messages = page.content
-            messages.forEach { message ->
-                val normalizedText = normalizeText(message.text)
-                val tokenizer = SimpleTokenizer.INSTANCE
-                /**
-                 * The uppercase filter will greatly reduce the dimension and vastly improve the speed of this thing.
-                 **/
-                val tokens = tokenizer.tokenize(normalizedText).filter { it.first().isUpperCase() }.toTypedArray()
-                getNgrams(tokens)
-                        .filter { it.isNotBlank() }
-                        .debounce(1, TimeUnit.SECONDS)
-                        .flatMapSingle { goodreadsService.search(it) }
-                        .subscribe { processGoodreadsResponse(it, message) }
+            val messageCount = messageService.getUnprocessedMessageCount(friend.id)
+            logger.info { "Processing $messageCount messages from user ${friend.screenName}" }
+            val pageCount = Math.ceil(messageCount.fdiv(pageSize)).toInt()
+            for (currentPage in 1 until pageCount) {
+                logger.info { "Progress $currentPage/$pageCount" }
+                val page = messageService.getAllMessages(friend.id, PageRequest.of(currentPage, pageCount))
+                val messages = page.content
+                messages.forEach { message ->
+                    val normalizedText = normalizeText(message.text)
+                    val tokenizer = SimpleTokenizer.INSTANCE
+                    /**
+                     * The uppercase filter will greatly reduce the dimension and vastly improve the speed of this thing.
+                     **/
+                    val tokens = tokenizer.tokenize(normalizedText).filter { it.first().isUpperCase() }.toTypedArray()
+                    getNgrams(tokens)
+                            .filter { it.isNotBlank() }
+                            .debounce(1, TimeUnit.SECONDS)
+                            .flatMapSingle { goodreadsService.search(it) }
+                            .subscribe { processGoodreadsResponse(it, message) }
+                }
             }
         }
     }
