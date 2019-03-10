@@ -13,15 +13,15 @@ class BookStore {
         this.client = client;
     }
 
-    // getBooks() {
-    //     this.client.get("/books")
-    //         .then(response => {
-    //             console.log(response.data)
-    //         })
-    //         .catch(e => {
-    //             console.log(e);
-    //         })
-    // }
+    getBooks() {
+        this.client.get("/books")
+            .then(response => {
+                console.log(response.data)
+            })
+            .catch(e => {
+                console.log(e);
+            })
+    }
 
 }
 
