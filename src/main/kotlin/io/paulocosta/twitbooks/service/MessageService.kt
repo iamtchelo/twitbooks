@@ -88,6 +88,10 @@ class MessageService @Autowired constructor(
         return SyncResult.SUCCESS
     }
 
+    fun update(message: Message) {
+        messageRepository.save(message)
+    }
+
     private fun getCurrentUserTimeline(friend: Friend): MessageResult {
         val tweets = twitterProvider.getTwitter().timelineOperations().getUserTimeline(friend.screenName, PAGE_SIZE)
         return MessageResult(tweets.map { toMessage(it, friend) })
@@ -110,7 +114,7 @@ class MessageService @Autowired constructor(
 
     private fun getRateLimit(): RateLimit = rateLimitService.getTimelineRateLimits()
 
-    fun toMessage(tweet: Tweet, friend: Friend): Message {
+    private fun toMessage(tweet: Tweet, friend: Friend): Message {
         return Message(tweet.id, tweet.text, tweet.isRetweet, tweet.createdAt, friend)
     }
 

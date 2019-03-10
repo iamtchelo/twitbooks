@@ -18,4 +18,10 @@ interface MessageRepository : JpaRepository<Message, Long> {
 
     fun getAllByFriendIdOrderByIdAsc(friendId: Long, pageable: Pageable): Page<Message>
 
+    @Query("select message from Message message where message.processed = false and message.friend.id = :friendId")
+    fun getUnprocessedMessages(pageable: Pageable, friendId: Long): Page<Message>
+
+    @Query("select count(message) from Message message where message.processed = false and message.friend.id = :friendId")
+    fun getUnprocessedMessageCount(friendId: Long): Int
+
 }
