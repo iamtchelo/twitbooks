@@ -2,21 +2,34 @@ import React, {Component} from "react";
 import { observer, inject } from 'mobx-react';
 import BookStore from "../stores/BookStore";
 
-@inject("stores")
-@observer
+@inject('stores') @observer
 class BookPage extends Component {
 
+    store: BookStore;
+
     componentDidMount(): void {
-        const store: BookStore = this.props.stores.bookStore;
-        store.getBooks();
+        console.log(this.props);
+        this.store = this.props.stores.bookStore;
+        this.store.getBooks();
     }
 
     render() {
+        console.log("render");
         return(
             <div>
-                <p>OH HAI</p>
+                {this.renderBooks()}
             </div>
         )
+    }
+
+    renderBooks() {
+        if (this.store == null) {
+            return <div></div>;
+        } else {
+            return this.store.books.map(b => {
+                return <div key={b.id}>{b.title}</div>
+            });
+        }
     }
 
 }
