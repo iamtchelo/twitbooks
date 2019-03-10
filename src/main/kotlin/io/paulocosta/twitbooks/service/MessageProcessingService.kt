@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.util.concurrent.TimeUnit
+import javax.transaction.Transactional
 
 private val logger = KotlinLogging.logger {}
 
@@ -54,12 +55,17 @@ class MessageProcessingService @Autowired constructor(
                             .filter { it.isNotBlank() }
                             .debounce(1, TimeUnit.SECONDS)
                             .flatMapSingle { goodreadsService.search(it) }
-                            .subscribe { processGoodreadsResponse(it, message) }
+                            .subscribe({
+                                processGoodreadsResponse(it, message)
+                            }, {
+                                logger.error(it.message)
+                            })
                 }
             }
         }
     }
 
+    @Transactional
     fun processGoodreadsResponse(goodreadsResponse: GoodreadsResponse, message: Message) {
         val results = goodreadsResponse.search.results.works
         if (!results.isNullOrEmpty() && results.size > 0) {
@@ -68,15 +74,15 @@ class MessageProcessingService @Autowired constructor(
             when (existingBook) {
                 null -> {
                     val book = Book(
+                            id = resultBook.id,
                             title = resultBook.title,
                             smallImageUrl = resultBook.smallImageUrl,
-                            imageUrl = resultBook.imageUrl,
-                            message = setOf(message))
+                            imageUrl = resultBook.imageUrl)
                     bookService.saveBook(book)
+                    bookService.updateMessages(book, setOf(message))
                 }
                 else -> {
-                    val updated = existingBook.copy(message = existingBook.message.plus(message))
-                    bookService.saveBook(updated)
+                    bookService.updateMessages(existingBook, existingBook.message.plus(message))
                 }
             }
         }

@@ -1,6 +1,7 @@
 package io.paulocosta.twitbooks.service
 
 import io.paulocosta.twitbooks.entity.Book
+import io.paulocosta.twitbooks.entity.Message
 import io.paulocosta.twitbooks.extensions.toNullable
 import io.paulocosta.twitbooks.repository.BookRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +20,10 @@ class BookService @Autowired constructor(private val bookRepository: BookReposit
 
     fun findById(bookId: Long): Book? {
         return bookRepository.findById(bookId).toNullable()
+    }
+
+    fun updateMessages(book: Book, messages: Set<Message>) {
+        bookRepository.save(book.copy(message = messages))
     }
 
 }

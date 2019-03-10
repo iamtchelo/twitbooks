@@ -10,7 +10,7 @@ public class Results {
 
     public Results() {}
 
-    @ElementList(name = "work", inline = true)
+    @ElementList(name = "work", inline = true, required = false)
     private List<Work> works;
 
     public List<Work> getWorks() {
