@@ -5,7 +5,7 @@ import { configure } from 'mobx';
 import BookPage from "./pages/BookPage";
 
 configure({
-    enforceActions: true
+    enforceActions: 'always'
 });
 
 const stores = createStores();
@@ -13,7 +13,7 @@ const stores = createStores();
 class App extends Component {
   render() {
     return (
-        <Provider {...stores}>
+        <Provider stores={createStores()}>
             <BookPage/>
         </Provider>
     );
