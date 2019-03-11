@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 import { observer, inject } from 'mobx-react';
 import BookStore from "../stores/BookStore";
+import { Row, Col } from 'antd';
+import BookCard from "../components/BookCard";
 
 @inject('bookStore') @observer
 class BookPage extends Component {
@@ -14,16 +16,18 @@ class BookPage extends Component {
     render() {
         return(
             <div>
-                {this.renderBooks()}
+                {this.renderBooks.apply(this)}
             </div>
         )
     }
 
     renderBooks() {
-        return this.store.apiData.map(apiData => {
-            const {book} = apiData;
-            return <div key={book.id}>{book.title}</div>
-        });
+        const data = this.store.apiData;
+        return (
+            <Row>
+                { data.map(i => {return <Col span={8}><BookCard book={i.book}/></Col>}) }) }
+            </Row>
+        )
     }
 
 }
