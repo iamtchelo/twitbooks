@@ -13,7 +13,7 @@ const stores = createStores();
 class App extends Component {
   render() {
     return (
-        <Provider bookStore={stores.bookStore}>
+        <Provider {...stores}>
             <BookPage />
         </Provider>
     );

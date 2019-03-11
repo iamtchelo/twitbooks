@@ -12,7 +12,6 @@ class BookPage extends Component {
     }
 
     render() {
-        console.log("render");
         return(
             <div>
                 {this.renderBooks()}
@@ -21,9 +20,9 @@ class BookPage extends Component {
     }
 
     renderBooks() {
-        return this.store.books.map(b => {
-            console.log(b);
-            return <div key={b.book.id}>{b.book.title}</div>
+        return this.store.apiData.map(apiData => {
+            const {book} = apiData;
+            return <div key={book.id}>{book.title}</div>
         });
     }
 

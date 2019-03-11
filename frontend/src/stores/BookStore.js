@@ -1,8 +1,8 @@
 // @flow
-import {observable, runInAction, action} from 'mobx'
+import {observable, runInAction} from 'mobx'
 
 class BookStore {
-    @observable books = [];
+    @observable apiData: [BookApiResponse] = [];
     page: number = 1;
     totalPages: number = 0;
 
@@ -12,7 +12,6 @@ class BookStore {
         this.client = client;
     }
 
-    @action.bound
     getBooks() {
         this.client.get(`/books?page=${this.page}`)
             .then(response => {
@@ -21,7 +20,7 @@ class BookStore {
                     const content = response.data.content;
                     this.totalPages = data.totalPages;
                     this.page++;
-                    this.books = [...this.books, ...content];
+                    this.apiData = [...this.apiData, ...content];
                 });
             })
             .catch(e => {
