@@ -2,15 +2,14 @@ import React, {Component} from "react";
 import { observer, inject } from 'mobx-react';
 import BookStore from "../stores/BookStore";
 
-@inject('stores') @observer
+@inject('bookStore') @observer
 class BookPage extends Component {
 
-    store: BookStore;
+    //store: BookStore;
 
     componentDidMount(): void {
         console.log(this.props);
-        this.store = this.props.stores.bookStore;
-        this.store.getBooks();
+        this.props.bookStore.getBooks();
     }
 
     render() {
@@ -23,11 +22,12 @@ class BookPage extends Component {
     }
 
     renderBooks() {
-        if (this.store == null) {
+        if (this.props.bookStore == null) {
             return <div></div>;
         } else {
-            return this.store.books.map(b => {
-                return <div key={b.id}>{b.title}</div>
+            return this.props.bookStore.books.map(b => {
+                console.log(b);
+                return <div key={b.book.id}>{b.book.title}</div>
             });
         }
     }

@@ -12,16 +12,18 @@ class BookStore {
         this.client = client;
     }
 
+    @action.bound
     getBooks() {
         this.client.get(`/books?page=${this.page}`)
             .then(response => {
                 runInAction(() => {
                     const data = response.data;
                     const content = response.data.content;
+                    console.log("content", content);
                     this.totalPages = data.totalPages;
                     this.page++;
-                    this.books = {...this.books, content};
-                    console.log("BOOKS ", this.books);
+                    this.books = [...this.books, ...content];
+                    console.log("Store ", this);
                 });
             })
             .catch(e => {
