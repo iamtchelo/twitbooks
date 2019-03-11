@@ -5,11 +5,10 @@ import BookStore from "../stores/BookStore";
 @inject('bookStore') @observer
 class BookPage extends Component {
 
-    //store: BookStore;
+    store: BookStore = this.props.bookStore;
 
     componentDidMount(): void {
-        console.log(this.props);
-        this.props.bookStore.getBooks();
+        this.store.getBooks();
     }
 
     render() {
@@ -22,14 +21,10 @@ class BookPage extends Component {
     }
 
     renderBooks() {
-        if (this.props.bookStore == null) {
-            return <div></div>;
-        } else {
-            return this.props.bookStore.books.map(b => {
-                console.log(b);
-                return <div key={b.book.id}>{b.book.title}</div>
-            });
-        }
+        return this.store.books.map(b => {
+            console.log(b);
+            return <div key={b.book.id}>{b.book.title}</div>
+        });
     }
 
 }

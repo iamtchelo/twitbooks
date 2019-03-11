@@ -4,16 +4,16 @@ import { Provider } from "mobx-react";
 import { configure } from 'mobx';
 import BookPage from "./pages/BookPage";
 
-// configure({
-//     enforceActions: 'always'
-// });
+configure({
+    enforceActions: 'always'
+});
 
-// const stores = createStores();
+const stores = createStores();
 
 class App extends Component {
   render() {
     return (
-        <Provider bookStore={createStores().bookStore}>
+        <Provider bookStore={stores.bookStore}>
             <BookPage />
         </Provider>
     );
