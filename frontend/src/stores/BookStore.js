@@ -19,11 +19,9 @@ class BookStore {
                 runInAction(() => {
                     const data = response.data;
                     const content = response.data.content;
-                    console.log("content", content);
                     this.totalPages = data.totalPages;
                     this.page++;
                     this.books = [...this.books, ...content];
-                    console.log("Store ", this);
                 });
             })
             .catch(e => {
