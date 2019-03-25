@@ -1,7 +1,7 @@
 version: '3'
 services:
   postgres:
-    container_name: db
+    container_name: twitbooks_db
     image: "postgres:11.1-alpine"
     ports: 
       - "5432:5432"
