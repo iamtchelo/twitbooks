@@ -11,7 +11,7 @@ class BookCard extends Component {
         return (
             <Card
                 hoverable
-                style={{width: "240px"}}
+                style={{width: "200px"}}
                 cover={<img alt="book" src={this.book.imageUrl} />}
             >
                 <Meta title={this.book.title}/>
