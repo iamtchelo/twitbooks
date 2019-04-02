@@ -3,6 +3,7 @@ package io.paulocosta.twitbooks.service
 import io.paulocosta.twitbooks.entity.Book
 import io.paulocosta.twitbooks.entity.Message
 import io.paulocosta.twitbooks.extensions.fdiv
+import io.paulocosta.twitbooks.goodreads.GoodreadsBook
 import io.paulocosta.twitbooks.goodreads.GoodreadsResponse
 import io.paulocosta.twitbooks.goodreads.GoodreadsService
 import io.reactivex.Observable
@@ -56,7 +57,7 @@ class BookSyncService @Autowired constructor(
                             .debounce(1, TimeUnit.SECONDS)
                             .flatMapSingle { goodreadsService.search(it) }
                             .subscribe({
-                                processGoodreadsResponse(it, message)
+                                processGoodreadsResponse(it, message, tokens)
                             }, {
                                 logger.error(it.message)
                             })
@@ -66,27 +67,43 @@ class BookSyncService @Autowired constructor(
     }
 
     @Transactional
-    fun processGoodreadsResponse(goodreadsResponse: GoodreadsResponse, message: Message) {
+    fun processGoodreadsResponse(goodreadsResponse: GoodreadsResponse, message: Message, tokens: Array<String>) {
         val results = goodreadsResponse.search.results.works
         if (!results.isNullOrEmpty() && results.size > 0) {
-            val resultBook = results[0].bestGoodreadsBook
-            val existingBook = bookService.findById(resultBook.id)
-            when (existingBook) {
-                null -> {
-                    val book = Book(
-                            id = resultBook.id,
-                            title = resultBook.title,
-                            smallImageUrl = resultBook.smallImageUrl,
-                            imageUrl = resultBook.imageUrl)
-                    bookService.saveBook(book)
-                    bookService.updateMessages(book, setOf(message))
+            val resultBook = crossValidation(results.map { it.bestGoodreadsBook }, tokens)
+            if (resultBook != null) {
+                val existingBook = bookService.findById(resultBook.id)
+                when (existingBook) {
+                    null -> {
+                        val book = Book(
+                                id = resultBook.id,
+                                title = resultBook.title,
+                                smallImageUrl = resultBook.smallImageUrl,
+                                imageUrl = resultBook.imageUrl)
+                        bookService.saveBook(book)
+                        bookService.updateMessages(book, setOf(message))
+                    }
+                    else -> {
+                        bookService.updateMessages(existingBook, existingBook.message.plus(message))
+                    }
                 }
-                else -> {
-                    bookService.updateMessages(existingBook, existingBook.message.plus(message))
-                }
+            } else {
+                logger.info { "Cross validation dismissed books from message ${message.id}" }
             }
         }
         toggleMessageProcessed(message)
+    }
+
+    /**
+     * Checks if the Goodreads results match exactly a given token name.
+     **/
+    fun crossValidation(apiBooks: List< GoodreadsBook>, tokens: Array<String>): GoodreadsBook? {
+        val filtered = apiBooks.filter { tokens.contains(it.title.trim()) }
+        return if (filtered.isEmpty()) {
+            null
+        } else {
+            filtered[0]
+        }
     }
 
     fun toggleMessageProcessed(message: Message) {
