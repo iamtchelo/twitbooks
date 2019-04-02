@@ -20,7 +20,7 @@ import javax.transaction.Transactional
 private val logger = KotlinLogging.logger {}
 
 @Service
-class MessageProcessingService @Autowired constructor(
+class BookSyncService @Autowired constructor(
         val messageService: MessageService,
         val userService: UserService,
         val goodreadsService: GoodreadsService,
