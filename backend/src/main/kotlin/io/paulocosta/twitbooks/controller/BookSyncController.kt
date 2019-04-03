@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("process")
+@RequestMapping("sync/books")
 class BookSyncController @Autowired constructor(val bookSyncService: BookSyncService) {
 
     @GetMapping

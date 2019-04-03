@@ -24,4 +24,11 @@ interface MessageRepository : JpaRepository<Message, Long> {
     @Query("select count(message) from Message message where message.processed = false and message.friend.id = :friendId")
     fun getUnprocessedMessageCount(friendId: Long): Int
 
+    @Query("""
+        select * from messages
+        INNER JOIN book_matches on messages.id = book_matches.message_id
+        WHERE book_matches.book_id = :bookId
+    """, nativeQuery = true)
+    fun getMessagesByBookId(bookId: Long): List<Message>
+
 }
