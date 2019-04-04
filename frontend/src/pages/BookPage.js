@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react';
 import BookStore from "../stores/BookStore";
 import { Row, Col } from 'antd';
 import BookCard from "../components/BookCard";
+import MainLayout from "../components/MainLayout";
 
 @inject('bookStore') @observer
 class BookPage extends Component {
@@ -15,9 +16,11 @@ class BookPage extends Component {
 
     render() {
         return(
-            <div>
-                {this.renderBooks.apply(this)}
-            </div>
+            <MainLayout>
+                <div>
+                    {this.renderBooks.apply(this)}
+                </div>
+            </MainLayout>
         )
     }
 
