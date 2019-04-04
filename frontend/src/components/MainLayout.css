@@ -1,3 +1,9 @@
 .content {
-    padding: 100px;
+    padding: 80px;
+}
+
+.title {
+    font-size: 24px;
+    color: azure;
+    text-transform: capitalize;
 }

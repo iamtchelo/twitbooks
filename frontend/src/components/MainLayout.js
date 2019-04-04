@@ -9,8 +9,10 @@ export default class MainLayout extends Component {
     render() {
         return (
             <Layout>
-                <Header/>
-                <Content>
+                <Header>
+                    <div class="title">TWIT BOOKS</div>
+                </Header>
+                <Content className="content">
                     {this.props.children}
                 </Content>
             </Layout>

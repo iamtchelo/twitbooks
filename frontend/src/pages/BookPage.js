@@ -4,6 +4,7 @@ import BookStore from "../stores/BookStore";
 import { Row, Col } from 'antd';
 import BookCard from "../components/BookCard";
 import MainLayout from "../components/MainLayout";
+import  "./BookPage.css";
 
 @inject('bookStore') @observer
 class BookPage extends Component {
@@ -28,7 +29,7 @@ class BookPage extends Component {
         const data = this.store.apiData;
         return (
             <Row>
-                { data.map(i => {return <Col span={6}><BookCard book={i.book}/></Col>}) }) }
+                { data.map(i => {return <Col className="book-card" span={6}><BookCard book={i.book}/></Col>}) }
             </Row>
         )
     }
