@@ -29,7 +29,15 @@ class BookPage extends Component {
         const data = this.store.apiData;
         return (
             <Row>
-                { data.map(i => {return <Col className="book-card" span={6}><BookCard book={i.book}/></Col>}) }
+                {
+                    data.map(i => {
+                        return (
+                            <Col className="book-card" span={6}>
+                                <BookCard book={i.book}/>
+                            </Col>
+                        )
+                    })
+                }
             </Row>
         )
     }
