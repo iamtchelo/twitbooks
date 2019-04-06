@@ -1,4 +1,4 @@
-import {observable, runInAction, computed} from 'mobx'
+import { observable, runInAction, computed } from 'mobx'
 
 class BookStore {
     @observable apiData = {};
@@ -6,9 +6,9 @@ class BookStore {
     @observable totalPages = 0;
     @observable currentData = [];
 
-    // @computed get count() {
-    //     return this.totalPages * 50;
-    // }
+    @computed get count() {
+        return this.totalPages * 50;
+    }
 
     client: any;
 
@@ -17,12 +17,7 @@ class BookStore {
     }
 
     setCurrentPage(page) {
-        console.log("setCurrentPage");
-        console.log(this);
         runInAction(() => {
-            console.log(page);
-            console.log(this.currentPage);
-            console.log("test 1 " + page);
             this.currentPage = page - 1;
             this.getBooks();
         })
@@ -31,18 +26,20 @@ class BookStore {
     getBooks() {
         console.log("getting book page " + this.currentPage);
         if (this.apiData[this.currentPage]) {
-            console.log("hai");
+            console.log("Using cached page " + this.currentPage);
+            runInAction(() => {})
             this.currentData = this.apiData[this.currentPage];
         }
         this.client.get(`/books?page=${this.currentPage}`)
             .then(response => {
                 runInAction(() => {
+                    console.log("page downloaded " + this.currentPage);
                     const data = response.data;
                     const content = response.data.content;
                     this.totalPages = data.totalPages;
                     this.apiData[this.currentPage] = content;
                     this.currentData = this.apiData[this.currentPage];
-                    console.log("total pages = " + this.totalPages);
+                    console.log("downloaded", this.currentData);
                 });
             })
             .catch(e => {

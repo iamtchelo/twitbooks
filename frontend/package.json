@@ -29,6 +29,7 @@
   "devDependencies": {
     "babel-preset-mobx": "^2.0.0",
     "customize-cra": "^0.2.12",
+    "mobx-react-devtools": "^6.1.1",
     "react-app-rewired": "^2.1.0"
   }
 }

@@ -10,44 +10,46 @@ import  "./BookPage.css";
 class BookPage extends Component {
 
     store: BookStore = this.props.bookStore;
-    storeContext = this.store.this;
 
     componentDidMount(): void {
         this.store.getBooks();
     }
 
     render() {
-        console.log("totallll " + this.store.totalPages);
         return(
             <MainLayout>
-                {this.renderBooks(this.store.currentData)}
-                {
-                    if (totalElements > 0) {
-                    return (
-                    <Pagination
-                    total={totalElements}
-                    pageSize={50}
-                    hideOnSinglePage={false}
-                    onChange={ () => this.store.setCurrentPage.apply(this.storeContext) }
-                    />
-                    )
-                }
-
-                }
+                { this.renderBooks(this.store.currentData) }
+                { this.renderPagination(this.store.count) }
             </MainLayout>
         )
     }
 
     renderPagination(totalElements) {
+        if (totalElements > 0) {
+            return (
+                <Pagination
+                    total={totalElements}
+                    pageSize={50}
+                    hideOnSinglePage={false}
+                    onChange={(page) => this.doOnChange(page)}
+                />
+            )
+        }
+    }
+
+    doOnChange(page) {
+        this.store.setCurrentPage(page);
     }
 
     renderBooks(books) {
+
+        console.log("books", books);
 
         if (!books) {
             return <div/>
         }
 
-        console.log("HAI");
+        console.log("rendering books");
         return (
             <Row>
                 {
