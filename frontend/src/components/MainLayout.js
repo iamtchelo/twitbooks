@@ -10,7 +10,7 @@ export default class MainLayout extends Component {
         return (
             <Layout>
                 <Header>
-                    <div class="title">TWIT BOOKS</div>
+                    <div className="title">TWIT BOOKS</div>
                 </Header>
                 <Content className="content">
                     {this.props.children}

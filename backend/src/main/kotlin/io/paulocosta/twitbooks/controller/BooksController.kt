@@ -14,7 +14,7 @@ class BooksController @Autowired constructor(private val bookService: BookServic
 
     @GetMapping
     fun getBooks(@RequestParam("page") page: Int?): Page<BookAPIResponse> {
-        return bookService.getAllBooks(PageRequest.of(page ?: 1, 50))
+        return bookService.getAllBooks(PageRequest.of(page ?: 0, 50))
                 .map { BookAPIResponse(it.copy(message = emptySet()), it.message.map { message -> message.id }) }
     }
 
