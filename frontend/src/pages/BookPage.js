@@ -10,6 +10,7 @@ import  "./BookPage.css";
 class BookPage extends Component {
 
     store: BookStore = this.props.bookStore;
+    storeContext = this.store.this;
 
     componentDidMount(): void {
         this.store.getBooks();
@@ -20,18 +21,24 @@ class BookPage extends Component {
         return(
             <MainLayout>
                 {this.renderBooks(this.store.currentData)}
-                <Pagination
-                    total={200}
+                {
+                    if (totalElements > 0) {
+                    return (
+                    <Pagination
+                    total={totalElements}
                     pageSize={50}
                     hideOnSinglePage={false}
-                    onChange={
-                        (page) => {
-                            this.store.setCurrentPage(page)
-                        }
-                    }
-                />
+                    onChange={ () => this.store.setCurrentPage.apply(this.storeContext) }
+                    />
+                    )
+                }
+
+                }
             </MainLayout>
         )
+    }
+
+    renderPagination(totalElements) {
     }
 
     renderBooks(books) {

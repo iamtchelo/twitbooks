@@ -1,10 +1,14 @@
-import {observable, runInAction} from 'mobx'
+import {observable, runInAction, computed} from 'mobx'
 
 class BookStore {
     @observable apiData = {};
     @observable currentPage = 0;
-    @observable totalPages: number = 1;
+    @observable totalPages = 0;
     @observable currentData = [];
+
+    // @computed get count() {
+    //     return this.totalPages * 50;
+    // }
 
     client: any;
 
@@ -14,7 +18,10 @@ class BookStore {
 
     setCurrentPage(page) {
         console.log("setCurrentPage");
+        console.log(this);
         runInAction(() => {
+            console.log(page);
+            console.log(this.currentPage);
             console.log("test 1 " + page);
             this.currentPage = page - 1;
             this.getBooks();
