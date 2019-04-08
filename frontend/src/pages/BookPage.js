@@ -18,7 +18,7 @@ class BookPage extends Component {
     render() {
         return(
             <MainLayout>
-                { this.renderBooks(this.store.currentData) }
+                { this.renderBooks(this.store.data) }
                 { this.renderPagination(this.store.count) }
             </MainLayout>
         )
@@ -43,26 +43,24 @@ class BookPage extends Component {
 
     renderBooks(books) {
 
-        console.log("books", books);
-
         if (!books) {
             return <div/>
+        } else {
+            return (
+                <Row>
+                    {
+                        books.map(i => {
+                            return (
+                                <Col key = {i.book.id} className="book-card" span={6}>
+                                    <BookCard book={i.book}/>
+                                </Col>
+                            )
+                        })
+                    }
+                </Row>
+            )
         }
 
-        console.log("rendering books");
-        return (
-            <Row>
-                {
-                    books.map(i => {
-                        return (
-                            <Col className="book-card" span={6}>
-                                <BookCard book={i.book}/>
-                            </Col>
-                        )
-                    })
-                }
-            </Row>
-        )
     }
 
 }

@@ -4,10 +4,13 @@ class BookStore {
     @observable apiData = {};
     @observable currentPage = 0;
     @observable totalPages = 0;
-    @observable currentData = [];
 
     @computed get count() {
         return this.totalPages * 50;
+    }
+
+    @computed get data() {
+        return this.apiData[this.currentPage];
     }
 
     client: any;
@@ -24,11 +27,8 @@ class BookStore {
     }
 
     getBooks() {
-        console.log("getting book page " + this.currentPage);
         if (this.apiData[this.currentPage]) {
-            console.log("Using cached page " + this.currentPage);
-            runInAction(() => {})
-            this.currentData = this.apiData[this.currentPage];
+            return;
         }
         this.client.get(`/books?page=${this.currentPage}`)
             .then(response => {
@@ -38,8 +38,6 @@ class BookStore {
                     const content = response.data.content;
                     this.totalPages = data.totalPages;
                     this.apiData[this.currentPage] = content;
-                    this.currentData = this.apiData[this.currentPage];
-                    console.log("downloaded", this.currentData);
                 });
             })
             .catch(e => {
