@@ -4,7 +4,7 @@ import { Provider } from "mobx-react";
 import { configure } from 'mobx';
 import BookPage from "./pages/BookPage";
 import "antd/dist/antd.css";
-import DevTools from 'mobx-react-devtools';
+import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 
 configure({
     enforceActions: 'always'
@@ -15,12 +15,14 @@ const stores = createStores();
 class App extends Component {
   render() {
     return (
-        <div>
-            <Provider {...stores}>
-                <BookPage />
-            </Provider>
-            <DevTools />
-        </div>
+        <Provider {...stores}>
+            <BrowserRouter>
+                <Switch>
+                    <Route path="/books" component={BookPage}/>
+                    <Redirect from="/" to="/books"/>
+                </Switch>
+            </BrowserRouter>
+        </Provider>
     );
   }
 }
