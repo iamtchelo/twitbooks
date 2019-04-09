@@ -29,6 +29,6 @@ interface MessageRepository : JpaRepository<Message, Long> {
         INNER JOIN book_matches on messages.id = book_matches.message_id
         WHERE book_matches.book_id = :bookId
     """, nativeQuery = true)
-    fun getMessagesByBookId(bookId: Long): List<Message>
+    fun getMessagesByBookId(bookId: Long, pageable: Pageable): Page<Message>
 
 }
