@@ -16,6 +16,7 @@ class BookPage extends Component {
     }
 
     render() {
+        console.log("PROPS", this.props);
         return(
             <MainLayout>
                 { this.renderBooks(this.store.data) }
@@ -51,8 +52,8 @@ class BookPage extends Component {
                     {
                         books.map(i => {
                             return (
-                                <Col key = {i.book.id} className="book-card" span={6}>
-                                    <BookCard book={i.book}/>
+                                <Col key={i.book.id} className="book-card" span={6}>
+                                    <BookCard onClickEvent={this.onClick(i.book.id)} book={i.book}/>
                                 </Col>
                             )
                         })
@@ -61,6 +62,10 @@ class BookPage extends Component {
             )
         }
 
+    }
+
+    onClick(bookId) {
+        return () => {this.props.history.push(`/messages/${bookId}`)}
     }
 
 }
