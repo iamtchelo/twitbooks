@@ -3,6 +3,7 @@ certifi==2019.3.9
 chardet==3.0.4
 Click==7.0
 cymem==2.0.2
+docopt==0.6.2
 Flask==1.0.2
 greenlet==0.4.15
 idna==2.8
@@ -14,12 +15,17 @@ murmurhash==1.0.2
 numpy==1.16.2
 plac==0.9.6
 preshed==2.0.1
-pynvim==0.3.2
+prompt-toolkit==2.0.9
+pyflakes==2.1.1
+Pygments==2.3.1
 requests==2.21.0
+six==1.12.0
 spacy==2.1.3
 srsly==0.0.5
 thinc==7.0.4
 tqdm==4.31.1
 urllib3==1.24.1
+waitress==1.2.1
 wasabi==0.2.1
+wcwidth==0.1.7
 Werkzeug==0.15.2
