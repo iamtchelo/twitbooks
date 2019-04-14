@@ -4,9 +4,9 @@ EXPOSE 5000
 
 WORKDIR /app
 
-RUN pip install -r requirements.txt
-
 COPY . .
+
+RUN pip install -r requirements.txt
 
 RUN python -m spacy download en_core_web_md
 

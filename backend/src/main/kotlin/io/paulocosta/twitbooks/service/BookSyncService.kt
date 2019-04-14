@@ -3,19 +3,15 @@ package io.paulocosta.twitbooks.service
 import io.paulocosta.twitbooks.entity.Book
 import io.paulocosta.twitbooks.entity.Message
 import io.paulocosta.twitbooks.extensions.fdiv
-import io.paulocosta.twitbooks.goodreads.GoodreadsBook
 import io.paulocosta.twitbooks.goodreads.GoodreadsResponse
 import io.paulocosta.twitbooks.goodreads.GoodreadsService
-import io.reactivex.Observable
+import io.paulocosta.twitbooks.nerclient.NERApiPayload
+import io.paulocosta.twitbooks.nerclient.NERApiService
 import mu.KotlinLogging
-import opennlp.tools.ngram.NGramUtils
-import opennlp.tools.tokenize.SimpleTokenizer
-import opennlp.tools.util.normalizer.TwitterCharSequenceNormalizer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
-import java.util.concurrent.TimeUnit
 import javax.transaction.Transactional
 
 private val logger = KotlinLogging.logger {}
@@ -24,6 +20,7 @@ private val logger = KotlinLogging.logger {}
 class BookSyncService @Autowired constructor(
         val messageService: MessageService,
         val userService: UserService,
+        val nerApiService: NERApiService,
         val goodreadsService: GoodreadsService,
         val bookService: BookService) {
 
@@ -46,31 +43,21 @@ class BookSyncService @Autowired constructor(
                 val page = messageService.getAllMessages(friend.id, PageRequest.of(currentPage, pageCount))
                 val messages = page.content
                 messages.forEach { message ->
-                    val normalizedText = normalizeText(message.text)
-                    val tokenizer = SimpleTokenizer.INSTANCE
-                    /**
-                     * The uppercase filter will greatly reduce the dimension and vastly improve the speed of this thing.
-                     **/
-                    val tokens = tokenizer.tokenize(normalizedText).filter { it.first().isUpperCase() }.toTypedArray()
-                    getNgrams(tokens)
-                            .filter { it.isNotBlank() }
-                            .debounce(1, TimeUnit.SECONDS)
-                            .flatMapSingle { goodreadsService.search(it) }
-                            .subscribe({
-                                processGoodreadsResponse(it, message, tokens)
-                            }, {
-                                logger.error(it.message)
-                            })
+                    nerApiService.process(NERApiPayload(message.text))
+                            .subscribe(
+                                    { logger.info { "Result : ${it.entities}" } },
+                                    { logger.error(it.message) }
+                            )
                 }
             }
         }
     }
 
     @Transactional
-    fun processGoodreadsResponse(goodreadsResponse: GoodreadsResponse, message: Message, tokens: Array<String>) {
+    fun processGoodreadsResponse(goodreadsResponse: GoodreadsResponse, message: Message) {
         val results = goodreadsResponse.search.results.works
         if (!results.isNullOrEmpty() && results.size > 0) {
-            val resultBook = crossValidation(results.map { it.bestGoodreadsBook }, tokens)
+            val resultBook = results[0].bestGoodreadsBook
             if (resultBook != null) {
                 val existingBook = bookService.findById(resultBook.id)
                 when (existingBook) {
@@ -94,37 +81,9 @@ class BookSyncService @Autowired constructor(
         toggleMessageProcessed(message)
     }
 
-    /**
-     * Checks if the Goodreads results match exactly a given token name.
-     **/
-    fun crossValidation(apiBooks: List< GoodreadsBook>, tokens: Array<String>): GoodreadsBook? {
-        val filtered = apiBooks.filter { tokens.contains(it.title.trim()) }
-        return if (filtered.isEmpty()) {
-            null
-        } else {
-            filtered[0]
-        }
-    }
-
     fun toggleMessageProcessed(message: Message) {
         val processedMessage = message.copy(processed = true)
         messageService.update(processedMessage)
-    }
-
-    fun getNgrams(tokens: Array<String>): Observable<String> {
-        val nGramStreams = (1..tokens.size).map { i ->
-            val ngrams = NGramUtils.getNGrams(tokens, i)
-            val joinedNgrams = mutableListOf<String>()
-            ngrams.forEach {
-                joinedNgrams.add(it.joinToString(separator = " "))
-            }
-            Observable.fromIterable(joinedNgrams)
-        }
-        return Observable.concat(nGramStreams)
-    }
-
-    fun normalizeText(text: String): String {
-        return TwitterCharSequenceNormalizer.getInstance().normalize(text).toString().trim()
     }
 
 }
