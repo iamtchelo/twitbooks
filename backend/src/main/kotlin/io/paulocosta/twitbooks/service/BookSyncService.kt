@@ -7,11 +7,14 @@ import io.paulocosta.twitbooks.goodreads.GoodreadsResponse
 import io.paulocosta.twitbooks.goodreads.GoodreadsService
 import io.paulocosta.twitbooks.nerclient.NERApiPayload
 import io.paulocosta.twitbooks.nerclient.NERApiService
+import io.reactivex.Observable
 import mu.KotlinLogging
+import opennlp.tools.util.normalizer.TwitterCharSequenceNormalizer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import java.util.concurrent.TimeUnit
 import javax.transaction.Transactional
 
 private val logger = KotlinLogging.logger {}
@@ -42,13 +45,18 @@ class BookSyncService @Autowired constructor(
                 logger.info { "Progress $currentPage/$pageCount" }
                 val page = messageService.getAllMessages(friend.id, PageRequest.of(currentPage, pageCount))
                 val messages = page.content
-                messages.forEach { message ->
-                    nerApiService.process(NERApiPayload(message.text))
-                            .subscribe(
-                                    { logger.info { "Result : ${it.entities}" } },
-                                    { logger.error(it.message) }
-                            )
-                }
+                Observable.fromIterable(messages)
+                        .map { normalizeMessage(it) }
+                        .flatMapSingle { nerApiService.process(NERApiPayload(it.text)).map { entities -> Pair(it, entities) } }
+                        .filter { it.second.entities.isNotEmpty() }
+                        .debounce(1, TimeUnit.SECONDS)
+                        .flatMapSingle { goodreadsService.search(it.second.entities[0]).map { res -> Pair(res, it.first) } }
+                        .subscribe(
+                                { processGoodreadsResponse(it.first, it.second)},
+                                {
+                                    logger.error(it.message)
+                                }
+                        )
             }
         }
     }
@@ -84,6 +92,10 @@ class BookSyncService @Autowired constructor(
     fun toggleMessageProcessed(message: Message) {
         val processedMessage = message.copy(processed = true)
         messageService.update(processedMessage)
+    }
+
+    fun normalizeMessage(message: Message): Message {
+        return message.copy(text = TwitterCharSequenceNormalizer.getInstance().normalize(message.text).toString().trim())
     }
 
 }
