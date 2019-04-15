@@ -1,10 +1,14 @@
-import { observable, runInAction } from 'mobx';
+import { observable, runInAction, computed } from 'mobx';
 
 class MessageStore {
 
     @observable messages = [];
-
     @observable currentPage = 0;
+    @observable totalPages = 0;
+
+    @computed get count() {
+        return this.totalPages * 50;
+    }
 
     client;
 
@@ -22,6 +26,7 @@ class MessageStore {
             .then(response => {
                 runInAction(() => {
                     const data = response.data;
+                    this.messages.replace(data.content);
                     this.totalPages = data.totalPages;
                 });
             })
