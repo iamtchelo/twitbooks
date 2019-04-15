@@ -16,9 +16,19 @@ class MessageStore {
         this.client = client;
     }
 
+    clear() {
+        runInAction(() => {
+            this.totalPages = 0;
+            this.currentPage = 0;
+            this.messages.replace([]);
+        })
+    }
+
     setCurrentPage(page, bookId) {
-        this.currentPage = page - 1;
-        this.getMessages(bookId);
+        runInAction(() => {
+            this.currentPage = page - 1;
+            this.getMessages(bookId);
+        });
     }
 
     getMessages(bookId) {

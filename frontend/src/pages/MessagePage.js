@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import MainLayout from "../components/MainLayout";
 import { observer, inject } from 'mobx-react';
-import {Pagination} from "antd";
+import { Pagination, List } from "antd";
 
 @inject('messageStore') @observer
 class MessagePage extends Component {
@@ -10,20 +10,29 @@ class MessagePage extends Component {
     bookId = 0;
 
     componentDidMount(): void {
-        this.store.getMessages(this.props.match.params.bookId)
+        this.store.clear();
+        this.store.getMessages(this.props.match.params.bookId);
     }
 
     render() {
         console.log(this.props);
         return(
             <MainLayout>
-                { this.store.render}
+                { this.renderMessages(this.store.messages) }
                 { this.renderPagination(this.store.totalPages) }
             </MainLayout>
         )
     }
 
     renderMessages(messages) {
+        return(
+            <List
+                bordered
+                dataSource={messages}
+                renderItem={item => (<List.Item> {item.text} </List.Item>)}
+            >
+            </List>
+        )
     }
 
     renderPagination(totalElements) {
