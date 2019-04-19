@@ -19,6 +19,11 @@ import javax.transaction.Transactional
 
 private val logger = KotlinLogging.logger {}
 
+data class SyncResponse(
+        val goodreadsResponse: GoodreadsResponse,
+        val message: Message,
+        val entities: List<String>)
+
 @Service
 class BookSyncService @Autowired constructor(
         val messageService: MessageService,
@@ -48,11 +53,15 @@ class BookSyncService @Autowired constructor(
                 Observable.fromIterable(messages)
                         .map { normalizeMessage(it) }
                         .flatMapSingle { nerApiService.process(NERApiPayload(it.text)).map { entities -> Pair(it, entities) } }
+                        .doOnNext {
+                            logger.info { "No Entities found, toggling message as processed." }
+                            if (it.second.entities.isEmpty()) { toggleMessageProcessed(it.first)}
+                        }
                         .filter { it.second.entities.isNotEmpty() }
                         .debounce(1, TimeUnit.SECONDS)
-                        .flatMapSingle { goodreadsService.search(it.second.entities[0]).map { res -> Pair(res, it.first) } }
+                        .flatMapSingle { goodreadsService.search(it.second.entities[0]).map { res -> SyncResponse(res, it.first, it.second.entities) } }
                         .subscribe(
-                                { processGoodreadsResponse(it.first, it.second)},
+                                { processGoodreadsResponse(it.goodreadsResponse, it.message, it.entities)},
                                 {
                                     logger.error(it.message)
                                 }
@@ -62,10 +71,14 @@ class BookSyncService @Autowired constructor(
     }
 
     @Transactional
-    fun processGoodreadsResponse(goodreadsResponse: GoodreadsResponse, message: Message) {
+    fun processGoodreadsResponse(goodreadsResponse: GoodreadsResponse, message: Message, entities: List<String>) {
         val results = goodreadsResponse.search.results.works
         if (!results.isNullOrEmpty() && results.size > 0) {
             val resultBook = results[0].bestGoodreadsBook
+            if (!crossValidation(resultBook.title, entities)) {
+                toggleMessageProcessed(message)
+                return
+            }
             if (resultBook != null) {
                 val existingBook = bookService.findById(resultBook.id)
                 when (existingBook) {
@@ -96,6 +109,15 @@ class BookSyncService @Autowired constructor(
 
     fun normalizeMessage(message: Message): Message {
         return message.copy(text = TwitterCharSequenceNormalizer.getInstance().normalize(message.text).toString().trim())
+    }
+
+    fun crossValidation(apiResponse: String, entities: List<String>): Boolean {
+        entities.forEach {
+            if (apiResponse.trim().equals(it.trim(), ignoreCase = true)) {
+                return true
+            }
+        }
+        return false
     }
 
 }
