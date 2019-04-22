@@ -1,5 +1,6 @@
 package io.paulocosta.twitbooks.service
 
+import arrow.core.Either
 import io.paulocosta.twitbooks.auth.TwitterProvider
 import io.paulocosta.twitbooks.entity.*
 import mu.KotlinLogging
@@ -19,7 +20,11 @@ class SyncFriendsService @Autowired constructor(
 
     fun sync(): SyncResult {
         logger.info { "Starting to sync users" }
-        val rateLimit = rateLimitService.getFriendRateLimits()
+        val rateLimit = when (val limitResult = rateLimitService.getFriendRateLimits()) {
+            is Either.Left -> limitResult.a
+            is Either.Right -> return SyncResult.ERROR
+        }
+
         return if (rateLimit.exceeded()) {
             logger.info { "Rate limit has been exceeded for the list friends API" }
             SyncResult.ERROR

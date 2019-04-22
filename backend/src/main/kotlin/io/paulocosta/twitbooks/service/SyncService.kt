@@ -55,8 +55,7 @@ class SyncService @Autowired constructor(
     }
 
     private fun syncUsers() {
-        val result = syncFriendsService.sync()
-        when (result) {
+        when (syncFriendsService.sync()) {
             SyncResult.SUCCESS -> {
                 logger.info { "User sync finished successfully" }
             }

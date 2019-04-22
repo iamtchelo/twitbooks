@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
+
 /**
  * Provides information on the API limits the application
  * has available. Current endpoints used:
@@ -18,7 +19,7 @@ class RateLimitController @Autowired constructor(val rateLimitService: RateLimit
 
     @GetMapping
     fun getLimits(): List<RateLimit> {
-        return listOf(rateLimitService.getFriendRateLimits(), rateLimitService.getTimelineRateLimits())
+        return emptyList()
     }
 
 }

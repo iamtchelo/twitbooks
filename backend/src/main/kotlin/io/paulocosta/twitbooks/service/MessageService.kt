@@ -1,5 +1,6 @@
 package io.paulocosta.twitbooks.service
 
+import arrow.core.Either
 import io.paulocosta.twitbooks.auth.TwitterProvider
 import io.paulocosta.twitbooks.entity.*
 import io.paulocosta.twitbooks.repository.MessageRepository
@@ -39,7 +40,11 @@ class MessageService @Autowired constructor(
 
     fun syncMessages(friend: Friend): SyncResult {
         logger.info { "Starting message sync" }
-        val rateLimit = getRateLimit()
+        val rateLimit = when(val eitherLimit = rateLimitService.getTimelineRateLimits()) {
+            is Either.Left -> eitherLimit.a
+            is Either.Right -> return SyncResult.ERROR
+        }
+
         if (rateLimit.exceeded()) {
             return SyncResult.ERROR
         }
@@ -119,8 +124,6 @@ class MessageService @Autowired constructor(
                         maxId, minId)
         return MessageResult(tweets.map { toMessage(it, friend) })
     }
-
-    private fun getRateLimit(): RateLimit = rateLimitService.getTimelineRateLimits()
 
     private fun toMessage(tweet: Tweet, friend: Friend): Message {
         return Message(tweet.id, tweet.text, tweet.isRetweet, tweet.createdAt, friend)

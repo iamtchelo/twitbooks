@@ -1,8 +1,11 @@
 package io.paulocosta.twitbooks.service
 
+import arrow.core.Either
 import io.paulocosta.twitbooks.auth.TwitterProvider
 import io.paulocosta.twitbooks.entity.RateLimit
+import io.paulocosta.twitbooks.error.TwitterApiError
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.social.ApiException
 import org.springframework.social.twitter.api.RateLimitStatus
 import org.springframework.social.twitter.api.ResourceFamily
 import org.springframework.stereotype.Service
@@ -27,27 +30,31 @@ class RateLimitService {
     @Autowired
     lateinit var twitterProvider: TwitterProvider
 
-    fun getTimelineRateLimits(): RateLimit {
+    fun getTimelineRateLimits(): Either<RateLimit, TwitterApiError> {
         return getRateLimit(ResourceFamily.STATUSES, USER_TIMELINE_ENDPOINT)
     }
 
-    fun getFriendRateLimits(): RateLimit {
+    fun getFriendRateLimits(): Either<RateLimit, TwitterApiError> {
         return getRateLimit(ResourceFamily.FRIENDS, FRIENDS_ENDPOINT)
     }
 
     private fun getRateLimit(
-            resourceFamily: ResourceFamily, endpoint: String): RateLimit {
+            resourceFamily: ResourceFamily, endpoint: String): Either<RateLimit, TwitterApiError> {
 
-        val response = twitterProvider.getTwitter()
-                .userOperations()
-                .getRateLimitStatus(resourceFamily)
 
-        val statuses: MutableList<RateLimitStatus>? = response?.get(resourceFamily)
-        val rateLimitStatus = statuses?.filter { it.endpoint ==  endpoint } ?: emptyList()
+        val response = try {
+            twitterProvider.getTwitter()
+                    .userOperations()
+                    .getRateLimitStatus(resourceFamily)[resourceFamily]
+        } catch (e: ApiException) {
+            return Either.right(TwitterApiError())
+        }
+
+        val rateLimitStatus = response?.filter { it.endpoint ==  endpoint } ?: emptyList()
         if (rateLimitStatus.isEmpty()) {
             throw IllegalStateException("Could not obtain rate limit")
         }
-        return toRateLimit(rateLimitStatus[0])
+        return Either.left(toRateLimit(rateLimitStatus[0]))
     }
 
     private fun toRateLimit(limit: RateLimitStatus): RateLimit {
