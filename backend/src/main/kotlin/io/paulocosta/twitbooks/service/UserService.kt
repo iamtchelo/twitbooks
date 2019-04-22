@@ -15,9 +15,7 @@ class UserService @Autowired constructor(
     fun saveFriends(friends: List<Friend>): List<Friend> = friendsRepository.saveAll(friends)
 
     fun updateMessageSyncMode(friend: Friend, messageSyncStrategy: MessageSyncStrategy) {
-        friendsRepository.save(Friend(
-                friend.id, friend.name, friend.screenName, messageSyncStrategy
-        ))
+        friendsRepository.save(friend.copy(messageSyncStrategy = messageSyncStrategy))
     }
 
 }

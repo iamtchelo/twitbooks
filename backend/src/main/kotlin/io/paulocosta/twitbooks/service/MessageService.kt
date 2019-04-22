@@ -17,7 +17,8 @@ private val logger = KotlinLogging.logger {}
 @Service
 class MessageService @Autowired constructor(
         val twitterProvider: TwitterProvider,
-        val messageRepository: MessageRepository) {
+        val messageRepository: MessageRepository,
+        val userService: UserService) {
 
     companion object {
         // Maximum number supported by the API
@@ -85,7 +86,8 @@ class MessageService @Autowired constructor(
                 }
             }
             if (messages.isEmpty()) {
-                logger.info { "There are no more old messages available for this user" }
+                userService.updateMessageSyncMode(friend, MessageSyncStrategy.NEWEST)
+                logger.info { "There are no more old messages available for this user. Updating Sync Strategy to NEWEST" }
                 return SyncResult.SUCCESS
             }
             messageRepository.saveAll(messages)
