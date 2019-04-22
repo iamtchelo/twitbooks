@@ -1,6 +1,8 @@
 package io.paulocosta.twitbooks.service
 
+import arrow.core.Either
 import io.paulocosta.twitbooks.entity.SyncResult
+import io.paulocosta.twitbooks.ratelimit.RateLimitKeeper
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -26,7 +28,8 @@ private val logger = KotlinLogging.logger {}
 class SyncService @Autowired constructor(
         val userService: UserService,
         val syncFriendsService: SyncFriendsService,
-        val messageService: MessageService) {
+        val messageService: MessageService,
+        val rateLimitService: RateLimitService) {
 
     @Value("\${sync.enabled}")
     var syncEnabled: Boolean = false
@@ -47,8 +50,19 @@ class SyncService @Autowired constructor(
     }
 
     private fun syncMessages() {
+
+        val rateLimit = when(val eitherLimit = rateLimitService.getTimelineRateLimits()) {
+            is Either.Left -> eitherLimit.a
+            else -> {
+                logger.info { "Rate limit exceeded. Stopping message sync" }
+                return
+            }
+        }
+
+        val rateLimitKeeper = RateLimitKeeper(rateLimit)
+
         for (it in userService.getAllUsers()) {
-            if (messageService.syncMessages(it) == SyncResult.ERROR) {
+            if (messageService.syncMessages(it, rateLimitKeeper) == SyncResult.ERROR) {
                 break
             }
         }

@@ -7,3 +7,5 @@ reset:
 destroy:
 	docker-compose stop
 	docker-compose rm -f postgres
+db_shell:
+	docker exec -it twitbooks_db psql -U test

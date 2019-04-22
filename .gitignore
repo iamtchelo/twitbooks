@@ -86,3 +86,5 @@ tmp/
 *.iml
 
 __pycache__/
+
+*.env

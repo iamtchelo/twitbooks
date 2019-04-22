@@ -1,8 +1,8 @@
 package io.paulocosta.twitbooks.service
 
-import arrow.core.Either
 import io.paulocosta.twitbooks.auth.TwitterProvider
 import io.paulocosta.twitbooks.entity.*
+import io.paulocosta.twitbooks.ratelimit.RateLimitKeeper
 import io.paulocosta.twitbooks.repository.MessageRepository
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,7 +17,6 @@ private val logger = KotlinLogging.logger {}
 @Service
 class MessageService @Autowired constructor(
         val twitterProvider: TwitterProvider,
-        val rateLimitService: RateLimitService,
         val messageRepository: MessageRepository) {
 
     companion object {
@@ -38,35 +37,30 @@ class MessageService @Autowired constructor(
         return messageRepository.getUnprocessedMessageCount(friendId)
     }
 
-    fun syncMessages(friend: Friend): SyncResult {
+    fun syncMessages(friend: Friend, rateLimitKeeper: RateLimitKeeper): SyncResult {
         logger.info { "Starting message sync" }
-        val rateLimit = when(val eitherLimit = rateLimitService.getTimelineRateLimits()) {
-            is Either.Left -> eitherLimit.a
-            is Either.Right -> return SyncResult.ERROR
-        }
 
-        if (rateLimit.exceeded()) {
+        if (rateLimitKeeper.exceeded()) {
             return SyncResult.ERROR
         }
         return when (friend.messageSyncStrategy) {
-            MessageSyncStrategy.DEPTH -> depthSync(friend, rateLimit)
-            MessageSyncStrategy.NEWEST -> newestSync(friend, rateLimit)
+            MessageSyncStrategy.DEPTH -> depthSync(friend, rateLimitKeeper)
+            MessageSyncStrategy.NEWEST -> newestSync(friend, rateLimitKeeper)
         }
     }
 
-    fun newestSync(friend: Friend, rateLimit: RateLimit): SyncResult {
+    fun newestSync(friend: Friend, rateLimit: RateLimitKeeper): SyncResult {
         logger.info { "Starting newest sync" }
-        var hits = 0
         var startId = 0L
-        val endId = messageRepository.getNewestMessages(friend.id, PageRequest.of(0, 1)).first().id
-        while (hits < rateLimit.remainingHits) {
-            val messages = if (hits == 0) {
+        val endId: Long? = messageRepository.getNewestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()?.id
+        while (!rateLimit.exceeded()) {
+            val messages = if (endId == null) {
                 getCurrentUserTimeline(friend).messages
             } else {
                 getNewestTimelineMessages(friend, startId, endId).messages
             }
 
-            hits++
+            rateLimit.addHit()
 
             if (messages.isEmpty()) {
                 return SyncResult.SUCCESS
@@ -77,10 +71,9 @@ class MessageService @Autowired constructor(
         return SyncResult.ERROR
     }
 
-    fun depthSync(friend: Friend, rateLimit: RateLimit): SyncResult {
+    fun depthSync(friend: Friend, rateLimitKeeper: RateLimitKeeper): SyncResult {
         logger.info { "Starting depth sync for user ${friend.screenName}" }
-        var hits = 0
-        while (hits < rateLimit.remainingHits) {
+        while (!rateLimitKeeper.exceeded()) {
             val oldestMessage = messageRepository.getOldestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()
             val messages = when (oldestMessage) {
                 null -> {
@@ -96,7 +89,7 @@ class MessageService @Autowired constructor(
                 return SyncResult.SUCCESS
             }
             messageRepository.saveAll(messages)
-            hits++
+            rateLimitKeeper.addHit()
         }
         return SyncResult.SUCCESS
     }
