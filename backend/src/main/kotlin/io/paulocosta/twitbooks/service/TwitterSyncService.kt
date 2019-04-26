@@ -22,8 +22,8 @@ class TwitterSyncService @Autowired constructor(
     var syncEnabled: Boolean = false
 
     companion object {
-        // Four hours
-        const val SYNC_DELAY_MILLIS = 4L * 36L * 100000L
+        // Five hours
+        const val SYNC_DELAY_MILLIS = 5L * 36L * 100000L
     }
 
     @Scheduled(fixedDelay = SYNC_DELAY_MILLIS)

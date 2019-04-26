@@ -26,8 +26,8 @@ class MessageService @Autowired constructor(
     lateinit var activeProfile: String
 
     companion object {
-        // Maximum number supported by the API
-        const val TIMELINE_PAGE_SIZE = 200
+        // 200 is the max pages supported
+        const val TIMELINE_PAGE_SIZE = 20
         const val MINIMUM_DEPTH_ALLOWED_ID = 0L
     }
 
