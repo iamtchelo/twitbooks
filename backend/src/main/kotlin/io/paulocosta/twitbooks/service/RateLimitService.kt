@@ -38,6 +38,12 @@ class RateLimitService {
         return getRateLimit(ResourceFamily.FRIENDS, FRIENDS_ENDPOINT)
     }
 
+    fun getRateLimits(): MutableMap<ResourceFamily, MutableList<RateLimitStatus>>? {
+        return twitterProvider.getTwitter()
+                .userOperations()
+                .getRateLimitStatus(ResourceFamily.FRIENDS, ResourceFamily.STATUSES)
+    }
+
     private fun getRateLimit(
             resourceFamily: ResourceFamily, endpoint: String): Either<RateLimit, TwitterApiError> {
 

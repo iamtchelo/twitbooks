@@ -13,6 +13,7 @@ import opennlp.tools.util.normalizer.TwitterCharSequenceNormalizer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.util.concurrent.TimeUnit
 import javax.transaction.Transactional
@@ -33,11 +34,28 @@ class BookSyncService @Autowired constructor(
         val bookService: BookService) {
 
 
-    @Value("\${clear.data:false}")
-    var clearData: Boolean = false
+    @Value("\${spring.profiles.active}")
+    lateinit var activeProfile: String
+
+    @Value("\${sync.enabled}")
+    var syncEnabled: Boolean = false
 
     companion object {
         const val pageSize: Int = 100
+        const val SYNC_DELAY_MILLIS = 2L * 36L * 100000L
+        const val INITIAL_DELAY = 1L * 36L * 100000L
+    }
+
+    @Scheduled(fixedDelay = SYNC_DELAY_MILLIS, initialDelay = INITIAL_DELAY)
+    fun sync() {
+
+        if (syncEnabled) {
+            logger.info { "Starting books sync" }
+            process()
+        } else {
+            logger.info { "Book sync disable by config" }
+        }
+
     }
 
     fun process() {
@@ -103,8 +121,15 @@ class BookSyncService @Autowired constructor(
     }
 
     fun toggleMessageProcessed(message: Message) {
-        val processedMessage = message.copy(processed = true)
-        messageService.update(processedMessage)
+
+        if (activeProfile == "prod") {
+            logger.info { "Deleting message with id ${message.id }" }
+            messageService.deleteMessage(message)
+        } else {
+            val processedMessage = message.copy(processed = true)
+            messageService.update(processedMessage)
+        }
+
     }
 
     fun normalizeMessage(message: Message): Message {

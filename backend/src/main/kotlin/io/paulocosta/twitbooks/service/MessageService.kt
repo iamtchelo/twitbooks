@@ -6,6 +6,7 @@ import io.paulocosta.twitbooks.ratelimit.RateLimitKeeper
 import io.paulocosta.twitbooks.repository.MessageRepository
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -18,7 +19,11 @@ private val logger = KotlinLogging.logger {}
 class MessageService @Autowired constructor(
         val twitterProvider: TwitterProvider,
         val messageRepository: MessageRepository,
+        val messageSyncStateService: MessageSyncStateService,
         val userService: UserService) {
+
+    @Value("\${spring.profiles.active}")
+    lateinit var activeProfile: String
 
     companion object {
         // Maximum number supported by the API
@@ -53,36 +58,71 @@ class MessageService @Autowired constructor(
     fun newestSync(friend: Friend, rateLimit: RateLimitKeeper): SyncResult {
         logger.info { "Starting newest sync" }
         var startId = 0L
-        val endId: Long? = messageRepository.getNewestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()?.id
+        var endId: Long?
         while (!rateLimit.exceeded()) {
+            endId = getNewestMessageId(friend)
             val messages = if (endId == null) {
+                logger.info { "No message present. Getting current timeline for user ${friend.name}" }
                 getCurrentUserTimeline(friend).messages
             } else {
+                logger.info { "Getting newest messages for user ${friend.name}. startId: $startId, endId: $endId" }
                 getNewestTimelineMessages(friend, startId, endId).messages
             }
 
             rateLimit.addHit()
 
             if (messages.isEmpty()) {
+                logger.info { "No more messages for user ${friend.name}" }
                 return SyncResult.SUCCESS
             }
             startId = messages.last().id
             messageRepository.saveAll(messages)
+            updateMessageSyncState(friend)
         }
         return SyncResult.ERROR
+    }
+
+    fun updateMessageSyncState(friend: Friend) {
+
+        if (activeProfile != "prod") {
+            return
+        }
+
+        val newestMessageId = messageRepository.getNewestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()?.id ?: return
+        val oldestMessageId = messageRepository.getOldestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()?.id ?: return
+        messageSyncStateService.saveMessageSyncState(
+                friend, newestMessageId, oldestMessageId
+        )
+    }
+
+    fun getNewestMessageId(friend: Friend): Long? {
+        return if (activeProfile == "prod") {
+            messageSyncStateService.getMessageSyncState(friend.id)?.maxId
+        } else {
+            messageRepository.getNewestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()?.id
+        }
+    }
+
+    fun getOldestMessageId(friend: Friend): Long? {
+        return if (activeProfile == "prod") {
+            messageSyncStateService.getMessageSyncState(friend.id)?.minId
+        } else {
+            messageRepository.getOldestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()?.id
+        }
     }
 
     fun depthSync(friend: Friend, rateLimitKeeper: RateLimitKeeper): SyncResult {
         logger.info { "Starting depth sync for user ${friend.screenName}" }
         while (!rateLimitKeeper.exceeded()) {
-            val oldestMessage = messageRepository.getOldestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()
-            val messages = when (oldestMessage) {
+            val oldestMessageId = getOldestMessageId(friend)
+            val messages = when (oldestMessageId) {
                 null -> {
                     logger.info { "There is no oldest message. Getting current timeline" }
                     getCurrentUserTimeline(friend).messages
                 }
                 else -> {
-                    getDepthTimelineMessages(friend, oldestMessage).messages
+                    logger.info { "Oldest message id is $oldestMessageId. Continuing depth sync" }
+                    getDepthTimelineMessages(friend, oldestMessageId).messages
                 }
             }
             if (messages.isEmpty()) {
@@ -91,9 +131,14 @@ class MessageService @Autowired constructor(
                 return SyncResult.SUCCESS
             }
             messageRepository.saveAll(messages)
+            updateMessageSyncState(friend)
             rateLimitKeeper.addHit()
         }
         return SyncResult.SUCCESS
+    }
+
+    fun deleteMessage(message: Message) {
+        messageRepository.delete(message)
     }
 
     fun update(message: Message) {
@@ -105,8 +150,7 @@ class MessageService @Autowired constructor(
         return MessageResult(tweets.map { toMessage(it, friend) })
     }
 
-    private fun getDepthTimelineMessages(friend: Friend, message: Message): MessageResult {
-            val messageId = message.id
+    private fun getDepthTimelineMessages(friend: Friend, messageId: Long): MessageResult {
             val tweets = twitterProvider.getTwitter()
                     .timelineOperations().getUserTimeline(friend.screenName, TIMELINE_PAGE_SIZE,
                             MINIMUM_DEPTH_ALLOWED_ID, messageId - 1L)

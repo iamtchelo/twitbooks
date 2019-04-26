@@ -1,18 +1,18 @@
 package io.paulocosta.twitbooks.controller
 
-import io.paulocosta.twitbooks.service.SyncService
+import io.paulocosta.twitbooks.service.TwitterSyncService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/sync")
-class SyncController @Autowired constructor(val syncService: SyncService) {
+@RequestMapping("/sync/twitter")
+class TwitterSyncController @Autowired constructor(val twitterSyncService: TwitterSyncService) {
 
     @GetMapping
     fun sync(): String {
-        syncService.sync()
+        twitterSyncService.sync()
         return "OK"
     }
 
