@@ -8,3 +8,8 @@ services:
     environment:
       - POSTGRES_USER=test
       - POSTGRES_PASSWORD=test
+  ner:
+    container_name: ner
+    build: ner_service/
+    ports: 
+      - "5000:5000"
