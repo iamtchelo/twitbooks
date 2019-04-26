@@ -42,11 +42,10 @@ class BookSyncService @Autowired constructor(
 
     companion object {
         const val pageSize: Int = 100
-        const val SYNC_DELAY_MILLIS = 2L * 36L * 100000L
-        const val INITIAL_DELAY = 1L * 36L * 100000L
+        const val SYNC_DELAY_MILLIS = 600000L
     }
 
-    @Scheduled(fixedDelay = SYNC_DELAY_MILLIS, initialDelay = INITIAL_DELAY)
+    @Scheduled(fixedDelay = SYNC_DELAY_MILLIS)
     fun sync() {
 
         if (syncEnabled) {
