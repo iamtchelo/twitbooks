@@ -3,6 +3,7 @@ package io.paulocosta.twitbooks.controller
 import io.paulocosta.twitbooks.entity.RateLimit
 import io.paulocosta.twitbooks.service.RateLimitService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Profile
 import org.springframework.social.twitter.api.RateLimitStatus
 import org.springframework.social.twitter.api.ResourceFamily
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController
  * **/
 
 @RestController("/limits")
+@Profile("dev")
 class RateLimitController @Autowired constructor(val rateLimitService: RateLimitService) {
 
     @GetMapping
