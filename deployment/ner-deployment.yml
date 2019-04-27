@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ner
+  labels:
+    app: ner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ner
+  template:
+    metadata:
+      labels:
+        app: ner
+    spec:
+      containers:
+        - name: ner
+          image: registry.gitlab.com/paulombcosta/twitbooks/ner:latest
+          ports:
+            - containerPort: 5000
+      imagePullSecrets:
+        - name: gitlab-registry
