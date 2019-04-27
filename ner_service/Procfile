@@ -1,1 +1,1 @@
-web: cd ner_service && && gunicorn app:create_app
+web: cd ner_service && gunicorn app:create_app
