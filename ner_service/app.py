@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 import spacy
-nlp = spacy.load('en_core_web_md')
+nlp = spacy.load('en_core_web_sm')
 
 def create_app():
     app = Flask(__name__)
