@@ -14,3 +14,9 @@ heroku-deploy-ner:
 heroku-delete:
 	heroku apps:destroy ner-service
 	heroku apps:destroy twitbooks-api-service
+registry-login:
+	docker login registry.gitlab.com -u ${GITLAB_USER} -p ${GITLAB_PASS}
+push-ner: registry-login
+	docker build -t registry.gitlab.com/paulombcosta/twitbooks/ner:latest ner_service/
+	docker push registry.gitlab.com/paulombcosta/twitbooks/ner:latest
+
