@@ -1,1 +1,1 @@
-web: cd ner_service && waitress-servce --call app:create_app
+web: cd ner_service && waitress-serve --call app:create_app
