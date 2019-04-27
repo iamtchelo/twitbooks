@@ -1,1 +1,1 @@
-web: cd ner_service && gunicorn app:create_app
+web: cd ner_service && python -m spacy download en_core_web_sm && gunicorn app:create_app
