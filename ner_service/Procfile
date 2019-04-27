@@ -1,1 +1,1 @@
-web: pip install -r requirements.txt python -m spacy download en_core_web_md && waitress-serve --port=80 --call app:create_app
+web: pip install -r requirements.txt && python -m spacy download en_core_web_md && waitress-serve --port=80 --call app:create_app
