@@ -1,1 +1,1 @@
-web: cd ner_service && python -m spacy download en_core_web_md && gunicorn -b 127.0.0.1:80 app:create_app
+web: cd ner_service && python -m spacy download en_core_web_md && gunicorn app:create_app
