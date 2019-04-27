@@ -6,6 +6,7 @@ heroku-create:
 	heroku buildpacks:add -a ner-service https://github.com/heroku/heroku-buildpack-multi-procfile
 	heroku buildpacks:add -a ner-service https://github.com/heroku/heroku-buildpack-python
 	heroku config:set -a ner-service PROCFILE=ner_service/Procfile
+	heroku config:set -a ner-service PORT=8080
 	heroku config:set -a ner-service WEB_CONCURRENCY=1
 	# API service config
 	heroku buildpacks:add -a twitbooks-api-service https://github.com/heroku/heroku-buildpack-multi-procfile
