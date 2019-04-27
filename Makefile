@@ -19,4 +19,8 @@ registry-login:
 push-ner: registry-login
 	docker build -t registry.gitlab.com/paulombcosta/twitbooks/ner:latest ner_service/
 	docker push registry.gitlab.com/paulombcosta/twitbooks/ner:latest
+push-api: registry-login
+	docker run -it --rm -v ~/.m2:/root/.m2 -v $(shell pwd)/backend/target:$(shell pwd)/target -v /var/run/docker.sock:/var/run/docker.sock -v $(shell pwd)/backend:$(shell pwd) -w $(shell pwd) maven:3-jdk-8-alpine mvn package -DskipTests
+	docker build -t registry.gitlab.com/paulombcosta/twitbooks/api:latest backend/
+	docker push registry.gitlab.com/paulombcosta/twitbooks/api:latest
 
