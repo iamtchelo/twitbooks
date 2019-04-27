@@ -1,1 +1,1 @@
-web: cd ner_service && waitress-serve --host=127.0.0.1 --call app:create_app
+web: cd ner_service && waitress-serve --port=$PORT --call app:create_app
