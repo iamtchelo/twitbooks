@@ -27,7 +27,7 @@ class MessageService @Autowired constructor(
 
     companion object {
         // 200 is the max pages supported
-        const val TIMELINE_PAGE_SIZE = 20
+        const val TIMELINE_PAGE_SIZE = 200
         const val MINIMUM_DEPTH_ALLOWED_ID = 0L
     }
 
