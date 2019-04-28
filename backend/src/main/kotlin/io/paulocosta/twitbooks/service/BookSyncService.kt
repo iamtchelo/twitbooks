@@ -47,7 +47,6 @@ class BookSyncService @Autowired constructor(
 
     @Scheduled(fixedDelay = SYNC_DELAY_MILLIS)
     fun sync() {
-
         if (syncEnabled) {
             logger.info { "Starting books sync" }
             process()
