@@ -25,3 +25,12 @@ push-api: registry-login
 	docker push registry.gitlab.com/paulombcosta/twitbooks/api:latest
 create-secrets:
 	kubectl create secret docker-registry gitlab-registry --docker-server=registry.gitlab.com --docker-username=${GITLAB_USER} --docker-password=${GITLAB_PASS} --docker-email=${GITLAB_USER}
+	kubectl create secret generic api-env \
+		--from-literal=DB_URL=${DB_URL} \
+		--from-literal=DB_USER=${DB_USER} \
+		--from-literal=DB_PASS=${DB_PASS} \
+		--from-literal=GOODREADS_KEY=${GOODREADS_KEY} \
+		--from-literal=TWITTER_CONSUMER_KEY=${TWITTER_CONSUMER_KEY} \
+		--from-literal=TWITTER_CONSUMER_SECRET=${TWITTER_CONSUMER_SECRET} \
+		--from-literal=TWITTER_ACCESS_TOKEN=${TWITTER_ACCESS_TOKEN} \
+		--from-literal=TWITTER_ACCESS_TOKEN_SECRET=${TWITTER_ACCESS_TOKEN_SECRET}
