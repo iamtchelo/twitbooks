@@ -19,6 +19,7 @@ spec:
           image: registry.gitlab.com/paulombcosta/twitbooks/api:latest
           ports:
             - containerPort: 8080
+          imagePullPolicy: Always
           env:
             - name: TWITTER_ACCESS_TOKEN_SECRET
               valueFrom:
