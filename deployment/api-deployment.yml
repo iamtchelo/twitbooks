@@ -65,7 +65,7 @@ spec:
               value: "true"
             - name: ACTIVE_PROFILE
               value: prod
-            - name: NER_CLIENT
-              value: ner
+            - name: NER_CLIENT_URL
+              value: http://ner
       imagePullSecrets:
         - name: gitlab-registry
