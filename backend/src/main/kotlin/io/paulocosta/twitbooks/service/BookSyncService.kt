@@ -13,7 +13,6 @@ import opennlp.tools.util.normalizer.TwitterCharSequenceNormalizer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.util.concurrent.TimeUnit
 import javax.transaction.Transactional
@@ -37,22 +36,13 @@ class BookSyncService @Autowired constructor(
     @Value("\${spring.profiles.active}")
     lateinit var activeProfile: String
 
-    @Value("\${sync.enabled}")
-    var syncEnabled: Boolean = false
-
     companion object {
-        const val pageSize: Int = 100
-        const val SYNC_DELAY_MILLIS = 600000L
+        const val pageSize: Int = 50
     }
 
-    @Scheduled(fixedDelay = SYNC_DELAY_MILLIS)
     fun sync() {
-        if (syncEnabled) {
-            logger.info { "Starting books sync" }
-            process()
-        } else {
-            logger.info { "Book sync disable by config" }
-        }
+        logger.info { "Starting books sync" }
+        process()
 
     }
 

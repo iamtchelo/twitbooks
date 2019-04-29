@@ -5,8 +5,6 @@ import io.paulocosta.twitbooks.entity.SyncResult
 import io.paulocosta.twitbooks.ratelimit.RateLimitKeeper
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 
 private val logger = KotlinLogging.logger {}
@@ -18,23 +16,10 @@ class TwitterSyncService @Autowired constructor(
         val messageService: MessageService,
         val rateLimitService: RateLimitService) {
 
-    @Value("\${sync.enabled}")
-    var syncEnabled: Boolean = false
-
-    companion object {
-        // Five hours
-        const val SYNC_DELAY_MILLIS = 5L * 36L * 100000L
-    }
-
-    @Scheduled(fixedDelay = SYNC_DELAY_MILLIS)
     fun sync() {
-        if (syncEnabled) {
-            logger.info { "Starting Twitter Sync" }
-            syncUsers()
-            syncMessages()
-        } else {
-            logger.info { "Twitter sync diabled by config" }
-        }
+        logger.info { "Starting Twitter Sync" }
+        syncUsers()
+        syncMessages()
     }
 
     private fun syncMessages() {
