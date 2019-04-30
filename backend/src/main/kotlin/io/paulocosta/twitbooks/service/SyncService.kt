@@ -14,7 +14,7 @@ class SyncService @Autowired constructor(
         private val bookSyncService: BookSyncService) {
 
     companion object {
-        // Five hours
+        // One hour
         const val SYNC_DELAY_MILLIS = 3600000L
     }
 
