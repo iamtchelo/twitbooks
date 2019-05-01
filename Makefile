@@ -34,3 +34,5 @@ create-secrets:
 		--from-literal=TWITTER_CONSUMER_SECRET=${TWITTER_CONSUMER_SECRET} \
 		--from-literal=TWITTER_ACCESS_TOKEN=${TWITTER_ACCESS_TOKEN} \
 		--from-literal=TWITTER_ACCESS_TOKEN_SECRET=${TWITTER_ACCESS_TOKEN_SECRET}
+build-front:
+	cd frontend && npm install && npm run build
