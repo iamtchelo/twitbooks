@@ -41,7 +41,7 @@ class MessageStore {
                 });
             })
             .catch(e => {
-                console.log(e);
+                // TODO proper error handling
             })
     }
 

@@ -16,7 +16,6 @@ class BookPage extends Component {
     }
 
     render() {
-        console.log("PROPS", this.props);
         return(
             <MainLayout>
                 { this.renderBooks(this.store.data) }

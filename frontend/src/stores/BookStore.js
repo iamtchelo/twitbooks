@@ -33,7 +33,6 @@ class BookStore {
         this.client.get(`/books?page=${this.currentPage}`)
             .then(response => {
                 runInAction(() => {
-                    console.log("page downloaded " + this.currentPage);
                     const data = response.data;
                     const content = response.data.content;
                     this.totalPages = data.totalPages;
@@ -41,7 +40,7 @@ class BookStore {
                 });
             })
             .catch(e => {
-                console.log(e);
+                // TODO proper error handling
             })
     }
 

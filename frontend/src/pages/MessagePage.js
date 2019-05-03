@@ -15,7 +15,6 @@ class MessagePage extends Component {
     }
 
     render() {
-        console.log(this.props);
         return(
             <MainLayout>
                 { this.renderMessages(this.store.messages) }
