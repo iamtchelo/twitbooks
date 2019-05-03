@@ -36,3 +36,13 @@ create-secrets:
 		--from-literal=TWITTER_ACCESS_TOKEN_SECRET=${TWITTER_ACCESS_TOKEN_SECRET}
 build-front:
 	cd frontend && npm install && npm run build
+helm-setup:
+	kubectl create serviceaccount --namespace kube-system tiller
+	kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+	helm init --service-account tiller
+ngnix-setup:
+	# Install ngnix ingress on master node
+	helm install stable/nginx-ingress --namespace kube-system
+	# Create ingress rule to reverse-proxy requests to the api pod
+	kubectl apply -f deployment/ingress.yml
+
