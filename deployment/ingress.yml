@@ -4,11 +4,18 @@ metadata:
   name: api-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: 'true'
 spec:
   rules:
-  - http:
-      paths:
-      - path: /
-        backend:
-          serviceName: api-service
-          servicePort: 80
+    - host: api.twitbooks.io
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: api-service
+              servicePort: 80
+  tls:
+    - hosts:
+        - "api.twitbooks.io"
+      secretName: twitbooks-tls-cert
+

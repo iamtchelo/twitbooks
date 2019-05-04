@@ -45,4 +45,5 @@ ngnix-setup:
 	helm install stable/nginx-ingress --namespace kube-system
 	# Create ingress rule to reverse-proxy requests to the api pod
 	kubectl apply -f deployment/ingress.yml
-
+tls-setup:
+	helm install stable/kube-lego --namespace kube-system --set config.LEGO_EMAIL=${EMAIL},config.LEGO_URL=https://acme-v01.api.letsencrypt.org/directory
