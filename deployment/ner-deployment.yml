@@ -17,6 +17,7 @@ spec:
       containers:
         - name: ner
           image: registry.gitlab.com/paulombcosta/twitbooks/ner:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 5000
       imagePullSecrets:
