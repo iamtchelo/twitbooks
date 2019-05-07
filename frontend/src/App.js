@@ -3,7 +3,6 @@ import createStores from "./stores/createStores";
 import { Provider } from "mobx-react";
 import { configure } from 'mobx';
 import BookPage from "./pages/BookPage";
-import "antd/dist/antd.css";
 import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import MessagePage from "./pages/MessagePage";
 

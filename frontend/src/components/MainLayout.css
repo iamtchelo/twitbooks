@@ -1,5 +1,11 @@
+.content-root {
+    background-color: #FFF;
+}
+
 .content {
-    padding: 80px;
+    padding: 20px;
+    margin: 20px;
+    background: #f2f2f2;
 }
 
 .title {

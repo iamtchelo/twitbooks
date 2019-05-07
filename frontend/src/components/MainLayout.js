@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout} from 'antd';
+import {Card, Layout} from 'antd';
 import "./MainLayout.css"
 
 const { Header, Content, Footer } = Layout;
@@ -8,13 +8,15 @@ export default class MainLayout extends Component {
 
     render() {
         return (
-            <Layout>
+            <Layout className="App">
                 <Header>
                     <div className="title">TWIT BOOKS</div>
                 </Header>
-                <Content className="content">
-                    {this.props.children}
-                </Content>
+                    <Content className="content">
+                        <Card>
+                            {this.props.children}
+                        </Card>
+                    </Content>
             </Layout>
         );
     }
