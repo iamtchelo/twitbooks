@@ -18,8 +18,8 @@ class BookPage extends Component {
     render() {
         return(
             <MainLayout>
-                {/*{ this.renderBooks(this.store.data) }*/}
-                { this.renderLoading() }
+                { this.renderBooks(this.store.data) }
+                {/*{ this.renderLoading() }*/}
                 { this.renderPagination(this.store.count) }
             </MainLayout>
         )
