@@ -19,7 +19,6 @@ class BookPage extends Component {
         return(
             <MainLayout>
                 { this.renderBooks(this.store.data) }
-                {/*{ this.renderLoading() }*/}
                 { this.renderPagination(this.store.count) }
             </MainLayout>
         )
