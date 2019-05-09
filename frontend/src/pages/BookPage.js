@@ -49,7 +49,7 @@ class BookPage extends Component {
                     [...Array(10).keys()].map(i => {
                         return(
                             <Col key={i} className="loading-card" span={6}>
-                                <Card style=>
+                                <Card>
                                     <div>
                                         <Skeleton active
                                                   title={false}
