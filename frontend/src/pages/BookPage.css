@@ -1,3 +1,17 @@
 .book-card {
     margin-bottom: 15px;
 }
+
+.loading-card {
+    padding: 20px;
+}
+
+.loading-card-content {
+    text-align: center;
+    width: 100px;
+    height: 300px;
+}
+
+ul {
+    padding-inline-start: 0;
+}

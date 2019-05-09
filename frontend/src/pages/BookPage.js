@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import { observer, inject } from 'mobx-react';
 import BookStore from "../stores/BookStore";
-import { Row, Col, Pagination } from 'antd';
+import { Row, Col, Pagination, Card, Spin, Skeleton } from 'antd';
 import BookCard from "../components/BookCard";
 import MainLayout from "../components/MainLayout";
 import  "./BookPage.css";
@@ -41,10 +41,34 @@ class BookPage extends Component {
         this.store.setCurrentPage(page);
     }
 
+    renderLoading() {
+        return(
+            <Row>
+                {
+                    [...Array(10).keys()].map(i => {
+                        return(
+                            <Col key={i} className="loading-card" span={6}>
+                                <Card>
+                                    <div>
+                                        <Skeleton active
+                                                  title={false}
+                                                  className="loading-card-content"
+                                                  paragraph={{rows: 6}}
+                                        />
+                                    </div>
+                                </Card>
+                            </Col>
+                        )
+                    })
+                }
+            </Row>
+        )
+    }
+
     renderBooks(books) {
 
         if (!books) {
-            return <div/>
+            return this.renderLoading()
         } else {
             return (
                 <Row>
