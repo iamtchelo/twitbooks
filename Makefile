@@ -36,6 +36,7 @@ create-secrets:
 		--from-literal=TWITTER_ACCESS_TOKEN_SECRET=${TWITTER_ACCESS_TOKEN_SECRET}
 build-front:
 	cd frontend && npm install && npm run build
+	cp frontend/_redirects frontend/build/_redirects
 helm-setup:
 	kubectl create serviceaccount --namespace kube-system tiller
 	kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
