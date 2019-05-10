@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Card, Layout} from 'antd';
 import "./MainLayout.css"
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content } = Layout;
 
 export default class MainLayout extends Component {
 

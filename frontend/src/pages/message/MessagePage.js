@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MainLayout from "../../components/MainLayout";
+import MainLayout from "../../components/layout/MainLayout";
 import { observer, inject } from 'mobx-react/index';
 import { Pagination, List } from "antd/lib/index";
 

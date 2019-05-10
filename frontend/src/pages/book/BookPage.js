@@ -2,8 +2,8 @@ import React, {Component} from "react";
 import { observer, inject } from 'mobx-react/index';
 import BookStore from "../../stores/BookStore";
 import { Row, Col, Pagination, Card, Skeleton } from 'antd';
-import BookCard from "../../components/BookCard";
-import MainLayout from "../../components/MainLayout";
+import BookCard from "../../components/book/card/BookCard";
+import MainLayout from "../../components/layout/MainLayout";
 import "./BookPage.css";
 
 @inject('bookStore') @observer
