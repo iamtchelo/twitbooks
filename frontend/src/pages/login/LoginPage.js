@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'antd';
+import auth0Client from '../../auth/Auth';
 
 class LoginPage extends Component {
 
@@ -12,7 +13,7 @@ class LoginPage extends Component {
     }
 
     handleClick() {
-        console.log("LOGIN ACTION");
+        auth0Client.signIn();
     }
 
 }
