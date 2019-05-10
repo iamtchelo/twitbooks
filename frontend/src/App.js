@@ -21,8 +21,8 @@ class App extends Component {
                 <Switch>
                     <Route path="/messages/:bookId" component={MessagePage}/>
                     <Route path="/login" component={LoginPage}/>
-                    <Route path="/books" component={BookPage}/>
-                    <Redirect from="/" to="/books"/>
+                    <Route path="/" component={BookPage}/>
+                    {/*<Redirect from="/" to="/books"/>*/}
                 </Switch>
             </BrowserRouter>
         </Provider>
