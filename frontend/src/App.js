@@ -3,9 +3,11 @@ import createStores from "./stores/createStores";
 import { Provider } from "mobx-react";
 import { configure } from 'mobx';
 import BookPage from "./pages/book/BookPage";
-import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
+import { Switch, Route, BrowserRouter } from 'react-router-dom';
 import MessagePage from "./pages/message/MessagePage";
 import LoginPage from "./pages/login/LoginPage";
+import SecuredRoute from "./components/route/SecuredRoute";
+import auth0Client from './auth/Auth';
 
 configure({
     enforceActions: 'always'
@@ -14,19 +16,37 @@ configure({
 const stores = createStores();
 
 class App extends Component {
-  render() {
-    return (
-        <Provider {...stores}>
-            <BrowserRouter>
-                <Switch>
-                    <Route path="/messages/:bookId" component={MessagePage}/>
-                    <Route path="/login" component={LoginPage}/>
-                    <Route path="/" component={BookPage}/>
-                </Switch>
-            </BrowserRouter>
-        </Provider>
-    );
-  }
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            checkingSession: true,
+        }
+    }
+
+    async componentDidMount(): void {
+        try {
+            await auth0Client.silentAuth();
+            this.forceUpdate();
+        } catch (err) {
+            if (err.error !== 'login_required') console.log(err.error);
+        }
+        this.setState({checkingSession: false})
+    }
+
+    render() {
+        return (
+            <Provider {...stores}>
+                <BrowserRouter>
+                    <Switch>
+                        <SecuredRoute path="/messages/:bookId" component={MessagePage}/>
+                        <Route path="/login" component={LoginPage}/>
+                        <SecuredRoute path="/" component={BookPage}/>
+                    </Switch>
+                </BrowserRouter>
+            </Provider>
+        );
+    }
 }
 
 export default App;
