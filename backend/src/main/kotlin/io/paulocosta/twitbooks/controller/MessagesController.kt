@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.*
 import retrofit2.http.GET
 
 @RestController
-@RequestMapping("/messages")
-@CrossOrigin("*")
+@RequestMapping("/api/v1/messages")
 class MessagesController @Autowired constructor(val messageRepository: MessageRepository) {
 
     @GET

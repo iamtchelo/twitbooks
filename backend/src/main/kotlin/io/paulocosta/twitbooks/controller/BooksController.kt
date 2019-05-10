@@ -8,8 +8,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/books")
-@CrossOrigin("*")
+@RequestMapping("/api/v1/books")
 class BooksController @Autowired constructor(private val bookService: BookService) {
 
     @GetMapping
