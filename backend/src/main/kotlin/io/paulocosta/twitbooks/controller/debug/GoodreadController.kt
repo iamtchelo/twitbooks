@@ -1,4 +1,4 @@
-package io.paulocosta.twitbooks.controller
+package io.paulocosta.twitbooks.controller.debug
 
 import io.paulocosta.twitbooks.goodreads.GoodreadsResponse
 import io.paulocosta.twitbooks.goodreads.GoodreadsService
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/search")
+@RequestMapping("/debug/search")
 @Profile("dev")
 class GoodreadController @Autowired constructor(val goodreadsService: GoodreadsService) {
 

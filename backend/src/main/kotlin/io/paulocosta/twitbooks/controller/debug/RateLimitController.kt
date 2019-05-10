@@ -1,6 +1,5 @@
-package io.paulocosta.twitbooks.controller
+package io.paulocosta.twitbooks.controller.debug
 
-import io.paulocosta.twitbooks.entity.RateLimit
 import io.paulocosta.twitbooks.service.RateLimitService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Profile
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
  * - statuses/user_timeline
  * **/
 
-@RestController("/limits")
+@RestController("/debug/limits")
 @Profile("dev")
 class RateLimitController @Autowired constructor(val rateLimitService: RateLimitService) {
 

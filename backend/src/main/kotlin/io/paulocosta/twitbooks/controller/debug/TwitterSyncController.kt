@@ -1,6 +1,6 @@
-package io.paulocosta.twitbooks.controller
+package io.paulocosta.twitbooks.controller.debug
 
-import io.paulocosta.twitbooks.service.BookSyncService
+import io.paulocosta.twitbooks.service.TwitterSyncService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Profile
 import org.springframework.web.bind.annotation.GetMapping
@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("sync/books")
+@RequestMapping("/debug/sync/twitter")
 @Profile("dev")
-class BookSyncController @Autowired constructor(val bookSyncService: BookSyncService) {
+class TwitterSyncController @Autowired constructor(val twitterSyncService: TwitterSyncService) {
 
     @GetMapping
-    fun test() {
-        bookSyncService.process()
+    fun sync(): String {
+        twitterSyncService.sync()
+        return "OK"
     }
 
 }

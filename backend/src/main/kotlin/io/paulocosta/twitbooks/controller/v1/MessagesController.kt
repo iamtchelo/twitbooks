@@ -1,4 +1,4 @@
-package io.paulocosta.twitbooks.controller
+package io.paulocosta.twitbooks.controller.v1
 
 import io.paulocosta.twitbooks.entity.Message
 import io.paulocosta.twitbooks.repository.MessageRepository
