@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import MainLayout from "../components/MainLayout";
-import { observer, inject } from 'mobx-react';
-import { Pagination, List } from "antd";
+import MainLayout from "../../components/MainLayout";
+import { observer, inject } from 'mobx-react/index';
+import { Pagination, List } from "antd/lib/index";
 
 @inject('messageStore') @observer
 class MessagePage extends Component {

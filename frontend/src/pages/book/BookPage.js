@@ -1,10 +1,10 @@
 import React, {Component} from "react";
-import { observer, inject } from 'mobx-react';
-import BookStore from "../stores/BookStore";
-import { Row, Col, Pagination, Card, Spin, Skeleton } from 'antd';
-import BookCard from "../components/BookCard";
-import MainLayout from "../components/MainLayout";
-import  "./BookPage.css";
+import { observer, inject } from 'mobx-react/index';
+import BookStore from "../../stores/BookStore";
+import { Row, Col, Pagination, Card, Skeleton } from 'antd';
+import BookCard from "../../components/BookCard";
+import MainLayout from "../../components/MainLayout";
+import "./BookPage.css";
 
 @inject('bookStore') @observer
 class BookPage extends Component {
