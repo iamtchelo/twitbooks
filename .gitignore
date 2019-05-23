@@ -66,12 +66,10 @@ gen-external-apklibs/
 .gradle
 /*/local.properties
 /*/out
-/*/*/build
 /*/*/production
 *.ipr
 *~
 *.swp
-build/
 tmp/
 
 # Mac
@@ -88,3 +86,5 @@ tmp/
 __pycache__/
 
 *.env
+/frontend/build/*
+!/frontend/build/_redirects
