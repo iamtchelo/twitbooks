@@ -11,3 +11,7 @@ def process():
     ents = [e.text for e in doc.ents if e.label_ == 'WORK_OF_ART']
     result = {'entities': ents}
     return jsonify(result)
+
+@app.route('/status', methods=["GET"])
+def status():
+    return ('', 204)
