@@ -18,17 +18,33 @@ class SyncService @Autowired constructor(
         const val SYNC_DELAY_MILLIS = 3600000L
     }
 
-    @Value("\${sync.enabled}")
-    var syncEnabled: Boolean = false
+    @Value("\${twitter.sync.enabled}")
+    var twitterSyncEnabled: Boolean = false
+
+    @Value("\${book.sync.enabled}")
+    var bookSyncEnabled: Boolean = false
+
 
     @Scheduled(fixedDelay = SYNC_DELAY_MILLIS)
     fun sync() {
-        if (syncEnabled) {
-            logger.info { "Starting Sync" }
+        twitterSync()
+        bookSync()
+    }
+
+    private fun twitterSync() {
+        if (twitterSyncEnabled) {
+            logger.info { "Starting Twitter Sync" }
             twitterSyncService.sync()
+        } else {
+            logger.info { "Twitter sync disabled by config property" }
+        }
+    }
+
+    private fun bookSync() {
+        if (bookSyncEnabled) {
             bookSyncService.sync()
         } else {
-            logger.info { "Sync disabled by config" }
+            logger.info { "Book sync disabled by config property" }
         }
     }
 

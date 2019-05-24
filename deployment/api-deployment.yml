@@ -61,11 +61,13 @@ spec:
                 secretKeyRef:
                   name: api-env
                   key: DB_PASS
-            - name: SYNC_ENABLED
+            - name: BOOK_SYNC_ENABLED
               value: "true"
+            - name: TWITTER_SYNC_ENABLED
+              value: "false"
             - name: ACTIVE_PROFILE
               value: prod
             - name: NER_CLIENT_URL
-              value: http://ner-service:5000
+              value: http://ner-service
       imagePullSecrets:
         - name: gitlab-registry
