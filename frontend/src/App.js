@@ -8,6 +8,7 @@ import MessagePage from "./pages/message/MessagePage";
 import LoginPage from "./pages/login/LoginPage";
 import SecuredRoute from "./components/route/SecuredRoute";
 import auth0Client from './auth/Auth';
+import Callback from "./components/auth/Callback";
 
 configure({
     enforceActions: 'always'
@@ -41,6 +42,7 @@ class App extends Component {
                     <Switch>
                         <SecuredRoute path="/messages/:bookId" component={MessagePage}/>
                         <Route path="/login" component={LoginPage}/>
+                        <Route path="/callback" component={Callback}/>
                         <SecuredRoute path="/" component={BookPage}/>
                     </Switch>
                 </BrowserRouter>

@@ -2,14 +2,15 @@ import auth0 from 'auth0-js';
 
 const domain = process.env.REACT_APP_AUTH_DOMAIN;
 const clientId = process.env.REACT_APP_CLIENT_ID;
-const redirectUri = process.env.REACT_APP_AUTH_CALLBACK_URI || 'http://localhost:3000/books';
+const audience = process.env.REACT_APP_AUDIENCE;
+const redirectUri = process.env.REACT_APP_AUTH_CALLBACK_URI || 'http://localhost:3000/callback';
 const logoutRedirect = process.env.REACT_APP_LOGOUT_REDIRECT_URI || 'http://localhost:3000/';
 
 class Auth {
     constructor() {
         this.auth0 = new auth0.WebAuth({
             domain: domain,
-            audience: `https://${domain}/userinfo`,
+            audience: audience,
             clientID: clientId,
             redirectUri: redirectUri,
             responseType: 'id_token',
