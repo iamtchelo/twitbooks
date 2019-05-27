@@ -12,7 +12,7 @@ private val logger = KotlinLogging.logger {}
 
 @Service
 class SyncFriendsService @Autowired constructor(
-        val userService: UserService,
+        val friendService: FriendService,
         val friendSyncStatusService: FriendSyncStatusService,
         val rateLimitService: RateLimitService,
         val twitterProvider: TwitterProvider
@@ -59,7 +59,7 @@ class SyncFriendsService @Autowired constructor(
 
             hits++
 
-            userService.saveFriends(profiles.map { toFriend(it) })
+            friendService.saveFriends(profiles.map { toFriend(it) })
             lastCursor = profiles.nextCursor
 
             if (!profiles.hasNext()) {

@@ -11,7 +11,7 @@ private val logger = KotlinLogging.logger {}
 
 @Service
 class TwitterSyncService @Autowired constructor(
-        val userService: UserService,
+        val friendService: FriendService,
         val syncFriendsService: SyncFriendsService,
         val messageService: MessageService,
         val rateLimitService: RateLimitService) {
@@ -34,7 +34,7 @@ class TwitterSyncService @Autowired constructor(
 
         val rateLimitKeeper = RateLimitKeeper(rateLimit)
 
-        for (it in userService.getAllUsers()) {
+        for (it in friendService.getAllUsers()) {
             val result = messageService.syncMessages(it, rateLimitKeeper)
             when (result) {
                 SyncResult.ERROR -> {

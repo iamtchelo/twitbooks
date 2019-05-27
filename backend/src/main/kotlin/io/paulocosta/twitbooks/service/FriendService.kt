@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class UserService @Autowired constructor(
+class FriendService @Autowired constructor(
         private val friendsRepository: FriendsRepository) {
 
     fun getAllUsers(): List<Friend> = friendsRepository.findAll()

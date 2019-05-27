@@ -20,7 +20,7 @@ class MessageService @Autowired constructor(
         val twitterProvider: TwitterProvider,
         val messageRepository: MessageRepository,
         val messageSyncStateService: MessageSyncStateService,
-        val userService: UserService) {
+        val friendService: FriendService) {
 
     @Value("\${spring.profiles.active}")
     lateinit var activeProfile: String
@@ -126,7 +126,7 @@ class MessageService @Autowired constructor(
                 }
             }
             if (messages.isEmpty()) {
-                userService.updateMessageSyncMode(friend, MessageSyncStrategy.NEWEST)
+                friendService.updateMessageSyncMode(friend, MessageSyncStrategy.NEWEST)
                 logger.info { "There are no more old messages available for this user. Updating Sync Strategy to NEWEST" }
                 return SyncResult.SUCCESS
             }

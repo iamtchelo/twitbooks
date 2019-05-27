@@ -27,7 +27,7 @@ data class SyncResponse(
 @Service
 class BookSyncService @Autowired constructor(
         val messageService: MessageService,
-        val userService: UserService,
+        val friendService: FriendService,
         val nerApiService: NERApiService,
         val goodreadsService: GoodreadsService,
         val bookService: BookService) {
@@ -47,7 +47,7 @@ class BookSyncService @Autowired constructor(
     }
 
     fun process() {
-        val users = userService.getAllUsers()
+        val users = friendService.getAllUsers()
         users.forEach { friend ->
             val messageCount = messageService.getUnprocessedMessageCount(friend.id)
             logger.info { "Processing $messageCount messages from user ${friend.screenName}" }
