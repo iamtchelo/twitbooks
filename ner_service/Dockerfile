@@ -14,4 +14,4 @@ ENV PYTHONUNBUFFERED=TRUE
 
 RUN python -m spacy download en_core_web_md
 
-CMD ["uwsgi", "--http-socket", "0.0.0.0:5000", "--module", "app:app"]
+CMD ["uwsgi", "--http-socket", "0.0.0.0:5000", "--die-on-term","--module", "app:app"]
