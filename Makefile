@@ -1,9 +1,7 @@
 heroku-create:
 	# Creating Apps
 	heroku create ner-service --remote ner
-	heroku create twitbooks-api-service --remote api
-	# NER service config
-	heroku buildpacks:add -a ner-service https://github.com/heroku/heroku-buildpack-multi-procfile
+	heroku create twitbooks-api-service --remote api # NER service config heroku buildpacks:add -a ner-service https://github.com/heroku/heroku-buildpack-multi-procfile
 	heroku buildpacks:add -a ner-service https://github.com/heroku/heroku-buildpack-python
 	heroku config:set -a ner-service PROCFILE=ner_service/Procfile
 	heroku config:set -a ner-service WEB_CONCURRENCY=1
@@ -48,3 +46,5 @@ ngnix-setup:
 	kubectl apply -f deployment/ingress.yml
 tls-setup:
 	helm install stable/kube-lego --namespace kube-system --set config.LEGO_EMAIL=${EMAIL},config.LEGO_URL=https://acme-v01.api.letsencrypt.org/directory,rbac.create=true
+heapster-setup:
+	helm install stable/heapster --namespace kube-system
