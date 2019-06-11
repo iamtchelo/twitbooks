@@ -14,11 +14,16 @@ spec:
       labels:
         app: ner
     spec:
+      restartPolicy: Always
       containers:
         - name: ner
           image: registry.gitlab.com/paulombcosta/twitbooks/ner:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
+          resources:
+            limits:
+              cpu: .5
+              memory: "1.5Gi"
       imagePullSecrets:
         - name: gitlab-registry
