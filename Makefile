@@ -45,6 +45,14 @@ nginx-setup:
 	# Create ingress rule to reverse-proxy requests to the api pod
 	kubectl apply -f deployment/ingress.yml
 tls-setup:
+	kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml
+	kubectl label namespace kube-system certmanager.k8s.io/disable-validation="true"
+	helm repo add jetstack https://charts.jetstack.io
+	helm install --name cert-manager --namespace kube-system jetstack/cert-manager --version v0.8.0
+tls-setup-old:
 	helm install stable/kube-lego --namespace kube-system --set config.LEGO_EMAIL=${EMAIL},config.LEGO_URL=https://acme-v01.api.letsencrypt.org/directory,rbac.create=true
 heapster-setup:
 	helm install stable/heapster --namespace kube-system
+test-ingress:
+	# TODO grep the ip
+	curl -kivL -H 'Host: api.twitbooks.io' 'http://138.68.39.173/status'
