@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card } from 'antd';
+import { Card, Icon } from 'antd';
 import "./BookCard.css";
 
 const { Meta } = Card;
@@ -15,6 +15,7 @@ class BookCard extends Component {
                 hoverable
                 className="card"
                 cover={<img className="card-img" alt="book" src={this.book.imageUrl} />}
+                actions={[<Icon type="delete"/>]}
             >
                 <Meta title={this.book.title}/>
             </Card>

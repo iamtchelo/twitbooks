@@ -88,3 +88,4 @@ __pycache__/
 *.env
 /frontend/build/*
 !/frontend/build/_redirects
+frontend/env.sh

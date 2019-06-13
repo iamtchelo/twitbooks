@@ -20,6 +20,10 @@ class BookService @Autowired constructor(private val bookRepository: BookReposit
         bookRepository.save(book)
     }
 
+    fun ignore(bookId: Long) {
+        bookRepository.ignoreBook(bookId)
+    }
+
     fun getAllBooks(pageable: Pageable): Page<Book> {
         return bookRepository.getAllBooks(pageable)
     }

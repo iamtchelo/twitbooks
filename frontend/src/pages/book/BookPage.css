@@ -3,13 +3,13 @@
 }
 
 .loading-card {
-    padding: 20px;
+    padding: .2rem;
 }
 
 .loading-card-content {
     text-align: center;
-    width: 100px;
-    height: 300px;
+    width: 10rem;
+    height: 30rem;
 }
 
 ul {
