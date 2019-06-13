@@ -18,6 +18,8 @@ data class Book(
 
         val imageUrl: String,
 
+        val ignored: Boolean = false,
+
         @CreatedDate
         var createdDate: Date? = null,
 

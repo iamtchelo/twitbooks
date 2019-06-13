@@ -1,0 +1,1 @@
+ALTER TABLE book ADD COLUMN ignored BIT DEFAULT 0;

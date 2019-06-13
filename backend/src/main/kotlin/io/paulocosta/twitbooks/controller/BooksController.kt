@@ -18,4 +18,9 @@ class BooksController @Autowired constructor(private val bookService: BookServic
                 .map { BookAPIResponse(it.copy(message = emptySet()), it.message.map { message -> message.id }) }
     }
 
+    @PutMapping
+    fun ignoreBook(@RequestParam("book_id") bookId: Long) {
+        bookService.ignore(bookId)
+    }
+
 }
