@@ -13,7 +13,10 @@ class BookPage extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {spanSize: this.initialSpanSize()};
+        this.state = {
+            spanSize: this.initialSpanSize(),
+            renderGrid: this.initialRenderWindow()
+        };
     }
 
     componentDidMount(): void {
@@ -34,6 +37,14 @@ class BookPage extends Component {
         }
     }
 
+    initialRenderWindow() {
+        if (window.innerWidth < 400) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     resizeListener = () => {
         console.log("TEST", window.innerWidth);
         if (window.innerWidth < 600 && this.state.spanSize !== 12) {
@@ -45,6 +56,12 @@ class BookPage extends Component {
                 console.log("SPAN SET TO 6");
                 this.setState({spanSize: 6})
             }
+        }
+        if (window.innerWidth < 400 && this.state.renderGrid === true) {
+            this.setState({renderGrid: false})
+        }
+        if (window.innerWidth > 400 && this.state.renderGrid === false) {
+            this.setState({renderGrid: true})
         }
     };
 
@@ -107,21 +124,48 @@ class BookPage extends Component {
         if (!books) {
             return this.renderLoading()
         } else {
-            return (
-                <Row>
-                    {
-                        books.map(i => {
-                            return (
-                                <Col key={i.book.id} className="book-card" span={this.state.spanSize}>
-                                    <BookCard onClickEvent={this.onClick(i.book)} book={i.book}/>
-                                </Col>
-                            )
-                        })
-                    }
-                </Row>
-            )
+            if (this.state.renderGrid) {
+                console.log("RENDERING GRID");
+                return this.renderBookGrid(books)
+            } else {
+                console.log("RENDERING LIST");
+                return this.renderBookList(books)
+            }
         }
+    }
 
+    renderBookGrid(books) {
+        return (
+            <Row>
+                {
+                    books.map(i => {
+                        return this.renderBookCard(i)
+                    })
+                }
+            </Row>
+        )
+    }
+
+    renderBookList(books) {
+        return (
+            <div style={{flex: 1, flexDirection: "column"}}>
+                {
+                    books.map(i => {
+                        return (
+                            <BookCard key={i.book.id} onClickEvent={this.onClick(i.book)} book={i.book}/>
+                        )
+                    })
+                }
+            </div>
+        )
+    }
+
+    renderBookCard(book) {
+        return (
+            <Col key={book.book.id} className="book-card" span={this.state.spanSize}>
+                <BookCard onClickEvent={this.onClick(book.book)} book={book.book}/>
+            </Col>
+        )
     }
 
     onClick(book) {
