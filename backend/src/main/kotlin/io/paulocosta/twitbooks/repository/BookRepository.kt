@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query
 
 interface BookRepository : JpaRepository<Book, Long> {
 
-    @Query("select book from Book book order by book.id desc, book.createdAt desc")
+    @Query("select book from Book book order by book.id desc, book.createdDate desc")
     fun getAllBooks(pageable: Pageable): Page<Book>
 
 }
