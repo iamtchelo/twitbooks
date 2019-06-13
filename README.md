@@ -9,12 +9,6 @@ an API endpoint for clients. It integrates with another service that uses spaCy'
 features to identify works of arts and that information is fed to [Goodreads](`https://www.goodreads.com/)
 API to fetch book data.
 
-## Running
-
-You need to provide both Twitter and Goodreads API keys to the `backend` project. They can be set
-through the respective environment variables:
-```
-```
 
 ## Cluster setup
 
