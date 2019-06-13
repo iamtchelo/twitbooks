@@ -2,6 +2,28 @@ html {
     font-size: 62.5%
 }
 
+/*phone - 600px*/
+@media only screen and (max-width: 37.5em) {
+    html {
+        font-size: 35%;
+    }
+}
+
+/*tab-port - 900px*/
+@media only screen and (max-width: 56.25em) {
+    html {
+        font-size: 50%;
+    }
+}
+
+/*tab-land - 1200px*/
+@media only screen and (max-width: 75em) {
+}
+
+/*big-desktop - 1200px*/
+@media only screen and (min-width: 112.5em) {
+}
+
 body {
   margin: 0;
   padding: 0;
