@@ -20,7 +20,6 @@ class BookPage extends Component {
     }
 
     componentDidMount(): void {
-        console.log("HAI");
         this.store.getBooks();
     }
 
@@ -29,7 +28,6 @@ class BookPage extends Component {
     }
 
     initialSpanSize() {
-        console.log("INITIAL SPAN CALCULATION");
         if (window.innerWidth < 600) {
             return 12;
         } else {
@@ -46,14 +44,10 @@ class BookPage extends Component {
     }
 
     resizeListener = () => {
-        console.log("TEST", window.innerWidth);
         if (window.innerWidth < 600 && this.state.spanSize !== 12) {
-            console.log("SPAN SET TO 12");
             this.setState({spanSize: 12});
-            console.log("STATE", this.state);
         } else {
             if (window.innerWidth > 600 && this.state.spanSize !== 6) {
-                console.log("SPAN SET TO 6");
                 this.setState({spanSize: 6})
             }
         }
@@ -125,10 +119,8 @@ class BookPage extends Component {
             return this.renderLoading()
         } else {
             if (this.state.renderGrid) {
-                console.log("RENDERING GRID");
                 return this.renderBookGrid(books)
             } else {
-                console.log("RENDERING LIST");
                 return this.renderBookList(books)
             }
         }
