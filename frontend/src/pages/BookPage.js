@@ -11,8 +11,45 @@ class BookPage extends Component {
 
     store: BookStore = this.props.bookStore;
 
+    constructor(props) {
+        super(props);
+        this.state = {spanSize: this.initialSpanSize()};
+    }
+
     componentDidMount(): void {
+        console.log("HAI");
         this.store.getBooks();
+    }
+
+    componentWillMount(): void {
+        window.addEventListener("resize", this.resizeListener)
+    }
+
+    initialSpanSize() {
+        console.log("INITIAL SPAN CALCULATION");
+        if (window.innerWidth < 600) {
+            return 12;
+        } else {
+            return 6
+        }
+    }
+
+    resizeListener = () => {
+        console.log("TEST", window.innerWidth);
+        if (window.innerWidth < 600 && this.state.spanSize !== 12) {
+            console.log("SPAN SET TO 12");
+            this.setState({spanSize: 12});
+            console.log("STATE", this.state);
+        } else {
+            if (window.innerWidth > 600 && this.state.spanSize !== 6) {
+                console.log("SPAN SET TO 6");
+                this.setState({spanSize: 6})
+            }
+        }
+    };
+
+    componentWillUnmount(): void {
+        window.removeEventListener("resize", this.resizeListener);
     }
 
     render() {
@@ -75,7 +112,7 @@ class BookPage extends Component {
                     {
                         books.map(i => {
                             return (
-                                <Col key={i.book.id} className="book-card" span={6}>
+                                <Col key={i.book.id} className="book-card" span={this.state.spanSize}>
                                     <BookCard onClickEvent={this.onClick(i.book)} book={i.book}/>
                                 </Col>
                             )
