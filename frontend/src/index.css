@@ -1,3 +1,7 @@
+html {
+    font-size: 62.5%
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -9,8 +13,8 @@ body {
 
   font-weight: 200;
   font-style: normal;
-  font-size: 44px;
-  line-height: 36px;
+  font-size: 4rem;
+  line-height: 3.6rem;
 
 }
 
