@@ -90,12 +90,40 @@ class BookPage extends Component {
     }
 
     renderLoading() {
+        if (this.state.renderGrid) {
+            return this.renderLoadingGrid()
+        } else {
+            return this.renderLoadingList()
+        }
+    }
+
+    renderLoadingList() {
+        return(
+            <div style={{flex: 1, flexDirection: "column"}}>
+                {
+                    [...Array(10).keys()].map(i => {
+                        return(
+                            <div key={i} className="loading-card">
+                                <Skeleton active
+                                          title={false}
+                                          className="loading-card-content"
+                                          paragraph={{rows: 6}}
+                                />
+                            </div>
+                        )
+                    })
+                }
+            </div>
+        )
+    }
+
+    renderLoadingGrid() {
         return(
             <Row>
                 {
                     [...Array(10).keys()].map(i => {
                         return(
-                            <Col key={i} className="loading-card" span={6}>
+                            <Col key={i} className="loading-card" span={this.state.spanSize}>
                                 <Card>
                                     <div>
                                         <Skeleton active
