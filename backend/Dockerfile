@@ -1,4 +1,4 @@
-FROM openjdk:12-jdk-oracle
+FROM openjdk:10-jre-slim
 
 EXPOSE 8080
 
