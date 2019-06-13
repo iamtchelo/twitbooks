@@ -44,7 +44,7 @@ class MessageService @Autowired constructor(
     }
 
     fun getCount(): Int {
-        return messageRepository.count()
+        return messageRepository.count().toInt()
     }
 
     fun syncMessages(friend: Friend, rateLimitKeeper: RateLimitKeeper): SyncResult {
