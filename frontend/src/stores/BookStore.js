@@ -26,6 +26,9 @@ class BookStore {
         })
     }
 
+    ignoreBook(book) {
+    }
+
     getBooks() {
         if (this.apiData[this.currentPage]) {
             return;
