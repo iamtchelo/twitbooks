@@ -13,13 +13,18 @@ class BookCard extends Component {
     render() {
         return (
             <Card
-                onClick={() => this.props.onClickEvent()}
                 hoverable
                 className="card"
-                cover={<img className="card-img" alt="book" src={this.book.imageUrl} />}
-                actions={[<Icon type="delete" onClick={this.onDelete}/>]}>
+                cover={<img onClick={() => this.props.onClickEvent()} className="card-img" alt="book" src={this.book.imageUrl} />}
+                actions={[this.deleteAction()]}>
                 <Meta title={this.book.title}/>
             </Card>
+        )
+    }
+
+    deleteAction() {
+        return(
+            <Icon type="delete" onClick={this.onDelete} style={{width: '2rem', height: '2rem'}}/>
         )
     }
 
