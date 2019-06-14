@@ -32,6 +32,10 @@ class BookService @Autowired constructor(private val bookRepository: BookReposit
         return bookRepository.findById(bookId).toNullable()
     }
 
+    fun getBookCount(): Long {
+        return bookRepository.count()
+    }
+
     fun updateMessages(book: Book, messages: Set<Message>) {
         if (activeProfile != "prod") {
             bookRepository.save(book.copy(message = messages))

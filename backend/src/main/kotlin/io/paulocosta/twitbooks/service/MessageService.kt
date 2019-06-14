@@ -43,8 +43,8 @@ class MessageService @Autowired constructor(
         return messageRepository.getUnprocessedMessageCount(friendId)
     }
 
-    fun getCount(): Int {
-        return messageRepository.count().toInt()
+    fun getCount(): Long {
+        return messageRepository.count()
     }
 
     fun syncMessages(friend: Friend, rateLimitKeeper: RateLimitKeeper): SyncResult {

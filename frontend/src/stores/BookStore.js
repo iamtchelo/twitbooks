@@ -32,6 +32,7 @@ class BookStore {
                 this.apiData[this.currentPage].filter((i) => {
                     return i.book.id !== book.id
                 });
+            this.client.put(`/books?book_id=${book.id}`)
         });
     }
 
