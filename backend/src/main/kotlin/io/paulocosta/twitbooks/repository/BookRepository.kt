@@ -10,14 +10,10 @@ import javax.transaction.Transactional
 
 interface BookRepository : JpaRepository<Book, Long> {
 
-    @Query("""
-        select book from Book book
-        where book.ignored = 0
-        order by book.id desc, book.createdDate desc
-        """)
+    @Query("select book from Book book where book.ignored = '0' order by book.createdDate desc")
     fun getAllBooks(pageable: Pageable): Page<Book>
 
-    @Query("update Book book set book.ignored = 1 where book.id = :bookId")
+    @Query("update Book book set book.ignored = '1' where book.id = :bookId")
     @Modifying
     @Transactional
     fun ignoreBook(bookId: Long)
