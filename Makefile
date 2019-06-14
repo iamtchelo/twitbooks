@@ -53,6 +53,3 @@ tls-setup-old:
 	helm install stable/kube-lego --namespace kube-system --set config.LEGO_EMAIL=${EMAIL},config.LEGO_URL=https://acme-v01.api.letsencrypt.org/directory,rbac.create=true
 heapster-setup:
 	helm upgrade --install --wait k8s-heapster stable/heapster --set=command='{/heapster,--source=kubernetes:https://kubernetes.default?kubeletHttps=true&kubeletPort=10250&insecure=true}' --namespace kube-system
-test-ingress:
-	# TODO grep the ip
-	curl -kivL -H 'Host: api.twitbooks.io' 'http://138.68.39.173/status'

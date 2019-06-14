@@ -26,6 +26,16 @@ class BookStore {
         })
     }
 
+    ignoreBook(book) {
+        runInAction(() => {
+            this.apiData[this.currentPage] =
+                this.apiData[this.currentPage].filter((i) => {
+                    return i.book.id !== book.id
+                });
+            this.client.put(`/books?book_id=${book.id}`)
+        });
+    }
+
     getBooks() {
         if (this.apiData[this.currentPage]) {
             return;
