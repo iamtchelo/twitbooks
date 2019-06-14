@@ -3,7 +3,9 @@
 }
 
 .loading-card {
-    padding: .2rem;
+    padding: 2rem
+    /*padding: .5rem;*/
+    /*margin: 2rem*/
 }
 
 .loading-card-content {
