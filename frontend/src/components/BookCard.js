@@ -17,7 +17,7 @@ class BookCard extends Component {
                 className="card"
                 cover={<img onClick={() => this.props.onClickEvent()} className="card-img" alt="book" src={this.book.imageUrl} />}
                 actions={[this.deleteAction()]}>
-                <Meta title={this.book.title}/>
+                <Meta onClick={() => this.props.onClickEvent()} title={this.book.title}/>
             </Card>
         )
     }
