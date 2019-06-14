@@ -27,6 +27,12 @@ class BookStore {
     }
 
     ignoreBook(book) {
+        runInAction(() => {
+            this.apiData[this.currentPage] =
+                this.apiData[this.currentPage].filter((i) => {
+                    return i.book.id !== book.id
+                });
+        });
     }
 
     getBooks() {
