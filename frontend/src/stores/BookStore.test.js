@@ -3,6 +3,12 @@ import { BookStore, Book } from "./BookStore";
 const NOOP_CLIENT = ({
     ignoreBook() {
         return Promise.resolve();
+    },
+    getBooks() {
+        return Promise.resolve({json: () => Promise.resolve({
+                content: [],
+                totalPages: 0
+            })})
     }
 });
 
@@ -58,4 +64,14 @@ test("Should return in-memory list if it is already downloaded for the requested
     }, {});
     store.getBooks();
     expect(store.apiData.get(1)).toEqual(books);
+});
+
+test("set page should subtract one from the input as to conform to the API", () => {
+    const store = BookStore.create({
+        apiData: {},
+        currentPage: 1,
+        totalPages: 0,
+    }, {client: NOOP_CLIENT});
+    store.setCurrentPage(3);
+    expect(store.currentPage).toEqual(2);
 });
