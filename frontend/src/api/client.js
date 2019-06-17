@@ -1,7 +1,21 @@
-import axios from 'axios'
+const contentTypeJSON = {"ContentType": "application/json"};
 
-const client = axios.create({
-    baseURL: process.env.REACT_APP_ENDPOINT || "http://localhost:8080/"
-});
+const client = (baseUrl) => {
+    const ignoreBook = (bookId) => {
+        return window.fetch(`${baseUrl}/books?book_id=${bookId}`,
+            { method: "PUT", headers: contentTypeJSON })
+    };
+    const getBooks = (page) => {
+        return window.fetch(`${baseUrl}/books?page=${page}`, {
+            method: "GET", headers: contentTypeJSON
+        })
+    };
+    const getMessages = (bookId, page) => {
+        return window.fetch(`${baseUrl}/messages/${bookId}?page=${page}`, {
+            method: "GET",
+            headers: contentTypeJSON
+        })
+    }
+};
 
 export default client;

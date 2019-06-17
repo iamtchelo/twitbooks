@@ -22,10 +22,7 @@ const MessageStore = types.model({
     },
     getMessages: flow(function*(bookId) {
         try {
-            const response = yield window.fetch(`${getEnv(self)}.baseUrl/messages/${bookId}?page=${self.currentPage}`, {
-                method: 'GET',
-                headers: {"Content-Type": 'application/json'}
-            });
+            const response = yield getEnv(self).client.getMessages(bookId, self.currentPage);
             const data = yield response.json();
             self.totalPages = data.totalPages;
             self.messages = data.content;

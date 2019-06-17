@@ -1,7 +1,11 @@
-import { types, flow, destroy, getEnv } from 'mobx-state-tree';
+import { types, flow, destroy, getEnv, getParent } from 'mobx-state-tree';
 
-const BookStore = types.model({
-    apiData: types.map,
+export const Book = types.model({
+    id: types.integer
+});
+
+export const BookStore = types.model({
+    apiData: types.map(types.array(Book)),
     currentPage: types.integer,
     totalPages: types.integer
 })
@@ -19,10 +23,10 @@ const BookStore = types.model({
         self.getBooks();
     },
     ignoreBook: flow(function*(book) {
-        destroy(book);
         try {
-            yield window.fetch(`${getEnv(self).baseUrl}/books?book_id=${book.id}`, {
-                method: "PUT"})
+            const bookId = book.id;
+            self.apiData.get(self.currentPage).remove(book);
+            yield getEnv(self).client.ignoreBook(bookId);
         } catch(e) {
             console.log("ERROR", e);
         }
@@ -32,17 +36,12 @@ const BookStore = types.model({
             return;
         }
         try {
-            const response = yield window.fetch(`${getEnv(self)}.baseUrl/books?page=${self.currentPage}`, {
-                method: "GET",
-                headers: {"Content-Type": "application/json"}
-            });
+            const response = yield getEnv(self).client.getBooks(self.currentPage);
             const responseData = yield response.json();
             self.totalPages = responseData.totalPages;
-            self.apiData[self.currentPage] = responseData.content;
+            self.apiData.set(self.currentPage,responseData.content);
         } catch(e) {
             console.log("ERROR", e);
         }
     })
 }));
-
-export default BookStore;
