@@ -32,7 +32,7 @@ export const BookStore = types.model({
         }
     }),
     getBooks: flow(function*() {
-        if (self.apiData[self.currentPage]) {
+        if (self.apiData.get(self.currentPage)) {
             return;
         }
         try {

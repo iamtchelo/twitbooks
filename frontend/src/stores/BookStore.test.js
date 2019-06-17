@@ -48,3 +48,14 @@ test("test getBooks should update the model", async () => {
     expect(store.totalPages).toEqual(5);
     expect(store.apiData.get(0)).toEqual(books);
 });
+
+test("Should return in-memory list if it is already downloaded for the requested page", () => {
+    const books = [Book.create({id: 123})];
+    const store = BookStore.create({
+        apiData: {1: books},
+        currentPage: 1,
+        totalPages: 0,
+    }, {});
+    store.getBooks();
+    expect(store.apiData.get(1)).toEqual(books);
+});
