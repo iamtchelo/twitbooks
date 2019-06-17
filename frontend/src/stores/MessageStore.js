@@ -1,50 +1,38 @@
-import { observable, runInAction, computed } from 'mobx';
+import { types, flow, getEnv } from 'mobx-state-tree';
 
-class MessageStore {
-
-    @observable messages = [];
-    @observable currentPage = 0;
-    @observable totalPages = 0;
-
-    @computed get count() {
-        return this.totalPages * 50;
+const MessageStore = types.model({
+    messages: types.array,
+    currentPage: types.integer,
+    totalPages: types.integer
+})
+.views(self => ({
+    get count() {
+        return self.totalPages * 50;
     }
-
-    client;
-
-    constructor(client) {
-        this.client = client;
-    }
-
+}))
+.actions(self => ({
     clear() {
-        runInAction(() => {
-            this.totalPages = 0;
-            this.currentPage = 0;
-            this.messages.replace([]);
-        })
-    }
-
+        self.totalPages = 0;
+        self.currentPage = 0;
+        self.messages.replace([])
+    },
     setCurrentPage(page, bookId) {
-        runInAction(() => {
-            this.currentPage = page - 1;
-            this.getMessages(bookId);
-        });
-    }
-
-    getMessages(bookId) {
-        this.client.get(`/messages/${bookId}?page=${this.currentPage}`)
-            .then(response => {
-                runInAction(() => {
-                    const data = response.data;
-                    this.messages.replace(data.content);
-                    this.totalPages = data.totalPages;
-                });
-            })
-            .catch(e => {
-                // TODO proper error handling
-            })
-    }
-
-}
+        self.currentPage = page - 1;
+        self.getMessages(bookId);
+    },
+    getMessages: flow(function*(bookId) {
+        try {
+            const response = yield window.fetch(`${getEnv(self)}.baseUrl/messages/${bookId}?page=${self.currentPage}`, {
+                method: 'GET',
+                headers: {"Content-Type": 'application/json'}
+            });
+            const data = yield response.json();
+            self.totalPages = data.totalPages;
+            self.messages = data.content;
+        } catch(e) {
+            console.log(e);
+        }
+    })
+}));
 
 export default MessageStore;

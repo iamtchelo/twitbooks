@@ -1,59 +1,48 @@
-import { observable, runInAction, computed } from 'mobx'
+import { types, flow, destroy, getEnv } from 'mobx-state-tree';
 
-class BookStore {
-    @observable apiData = {};
-    @observable currentPage = 0;
-    @observable totalPages = 0;
-
-    @computed get count() {
-        return this.totalPages * 50;
-    }
-
-    @computed get data() {
+const BookStore = types.model({
+    apiData: types.map,
+    currentPage: types.integer,
+    totalPages: types.integer
+})
+.views(self => ({
+    get count() {
+        return self.totalPages * 50
+    },
+    get data() {
         return this.apiData[this.currentPage];
     }
-
-    client: any;
-
-    constructor(client) {
-        this.client = client;
-    }
-
+}))
+.actions(self => ({
     setCurrentPage(page) {
-        runInAction(() => {
-            this.currentPage = page - 1;
-            this.getBooks();
-        })
-    }
-
-    ignoreBook(book) {
-        runInAction(() => {
-            this.apiData[this.currentPage] =
-                this.apiData[this.currentPage].filter((i) => {
-                    return i.book.id !== book.id
-                });
-            this.client.put(`/books?book_id=${book.id}`)
-        });
-    }
-
-    getBooks() {
-        if (this.apiData[this.currentPage]) {
+        self.currentPage = page - 1;
+        self.getBooks();
+    },
+    ignoreBook: flow(function*(book) {
+        destroy(book);
+        try {
+            yield window.fetch(`${getEnv(self).baseUrl}/books?book_id=${book.id}`, {
+                method: "PUT"})
+        } catch(e) {
+            console.log("ERROR", e);
+        }
+    }),
+    getBooks: flow(function*() {
+        if (self.apiData[self.currentPage]) {
             return;
         }
-        this.client.get(`/books?page=${this.currentPage}`)
-            .then(response => {
-                runInAction(() => {
-                    const data = response.data;
-                    const content = response.data.content;
-                    this.totalPages = data.totalPages;
-                    this.apiData[this.currentPage] = content;
-                });
-            })
-            .catch(e => {
-                // TODO proper error handling
-            })
-    }
-
-}
+        try {
+            const response = yield window.fetch(`${getEnv(self)}.baseUrl/books?page=${self.currentPage}`, {
+                method: "GET",
+                headers: {"Content-Type": "application/json"}
+            });
+            const responseData = yield response.json();
+            self.totalPages = responseData.totalPages;
+            self.apiData[self.currentPage] = responseData.content;
+        } catch(e) {
+            console.log("ERROR", e);
+        }
+    })
+}));
 
 export default BookStore;
