@@ -30,6 +30,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         config.allowedMethods = Arrays.asList("GET","POST")
         config.allowCredentials = true
         config.addAllowedHeader("Authorization")
+        config.addAllowedHeader("Content-Type")
         source.registerCorsConfiguration("/**", config)
         return source
     }

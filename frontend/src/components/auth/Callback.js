@@ -6,6 +6,7 @@ class Callback extends Component {
 
     async componentDidMount(): void {
         await auth0Client.handleAuthentication();
+        await auth0Client.validateAuthentication();
         this.props.history.replace('/books')
     }
 

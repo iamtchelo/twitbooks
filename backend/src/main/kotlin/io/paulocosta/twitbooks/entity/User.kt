@@ -6,5 +6,7 @@ import javax.persistence.Id
 //@Entity
 data class User(
         @Id
-        val id: Long?
+        val id: String,
+
+        val accessToken: String
 )

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/api/v1/login")
 class LoginController @Autowired constructor(val loginService: LoginService) {
 
     @GetMapping

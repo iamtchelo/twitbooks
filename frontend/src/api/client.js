@@ -1,30 +1,36 @@
 import auth0Client from '../auth/Auth';
-const contentTypeJSON = {"ContentType": "application/json"};
+
+const baseUrl = process.env.REACT_APP_ENDPOINT || "http://localhost:8080";
+
+const baseHeaders = () => {
+    return {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${auth0Client.getIdToken()}`
+    }
+};
 
 const client = (baseUrl) => ({
     ignoreBook(bookId) {
         return window.fetch(`${baseUrl}/books?book_id=${bookId}`,
-            { method: "PUT", headers: contentTypeJSON })
+            { method: "PUT", headers: baseHeaders() })
     },
     getBooks(page) {
         return window.fetch(`${baseUrl}/books?page=${page}`, {
-            method: "GET", headers: contentTypeJSON
+            method: "GET", headers: baseHeaders()
         })
     },
     getMessages(bookId, page) {
         return window.fetch(`${baseUrl}/messages/${bookId}?page=${page}`, {
             method: "GET",
-            headers: contentTypeJSON
+            headers: baseHeaders()
+        })
+    },
+    login() {
+        return window.fetch(`${baseUrl}/login`, {
+            method: "GET",
+            headers: baseHeaders()
         })
     }
 });
 
-// client.interceptors.request.use(
-//     config => {
-//         config.headers.Authorization = `Bearer ${auth0Client.getIdToken()}`;
-//         return config;
-//     },
-//     error => Promise.reject(error)
-// );
-
-export default client;
+export default client(baseUrl);

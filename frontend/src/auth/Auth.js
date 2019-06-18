@@ -1,4 +1,5 @@
 import auth0 from 'auth0-js';
+import client from '../api/client';
 
 const domain = process.env.REACT_APP_AUTH_DOMAIN;
 const clientId = process.env.REACT_APP_CLIENT_ID;
@@ -75,6 +76,10 @@ class Auth {
                 resolve();
             });
         });
+    }
+
+    validateAuthentication() {
+        return client.login();
     }
 
 }
