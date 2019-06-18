@@ -13,7 +13,7 @@ const NOOP_CLIENT = ({
 });
 
 test("ignoreBook should remove it from the current state", () => {
-    const book = Book.create({id: 123});
+    const book = Book.create({id: 123, title: "Hai", imageUrl: "http://imagelink"});
     const store = BookStore.create({
         apiData: {1: [book]},
         currentPage: 1,
@@ -26,8 +26,8 @@ test("ignoreBook should remove it from the current state", () => {
 test("test getBooks should update the model", async () => {
 
     const books = [
-        {id: 1},
-        {id: 2}
+        {id: 1, title: "SomeTitle", imageUrl: "SomeImageUrl"},
+        {id: 2, title: "SomeOtherTitle", imageUrl: "SomeOtherImageUrl"}
     ];
 
     const client = ({
@@ -56,7 +56,7 @@ test("test getBooks should update the model", async () => {
 });
 
 test("Should return in-memory list if it is already downloaded for the requested page", () => {
-    const books = [Book.create({id: 123})];
+    const books = [Book.create({id: 123, title: "Hay", imageUrl: "imageUrl"})];
     const store = BookStore.create({
         apiData: {1: books},
         currentPage: 1,
