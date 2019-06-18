@@ -1,11 +1,16 @@
 package io.paulocosta.twitbooks.controller
 
-import io.paulocosta.twitbooks.entity.BookAPIResponse
 import io.paulocosta.twitbooks.service.BookService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.web.bind.annotation.*
+
+data class BookApiResponse(
+        val id: Long,
+        val title: String,
+        val imageUrl: String
+)
 
 @RestController
 @RequestMapping("/books")
@@ -13,9 +18,11 @@ import org.springframework.web.bind.annotation.*
 class BooksController @Autowired constructor(private val bookService: BookService) {
 
     @GetMapping
-    fun getBooks(@RequestParam("page") page: Int?): Page<BookAPIResponse> {
+    fun getBooks(@RequestParam("page") page: Int?): Page<BookApiResponse> {
         return bookService.getAllBooks(PageRequest.of(page ?: 0, 50))
-                .map { BookAPIResponse(it.copy(message = emptySet()), it.message.map { message -> message.id }) }
+                .map {
+                    BookApiResponse(it.id, it.title, it.imageUrl)
+                }
     }
 
     @PutMapping

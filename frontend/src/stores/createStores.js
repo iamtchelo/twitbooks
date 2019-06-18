@@ -1,6 +1,6 @@
-import BookStore from './BookStore'
 import MessageStore from "./MessageStore";
 import client from "../api/client";
+import { BookStore } from "./BookStore";
 
 const baseUrl = process.env.REACT_APP_ENDPOINT || "http://localhost:8080/";
 

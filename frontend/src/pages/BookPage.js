@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import { observer, inject } from 'mobx-react';
-import BookStore from "../stores/BookStore";
-import { Row, Col, Pagination, Card, Spin, Skeleton } from 'antd';
+import { Row, Col, Pagination, Card, Skeleton } from 'antd';
 import BookCard from "../components/BookCard";
 import MainLayout from "../components/MainLayout";
 import  "./BookPage.css";
@@ -9,7 +8,7 @@ import  "./BookPage.css";
 @inject('bookStore') @observer
 class BookPage extends Component {
 
-    store: BookStore = this.props.bookStore;
+    store = this.props.bookStore;
 
     constructor(props) {
         super(props);
@@ -182,8 +181,8 @@ class BookPage extends Component {
 
     renderBookCard(book) {
         return (
-            <Col key={book.book.id} className="book-card" span={this.state.spanSize}>
-                <BookCard onClickEvent={this.onClick(book.book)} book={book.book}/>
+            <Col key={book.id} className="book-card" span={this.state.spanSize}>
+                <BookCard onClickEvent={this.onClick(book)} book={book}/>
             </Col>
         )
     }

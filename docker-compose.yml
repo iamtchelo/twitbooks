@@ -4,7 +4,7 @@ services:
     container_name: twitbooks_db
     image: "postgres:11.1-alpine"
     ports: 
-      - "5433:5432"
+      - "5432:5432"
     environment:
       - POSTGRES_USER=test
       - POSTGRES_PASSWORD=test

@@ -16,7 +16,7 @@ export const BookStore = types.model({
         return self.totalPages * 50
     },
     get data() {
-        return this.apiData[this.currentPage];
+        return this.apiData.get(self.currentPage);
     }
 }))
 .actions(self => ({

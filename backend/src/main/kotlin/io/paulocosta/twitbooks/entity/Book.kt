@@ -10,7 +10,7 @@ import javax.persistence.*
 @Table(name = "books")
 data class Book(
         @Id
-        var id: Long? = null,
+        val id: Long,
 
         val title: String,
 
