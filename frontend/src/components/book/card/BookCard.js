@@ -8,7 +8,7 @@ const { Meta } = Card;
 @inject('bookStore') @observer
 class BookCard extends Component {
 
-    book: Book = this.props.book;
+    book = this.props.book;
 
     render() {
         return (

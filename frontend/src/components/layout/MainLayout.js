@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Card, Layout} from 'antd';
+import { Card, Layout } from 'antd';
 import "./MainLayout.css"
 
 const { Header, Content } = Layout;
