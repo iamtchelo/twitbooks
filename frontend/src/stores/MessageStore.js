@@ -1,7 +1,12 @@
 import { types, flow, getEnv } from 'mobx-state-tree';
 
-const MessageStore = types.model({
-    messages: types.array,
+export  const Message = types.model({
+    id: types.integer,
+    text: types.string
+});
+
+export const MessageStore = types.model({
+    messages: types.array(Message),
     currentPage: types.integer,
     totalPages: types.integer
 })
