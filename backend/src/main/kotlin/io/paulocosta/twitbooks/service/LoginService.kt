@@ -11,16 +11,16 @@ import org.springframework.stereotype.Service
 private val logger = KotlinLogging.logger {}
 
 @Service
-class LoginService @Autowired constructor(val auth0Provider: Auth0Provider) {
+class LoginService @Autowired constructor(private val auth0Provider: Auth0Provider) {
 
-    var apiToken: String? = null
+    // TODO Should cache this properly
+    private var apiToken: String = ""
 
     fun login() {
         val id = SecurityContextHolder.getContext().authentication.principal as String
         // Should see how to cache this.
         try {
-            apiToken = apiToken ?: auth0Provider.getApiToken()
-            val userData = auth0Provider.geUserData(apiToken, id)
+            val userData = auth0Provider.geUserData(getApiToken(), id)
             // Twitter's access token
             val accessToken = userData.identities[0].accessToken
             logger.info { "Login successful" }
@@ -29,6 +29,13 @@ class LoginService @Autowired constructor(val auth0Provider: Auth0Provider) {
         } catch (e: APIException) {
             logger.error { e.message }
         }
+    }
+
+    fun getApiToken(): String {
+        if (apiToken.isEmpty()) {
+            apiToken = auth0Provider.getApiToken()
+        }
+        return apiToken
     }
 
 }
