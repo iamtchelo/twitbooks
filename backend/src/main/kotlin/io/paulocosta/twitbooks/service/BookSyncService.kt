@@ -47,7 +47,7 @@ class BookSyncService @Autowired constructor(
     }
 
     fun process() {
-        val users = friendService.getAllUsers()
+        val users = friendService.getAllFriends()
         users.forEach { friend ->
             val messageCount = messageService.getUnprocessedMessageCount(friend.id)
             logger.info { "Processing $messageCount messages from user ${friend.screenName}" }

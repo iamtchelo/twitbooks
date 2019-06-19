@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface FriendSyncStatusRepository : JpaRepository<FriendSyncStatus, Long> {
 
-    fun findFirstByOrderByIdDesc(): FriendSyncStatus?
+    fun findFirstByUserId(userId: String): FriendSyncStatus?
 
 }

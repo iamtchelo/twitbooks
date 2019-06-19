@@ -1,5 +1,6 @@
 package io.paulocosta.twitbooks.service
 
+import io.paulocosta.twitbooks.entity.User
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -11,7 +12,8 @@ private val logger = KotlinLogging.logger {}
 @Service
 class SyncService @Autowired constructor(
         private val twitterSyncService: TwitterSyncService,
-        private val bookSyncService: BookSyncService) {
+        private val bookSyncService: BookSyncService,
+        private val userService: UserService) {
 
     companion object {
         // One hour
@@ -27,14 +29,16 @@ class SyncService @Autowired constructor(
 
     @Scheduled(fixedDelay = SYNC_DELAY_MILLIS)
     fun sync() {
-        twitterSync()
-        bookSync()
+        userService.getSyncableUsers().forEach {
+            twitterSync(it)
+        }
+//        bookSync()
     }
 
-    private fun twitterSync() {
+    private fun twitterSync(user: User) {
         if (twitterSyncEnabled) {
             logger.info { "Starting Twitter Sync" }
-            twitterSyncService.sync()
+            twitterSyncService.sync(user)
         } else {
             logger.info { "Twitter sync disabled by config property" }
         }

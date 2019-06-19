@@ -22,7 +22,8 @@ class RateLimitController @Autowired constructor(val rateLimitService: RateLimit
 
     @GetMapping
     fun getLimits(): MutableMap<ResourceFamily, MutableList<RateLimitStatus>>? {
-        return rateLimitService.getRateLimits()
+        return null
+//        return rateLimitService.getRateLimits()
     }
 
 }

@@ -14,5 +14,8 @@ data class Friend(
         val name: String,
         val screenName: String,
         @Enumerated(EnumType.STRING)
-        val messageSyncStrategy: MessageSyncStrategy
+        val messageSyncStrategy: MessageSyncStrategy,
+        @ManyToOne
+        @JoinColumn
+        var user: User? = null
 )

@@ -18,9 +18,9 @@ class SyncFriendsService @Autowired constructor(
         val twitterProvider: TwitterProvider
 ) {
 
-    fun sync(): SyncResult {
+    fun sync(user: User): SyncResult {
         logger.info { "Starting to sync users" }
-        val rateLimit = when (val limitResult = rateLimitService.getFriendRateLimits()) {
+        val rateLimit = when (val limitResult = rateLimitService.getFriendRateLimits(user.accessToken)) {
             is Either.Left -> limitResult.a
             is Either.Right -> return SyncResult.ERROR
         }
@@ -29,11 +29,11 @@ class SyncFriendsService @Autowired constructor(
             logger.info { "Rate limit has been exceeded for the list friends API" }
             SyncResult.ERROR
         } else {
-            val latestSync = friendSyncStatusService.getLatestFriendSyncStatus()
+            val latestSync = friendSyncStatusService.getLatestFriendSyncStatus(user)
             return when (latestSync.status) {
                 Status.ABSENT -> {
                     logger.info { "No previous user sync status present. Starting full sync" }
-                    doSync(rateLimit, null)
+                    doSync(user, rateLimit, null)
                 }
                 Status.SUCCESS -> {
                     logger.info { "Previous user sync was successful. Skipping further synchronization" }
@@ -41,42 +41,43 @@ class SyncFriendsService @Autowired constructor(
                 }
                 Status.FAILED -> {
                     logger.info { "Previous sync failed. Attempt to synchronize with previous cursor" }
-                    doSync(rateLimit, latestSync.cursorId)
+                    doSync(user, rateLimit, latestSync.cursorId)
                 }
             }
         }
     }
 
-    private fun doSync(rateLimit: RateLimit, cursor: Long?): SyncResult {
+    private fun doSync(user: User, rateLimit: RateLimit, cursor: Long?): SyncResult {
         var hits = 0
         var lastCursor = cursor
         while (hits < rateLimit.remainingHits) {
             val profiles = if (hits == 0 && cursor == null) {
-                twitterProvider.getTwitter().friendOperations().friends
+                twitterProvider.getTwitter(user.accessToken).friendOperations().friends
             } else {
-                twitterProvider.getTwitter().friendOperations().getFriendsInCursor(lastCursor!!)
+                twitterProvider.getTwitter(user.accessToken).friendOperations().getFriendsInCursor(lastCursor!!)
             }
 
             hits++
 
-            friendService.saveFriends(profiles.map { toFriend(it) })
+            friendService.saveFriends(profiles.map { toFriend(it, user) })
             lastCursor = profiles.nextCursor
 
             if (!profiles.hasNext()) {
-                friendSyncStatusService.createSuccessEvent()
+                friendSyncStatusService.createSuccessEvent(user)
                 return SyncResult.SUCCESS
             }
         }
-        friendSyncStatusService.createSyncFailedEvent(lastCursor)
+        friendSyncStatusService.createSyncFailedEvent(user, lastCursor)
         return SyncResult.ERROR
     }
 
-    private fun toFriend(profile: TwitterProfile): Friend {
+    private fun toFriend(profile: TwitterProfile, user: User): Friend {
         return Friend(
                 profile.id,
                 profile.name,
                 profile.screenName,
-                MessageSyncStrategy.DEPTH)
+                MessageSyncStrategy.DEPTH,
+                user)
     }
 
 }

@@ -150,19 +150,19 @@ class MessageService @Autowired constructor(
     }
 
     private fun getCurrentUserTimeline(friend: Friend): MessageResult {
-        val tweets = twitterProvider.getTwitter().timelineOperations().getUserTimeline(friend.screenName, TIMELINE_PAGE_SIZE)
+        val tweets = twitterProvider.getTwitter("").timelineOperations().getUserTimeline(friend.screenName, TIMELINE_PAGE_SIZE)
         return MessageResult(tweets.map { toMessage(it, friend) })
     }
 
     private fun getDepthTimelineMessages(friend: Friend, messageId: Long): MessageResult {
-            val tweets = twitterProvider.getTwitter()
+            val tweets = twitterProvider.getTwitter("")
                     .timelineOperations().getUserTimeline(friend.screenName, TIMELINE_PAGE_SIZE,
                             MINIMUM_DEPTH_ALLOWED_ID, messageId - 1L)
             return MessageResult(tweets.map { toMessage(it, friend) })
     }
 
     private fun getNewestTimelineMessages(friend: Friend, minId: Long, maxId: Long): MessageResult {
-        val tweets = twitterProvider.getTwitter()
+        val tweets = twitterProvider.getTwitter("")
                 .timelineOperations().getUserTimeline(friend.screenName, TIMELINE_PAGE_SIZE,
                         maxId, minId)
         return MessageResult(tweets.map { toMessage(it, friend) })

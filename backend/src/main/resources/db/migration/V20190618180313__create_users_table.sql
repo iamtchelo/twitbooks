@@ -1,4 +1,4 @@
 CREATE TABLE users(
-    id UUID PRIMARY KEY,
+    id TEX text  PRIMARY KEY,
     access_token TEXT
 );

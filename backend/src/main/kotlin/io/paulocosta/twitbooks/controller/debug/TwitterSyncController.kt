@@ -14,7 +14,7 @@ class TwitterSyncController @Autowired constructor(val twitterSyncService: Twitt
 
     @GetMapping
     fun sync(): String {
-        twitterSyncService.sync()
+//        twitterSyncService.sync()
         return "OK"
     }
 

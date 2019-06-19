@@ -15,5 +15,9 @@ data class FriendSyncStatus(
         @Enumerated(value = EnumType.STRING)
         val status: Status,
 
-        var cursorId: Long? = null
+        var cursorId: Long? = null,
+
+        @OneToOne
+        @JoinColumn
+        var user: User? = null
 )

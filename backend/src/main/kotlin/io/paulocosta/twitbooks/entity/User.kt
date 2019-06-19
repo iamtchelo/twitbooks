@@ -9,5 +9,5 @@ import javax.persistence.Table
 data class User(
         @Id
         val id: String,
-        val accessToken: String
+        var accessToken: String?
 )

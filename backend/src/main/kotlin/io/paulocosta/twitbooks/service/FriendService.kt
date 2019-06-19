@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 class FriendService @Autowired constructor(
         private val friendsRepository: FriendsRepository) {
 
-    fun getAllUsers(): List<Friend> = friendsRepository.findAll()
+    fun getAllFriends(): List<Friend> = friendsRepository.findAll()
 
     fun saveFriends(friends: List<Friend>): List<Friend> = friendsRepository.saveAll(friends)
 

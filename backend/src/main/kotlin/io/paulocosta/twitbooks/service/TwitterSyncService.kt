@@ -2,6 +2,7 @@ package io.paulocosta.twitbooks.service
 
 import arrow.core.Either
 import io.paulocosta.twitbooks.entity.SyncResult
+import io.paulocosta.twitbooks.entity.User
 import io.paulocosta.twitbooks.ratelimit.RateLimitWatcher
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,15 +17,15 @@ class TwitterSyncService @Autowired constructor(
         val messageService: MessageService,
         val rateLimitService: RateLimitService) {
 
-    fun sync() {
+    fun sync(user: User) {
         logger.info { "Starting Twitter Sync" }
-        syncUsers()
-        syncMessages()
+        syncFriends(user)
+//        syncMessages()
     }
 
     private fun syncMessages() {
 
-        val rateLimit = when(val eitherLimit = rateLimitService.getTimelineRateLimits()) {
+        val rateLimit = when(val eitherLimit = rateLimitService.getTimelineRateLimits("")) {
             is Either.Left -> eitherLimit.a
             else -> {
                 logger.info { "Rate limit exceeded. Stopping message sync" }
@@ -34,7 +35,7 @@ class TwitterSyncService @Autowired constructor(
 
         val rateLimitKeeper = RateLimitWatcher(rateLimit)
 
-        for (it in friendService.getAllUsers()) {
+        for (it in friendService.getAllFriends()) {
             val result = messageService.syncMessages(it, rateLimitKeeper)
             when (result) {
                 SyncResult.ERROR -> {
@@ -49,8 +50,8 @@ class TwitterSyncService @Autowired constructor(
         logger.info { "Message sync finished!" }
     }
 
-    private fun syncUsers() {
-        when (syncFriendsService.sync()) {
+    private fun syncFriends(user: User) {
+        when (syncFriendsService.sync(user)) {
             SyncResult.SUCCESS -> {
                 logger.info { "User sync finished successfully" }
             }
