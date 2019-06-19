@@ -36,7 +36,9 @@ class LoginService @Autowired constructor(
 
         if (user?.accessToken == null) {
             val userData = auth0Provider.geUserData(getApiToken(), userId)
-            val accessToken = userData.identities[0].accessToken
+            val identity = userData.identities[0]
+            val accessToken = identity.accessToken
+            val accessTokenSecret = identity.values["access_token_secret"]
             userService.saveUser(User(userId, accessToken))
         }
 

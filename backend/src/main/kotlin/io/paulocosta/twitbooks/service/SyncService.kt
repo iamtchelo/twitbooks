@@ -31,8 +31,8 @@ class SyncService @Autowired constructor(
     fun sync() {
         userService.getSyncableUsers().forEach {
             twitterSync(it)
+//          bookSync()
         }
-//        bookSync()
     }
 
     private fun twitterSync(user: User) {
