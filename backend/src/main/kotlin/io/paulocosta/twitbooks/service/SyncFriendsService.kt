@@ -1,7 +1,7 @@
 package io.paulocosta.twitbooks.service
 
 import arrow.core.Either
-import io.paulocosta.twitbooks.auth.TwitterProvider
+import io.paulocosta.twitbooks.auth.TwitterApiProvider
 import io.paulocosta.twitbooks.entity.*
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,12 +15,12 @@ class SyncFriendsService @Autowired constructor(
         val friendService: FriendService,
         val friendSyncStatusService: FriendSyncStatusService,
         val rateLimitService: RateLimitService,
-        val twitterProvider: TwitterProvider
+        val twitterApiProvider: TwitterApiProvider
 ) {
 
     fun sync(user: User): SyncResult {
         logger.info { "Starting to sync users" }
-        val rateLimit = when (val limitResult = rateLimitService.getFriendRateLimits(user.accessToken)) {
+        val rateLimit = when (val limitResult = rateLimitService.getFriendRateLimits(user.getTwitterCredentials())) {
             is Either.Left -> limitResult.a
             is Either.Right -> return SyncResult.ERROR
         }
@@ -52,9 +52,9 @@ class SyncFriendsService @Autowired constructor(
         var lastCursor = cursor
         while (hits < rateLimit.remainingHits) {
             val profiles = if (hits == 0 && cursor == null) {
-                twitterProvider.getTwitter(user.accessToken).friendOperations().friends
+                twitterApiProvider.getTwitter(user.getTwitterCredentials()).friendOperations().friends
             } else {
-                twitterProvider.getTwitter(user.accessToken).friendOperations().getFriendsInCursor(lastCursor!!)
+                twitterApiProvider.getTwitter(user.getTwitterCredentials()).friendOperations().getFriendsInCursor(lastCursor!!)
             }
 
             hits++

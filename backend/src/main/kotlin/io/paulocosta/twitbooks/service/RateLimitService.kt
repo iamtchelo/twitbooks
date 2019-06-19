@@ -1,8 +1,9 @@
 package io.paulocosta.twitbooks.service
 
 import arrow.core.Either
-import io.paulocosta.twitbooks.auth.TwitterProvider
+import io.paulocosta.twitbooks.auth.TwitterApiProvider
 import io.paulocosta.twitbooks.entity.RateLimit
+import io.paulocosta.twitbooks.entity.TwitterApiCredentials
 import io.paulocosta.twitbooks.error.TwitterApiError
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.social.ApiException
@@ -28,25 +29,25 @@ class RateLimitService {
     }
 
     @Autowired
-    lateinit var twitterProvider: TwitterProvider
+    lateinit var twitterApiProvider: TwitterApiProvider
 
-    fun getTimelineRateLimits(clientKey: String): Either<RateLimit, TwitterApiError> {
-        return getRateLimit(clientKey, ResourceFamily.STATUSES, USER_TIMELINE_ENDPOINT)
+    fun getTimelineRateLimits(twitterApiCredentials: TwitterApiCredentials): Either<RateLimit, TwitterApiError> {
+        return getRateLimit(twitterApiCredentials, ResourceFamily.STATUSES, USER_TIMELINE_ENDPOINT)
     }
 
-    fun getFriendRateLimits(clientKey: String?): Either<RateLimit, TwitterApiError> {
-        return getRateLimit(clientKey, ResourceFamily.FRIENDS, FRIENDS_ENDPOINT)
+    fun getFriendRateLimits(twitterApiCredentials: TwitterApiCredentials): Either<RateLimit, TwitterApiError> {
+        return getRateLimit(twitterApiCredentials, ResourceFamily.FRIENDS, FRIENDS_ENDPOINT)
     }
 
-    fun getRateLimits(clientKey: String): MutableMap<ResourceFamily, MutableList<RateLimitStatus>>? {
-        return twitterProvider.getTwitter(clientKey)
+    fun getRateLimits(twitterApiCredentials: TwitterApiCredentials): MutableMap<ResourceFamily, MutableList<RateLimitStatus>>? {
+        return twitterApiProvider.getTwitter(twitterApiCredentials)
                 .userOperations()
                 .getRateLimitStatus(ResourceFamily.FRIENDS, ResourceFamily.STATUSES)
     }
 
-    private fun getRateLimit(clientKey: String?, resourceFamily: ResourceFamily, endpoint: String): Either<RateLimit, TwitterApiError> {
+    private fun getRateLimit(twitterApiCredentials: TwitterApiCredentials, resourceFamily: ResourceFamily, endpoint: String): Either<RateLimit, TwitterApiError> {
         val response = try {
-            twitterProvider.getTwitter(clientKey)
+            twitterApiProvider.getTwitter(twitterApiCredentials)
                     .userOperations()
                     .getRateLimitStatus(resourceFamily)[resourceFamily]
         } catch (e: ApiException) {

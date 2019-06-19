@@ -23,9 +23,9 @@ class TwitterSyncService @Autowired constructor(
 //        syncMessages()
     }
 
-    private fun syncMessages() {
+    private fun syncMessages(user: User) {
 
-        val rateLimit = when(val eitherLimit = rateLimitService.getTimelineRateLimits("")) {
+        val rateLimit = when(val eitherLimit = rateLimitService.getTimelineRateLimits(user.getTwitterCredentials())) {
             is Either.Left -> eitherLimit.a
             else -> {
                 logger.info { "Rate limit exceeded. Stopping message sync" }
@@ -33,10 +33,10 @@ class TwitterSyncService @Autowired constructor(
             }
         }
 
-        val rateLimitKeeper = RateLimitWatcher(rateLimit)
+        val rateLimitWatcher = RateLimitWatcher(rateLimit)
 
         for (it in friendService.getAllFriends()) {
-            val result = messageService.syncMessages(it, rateLimitKeeper)
+            val result = messageService.syncMessages(user, it, rateLimitWatcher)
             when (result) {
                 SyncResult.ERROR -> {
                     logger.info { "Stopping message sync due to rate limits" }
