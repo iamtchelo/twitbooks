@@ -2,7 +2,7 @@ package io.paulocosta.twitbooks.service
 
 import io.paulocosta.twitbooks.auth.TwitterProvider
 import io.paulocosta.twitbooks.entity.*
-import io.paulocosta.twitbooks.ratelimit.RateLimitKeeper
+import io.paulocosta.twitbooks.ratelimit.RateLimitWatcher
 import io.paulocosta.twitbooks.repository.MessageRepository
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -47,19 +47,19 @@ class MessageService @Autowired constructor(
         return messageRepository.count()
     }
 
-    fun syncMessages(friend: Friend, rateLimitKeeper: RateLimitKeeper): SyncResult {
+    fun syncMessages(friend: Friend, rateLimitWatcher: RateLimitWatcher): SyncResult {
         logger.info { "Starting message sync" }
 
-        if (rateLimitKeeper.exceeded()) {
+        if (rateLimitWatcher.exceeded()) {
             return SyncResult.ERROR
         }
         return when (friend.messageSyncStrategy) {
-            MessageSyncStrategy.DEPTH -> depthSync(friend, rateLimitKeeper)
-            MessageSyncStrategy.NEWEST -> newestSync(friend, rateLimitKeeper)
+            MessageSyncStrategy.DEPTH -> depthSync(friend, rateLimitWatcher)
+            MessageSyncStrategy.NEWEST -> newestSync(friend, rateLimitWatcher)
         }
     }
 
-    fun newestSync(friend: Friend, rateLimit: RateLimitKeeper): SyncResult {
+    fun newestSync(friend: Friend, rateLimit: RateLimitWatcher): SyncResult {
         logger.info { "Starting newest sync" }
         var startId = 0L
         var endId: Long?
@@ -115,9 +115,9 @@ class MessageService @Autowired constructor(
         }
     }
 
-    fun depthSync(friend: Friend, rateLimitKeeper: RateLimitKeeper): SyncResult {
+    fun depthSync(friend: Friend, rateLimitWatcher: RateLimitWatcher): SyncResult {
         logger.info { "Starting depth sync for user ${friend.screenName}" }
-        while (!rateLimitKeeper.exceeded()) {
+        while (!rateLimitWatcher.exceeded()) {
             val oldestMessageId = getOldestMessageId(friend)
             val messages = when (oldestMessageId) {
                 null -> {
@@ -136,7 +136,7 @@ class MessageService @Autowired constructor(
             }
             messageRepository.saveAll(messages)
             updateMessageSyncState(friend)
-            rateLimitKeeper.addHit()
+            rateLimitWatcher.addHit()
         }
         return SyncResult.SUCCESS
     }

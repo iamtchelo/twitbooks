@@ -2,7 +2,7 @@ package io.paulocosta.twitbooks.service
 
 import arrow.core.Either
 import io.paulocosta.twitbooks.entity.SyncResult
-import io.paulocosta.twitbooks.ratelimit.RateLimitKeeper
+import io.paulocosta.twitbooks.ratelimit.RateLimitWatcher
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -32,7 +32,7 @@ class TwitterSyncService @Autowired constructor(
             }
         }
 
-        val rateLimitKeeper = RateLimitKeeper(rateLimit)
+        val rateLimitKeeper = RateLimitWatcher(rateLimit)
 
         for (it in friendService.getAllUsers()) {
             val result = messageService.syncMessages(it, rateLimitKeeper)
