@@ -3,10 +3,9 @@ package io.paulocosta.twitbooks.entity
 import javax.persistence.Entity
 import javax.persistence.Id
 
-//@Entity
+@Entity
 data class User(
         @Id
         val id: String,
-
         val accessToken: String
 )

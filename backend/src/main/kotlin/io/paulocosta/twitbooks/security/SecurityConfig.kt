@@ -16,11 +16,11 @@ import java.util.*
 @EnableWebSecurity(debug = true)
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
-    @Value("\${auth0.api.audience}")
-    lateinit var apiAudience: String
+    @Value("\${auth0.app.client.id}")
+    lateinit var appClientId: String
 
-    @Value("\${auth0.issuer}")
-    lateinit var issuer: String
+    @Value("\${auth0.audience}")
+    lateinit var audience: String
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
@@ -38,7 +38,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http.cors()
         JwtWebSecurityConfigurer
-                .forRS256(apiAudience, issuer)
+                .forRS256(appClientId, audience)
                 .configure(http)
                 .authorizeRequests()
                 .antMatchers("/api/**").fullyAuthenticated()

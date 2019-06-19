@@ -1,6 +1,6 @@
 import auth0Client from '../auth/Auth';
 
-const baseUrl = process.env.REACT_APP_ENDPOINT || "http://localhost:8080";
+const baseUrl = process.env.REACT_APP_ENDPOINT || "http://localhost:8080/api/v1";
 
 const baseHeaders = () => {
     return {
