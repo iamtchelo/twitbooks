@@ -10,10 +10,7 @@ enum class MessageSyncStrategy {
 @Table(name = "friends")
 data class Friend(
         @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long? = null,
-
-        val twitterId: Long,
 
         val name: String,
 
@@ -24,6 +21,8 @@ data class Friend(
         @Enumerated(EnumType.STRING)
         val messageSyncStrategy: MessageSyncStrategy,
 
-        @ManyToMany(mappedBy = "friends")
+        @ManyToMany(
+                mappedBy = "friends",
+                cascade = [CascadeType.MERGE])
         var users: Set<User>
 )

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 import javax.transaction.Transactional
 
@@ -49,12 +50,13 @@ class BookSyncService @Autowired constructor(
     fun process() {
         val users = friendService.getAllFriends()
         users.forEach { friend ->
-            val messageCount = messageService.getUnprocessedMessageCount(friend.id)
+            val friendId = friend.id ?: throw IllegalStateException("User not found")
+            val messageCount = messageService.getCountByFriend(friendId).toInt()
             logger.info { "Processing $messageCount messages from user ${friend.screenName}" }
             val pageCount = Math.ceil(messageCount.fdiv(pageSize)).toInt()
             for (currentPage in 1 until pageCount) {
                 logger.info { "Progress $currentPage/$pageCount" }
-                val page = messageService.getAllMessages(friend.id, PageRequest.of(currentPage, pageCount))
+                val page = messageService.getAllMessages(friendId, PageRequest.of(currentPage, pageCount))
                 val messages = page.content
                 Observable.fromIterable(messages)
                         .map { normalizeMessage(it) }
@@ -109,15 +111,10 @@ class BookSyncService @Autowired constructor(
     }
 
     fun toggleMessageProcessed(message: Message) {
-
         if (activeProfile == "prod") {
             logger.info { "Deleting message with id ${message.id }" }
             messageService.deleteMessage(message)
-        } else {
-            val processedMessage = message.copy(processed = true)
-            messageService.update(processedMessage)
         }
-
     }
 
     fun normalizeMessage(message: Message): Message {

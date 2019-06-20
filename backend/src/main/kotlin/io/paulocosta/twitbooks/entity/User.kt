@@ -9,7 +9,7 @@ data class TwitterApiCredentials(val accessToken: String?, val accessTokenSecret
 data class User(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long,
+        var id: Long?,
 
         val twitterId: String,
 

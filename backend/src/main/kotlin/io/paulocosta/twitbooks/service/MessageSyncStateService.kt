@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service
 class MessageSyncStateService @Autowired constructor(
         private val messageSyncStateRepository: MessageSyncStateRepository) {
 
-    fun getMessageSyncState(friendId: Long): MessageSyncState? {
-        return messageSyncStateRepository.getFirstByFriendId(friendId)
+    fun getMessageSyncState(friendId: Long?): MessageSyncState? {
+        return friendId?.let {
+            messageSyncStateRepository.getFirstByFriendId(it)
+        }
     }
 
     fun saveMessageSyncState(friend: Friend, maxId: Long, minId: Long) {

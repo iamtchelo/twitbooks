@@ -39,7 +39,7 @@ class LoginService @Autowired constructor(
             val identity = userData.identities[0]
             val accessToken = identity.accessToken
             val accessTokenSecret = identity.values["access_token_secret"] as String
-            userService.saveUser(User(userId, accessToken, accessTokenSecret))
+            userService.saveUser(User(null, userId, accessToken, accessTokenSecret))
         }
 
     }

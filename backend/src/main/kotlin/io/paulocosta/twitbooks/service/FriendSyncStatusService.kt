@@ -6,12 +6,14 @@ import io.paulocosta.twitbooks.entity.User
 import io.paulocosta.twitbooks.repository.FriendSyncStatusRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.lang.IllegalStateException
 
 @Service
 class FriendSyncStatusService @Autowired constructor(val friendSyncStatusRepository: FriendSyncStatusRepository) {
 
     fun getLatestFriendSyncStatus(user: User): FriendSyncStatus {
-        return when (val status = friendSyncStatusRepository.findFirstByUserId(user.id)) {
+        val userId = user.id ?: throw IllegalStateException("User not found")
+        return when (val status = friendSyncStatusRepository.findFirstByUserId(userId)) {
             null -> FriendSyncStatus(status = Status.ABSENT)
             else -> status
         }

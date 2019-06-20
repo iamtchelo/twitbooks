@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.social.twitter.api.Tweet
 import org.springframework.stereotype.Service
+import java.lang.IllegalStateException
 
 private val logger = KotlinLogging.logger {}
 
@@ -35,12 +36,8 @@ class MessageService @Autowired constructor(
         return messageRepository.getAllByFriendIdOrderByIdAsc(friendId, pageable)
     }
 
-    fun getUnprocessedMessages(friendId: Long, pageable: Pageable): Page<Message> {
-        return messageRepository.getUnprocessedMessages(friendId, pageable)
-    }
-
-    fun getUnprocessedMessageCount(friendId: Long): Int {
-        return messageRepository.getUnprocessedMessageCount(friendId)
+    fun getCountByFriend(friendId: Long): Long {
+        return messageRepository.countByFriendId(friendId)
     }
 
     fun getCount(): Long {
@@ -87,32 +84,22 @@ class MessageService @Autowired constructor(
     }
 
     fun updateMessageSyncState(friend: Friend) {
-
-        if (activeProfile != "prod") {
-            return
-        }
-
-        val newestMessageId = messageRepository.getNewestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()?.id ?: return
-        val oldestMessageId = messageRepository.getOldestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()?.id ?: return
+        val friendId = friend.id ?: throw IllegalStateException("User not found")
+        val newestMessageId = messageRepository.getNewestMessages(friendId, PageRequest.of(0, 1)).firstOrNull()?.id ?: return
+        val oldestMessageId = messageRepository.getOldestMessages(friendId, PageRequest.of(0, 1)).firstOrNull()?.id ?: return
         messageSyncStateService.saveMessageSyncState(
                 friend, newestMessageId, oldestMessageId
         )
     }
 
     fun getNewestMessageId(friend: Friend): Long? {
-        return if (activeProfile == "prod") {
-            messageSyncStateService.getMessageSyncState(friend.id)?.maxId
-        } else {
-            messageRepository.getNewestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()?.id
-        }
+        val friendId = friend.id ?: throw IllegalStateException("User not found")
+        return messageSyncStateService.getMessageSyncState(friendId)?.maxId
     }
 
     fun getOldestMessageId(friend: Friend): Long? {
-        return if (activeProfile == "prod") {
-            messageSyncStateService.getMessageSyncState(friend.id)?.minId
-        } else {
-            messageRepository.getOldestMessages(friend.id, PageRequest.of(0, 1)).firstOrNull()?.id
-        }
+        val friendId = friend.id ?: throw IllegalStateException("User not found")
+        return messageSyncStateService.getMessageSyncState(friendId)?.minId
     }
 
     fun depthSync(user: User, friend: Friend, rateLimitWatcher: RateLimitWatcher): SyncResult {

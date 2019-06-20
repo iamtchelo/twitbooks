@@ -76,8 +76,9 @@ class SyncFriendsService @Autowired constructor(
                 profile.id,
                 profile.name,
                 profile.screenName,
+                profile.profileImageUrl,
                 MessageSyncStrategy.DEPTH,
-                user)
+                setOf(user))
     }
 
 }
