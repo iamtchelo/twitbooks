@@ -6,8 +6,7 @@ CREATE TABLE users(
 );
 
 create table friends(
-    id                    BIGSERIAL PRIMARY KEY,
-    twitter_id            TEXT NOT NULL,
+    id                    BIGINT NOT NULL,
     name                  VARCHAR(255) NOT NULL,
     screen_name           VARCHAR(255) NOT NULL,
     profile_image_url     TEXT NOT NULL,
