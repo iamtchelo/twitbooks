@@ -15,10 +15,7 @@ data class User(
 
         var accessToken: String?,
 
-        var accessTokenSecret: String?,
-
-        @ManyToMany(mappedBy = "users")
-        var books: Set<Book> = emptySet()
+        var accessTokenSecret: String?
 
 ) {
         fun getTwitterCredentials(): TwitterApiCredentials {
