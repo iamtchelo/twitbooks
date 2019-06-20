@@ -17,14 +17,6 @@ data class User(
 
         var accessTokenSecret: String?,
 
-        @ManyToMany
-        @JoinTable(
-                name = "user_friends",
-                joinColumns = [JoinColumn(name = "user_id")],
-                inverseJoinColumns = [JoinColumn(name = "friend_id")]
-        )
-        var friends: Set<Friend> = emptySet(),
-
         @ManyToMany(mappedBy = "users")
         var books: Set<Book> = emptySet()
 

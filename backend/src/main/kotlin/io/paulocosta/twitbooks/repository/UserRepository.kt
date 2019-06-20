@@ -9,4 +9,6 @@ interface UserRepository : JpaRepository<User, String> {
     @Query("select user from User user where user.accessToken is not null and user.accessTokenSecret is not null")
     fun findSyncableUsers(): List<User>
 
+    fun findByTwitterId(twitterId: String): User?
+
 }

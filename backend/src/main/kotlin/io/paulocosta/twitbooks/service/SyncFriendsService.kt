@@ -41,7 +41,7 @@ class SyncFriendsService @Autowired constructor(
                 }
                 Status.FAILED -> {
                     logger.info { "Previous sync failed. Attempt to synchronize with previous cursor" }
-                    doSync(user, rateLimit, latestSync.cursorId)
+                    doSync(user, rateLimit, latestSync.cursor)
                 }
             }
         }
@@ -77,8 +77,7 @@ class SyncFriendsService @Autowired constructor(
                 profile.name,
                 profile.screenName,
                 profile.profileImageUrl,
-                MessageSyncStrategy.DEPTH,
-                setOf(user))
+                MessageSyncStrategy.DEPTH, setOf(user))
     }
 
 }

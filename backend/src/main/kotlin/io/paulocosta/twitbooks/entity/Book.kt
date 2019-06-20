@@ -33,7 +33,7 @@ data class Book(
 
         @ManyToMany
         @JoinTable(
-                name = "book_users",
+                name = "book_user",
                 joinColumns = [JoinColumn(name = "book_id")],
                 inverseJoinColumns = [JoinColumn(name = "user_id")]
         )

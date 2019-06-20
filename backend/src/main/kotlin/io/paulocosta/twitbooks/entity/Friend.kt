@@ -21,8 +21,11 @@ data class Friend(
         @Enumerated(EnumType.STRING)
         val messageSyncStrategy: MessageSyncStrategy,
 
-        @ManyToMany(
-                mappedBy = "friends",
-                cascade = [CascadeType.MERGE])
+        @ManyToMany
+        @JoinTable(
+                name = "user_friends",
+                joinColumns = [JoinColumn(name = "friend_id")],
+                inverseJoinColumns = [JoinColumn(name = "user_id")]
+        )
         var users: Set<User>
 )

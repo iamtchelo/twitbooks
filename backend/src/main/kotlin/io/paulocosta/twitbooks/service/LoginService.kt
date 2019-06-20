@@ -31,15 +31,15 @@ class LoginService @Autowired constructor(
         }
     }
 
-    fun updateUserInfo(userId: String) {
-        val user = userService.getUser(userId)
+    fun updateUserInfo(twitterId: String) {
+        val user = userService.findByTwitterId(twitterId)
 
         if (user?.accessToken == null) {
-            val userData = auth0Provider.geUserData(getApiToken(), userId)
+            val userData = auth0Provider.geUserData(getApiToken(), twitterId)
             val identity = userData.identities[0]
             val accessToken = identity.accessToken
             val accessTokenSecret = identity.values["access_token_secret"] as String
-            userService.saveUser(User(null, userId, accessToken, accessTokenSecret))
+            userService.saveUser(User(null, twitterId, accessToken, accessTokenSecret))
         }
 
     }
