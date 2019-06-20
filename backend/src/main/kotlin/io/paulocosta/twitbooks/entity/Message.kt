@@ -15,7 +15,5 @@ data class Message(
         val createdAt: Date,
 
         @ManyToOne
-        var friend: Friend? = null,
-
-        var processed: Boolean = false
+        var friend: Friend? = null
 )

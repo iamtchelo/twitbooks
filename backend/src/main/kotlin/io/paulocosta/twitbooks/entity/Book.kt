@@ -29,5 +29,13 @@ data class Book(
                 joinColumns = [JoinColumn(name="book_id")],
                 inverseJoinColumns = [JoinColumn(name="message_id")]
         )
-        var message: Set<Message> = emptySet()
+        var message: Set<Message> = emptySet(),
+
+        @ManyToMany
+        @JoinTable(
+                name = "book_users",
+                joinColumns = [JoinColumn(name = "book_id")],
+                inverseJoinColumns = [JoinColumn(name = "user_id")]
+        )
+        var users: Set<User> = emptySet()
 )
