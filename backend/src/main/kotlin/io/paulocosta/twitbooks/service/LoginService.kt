@@ -25,9 +25,9 @@ class LoginService @Autowired constructor(
             updateUserInfo(id)
             logger.info { "Login successful" }
         } catch (e: Auth0Exception) {
-            logger.error { e.message }
+            logger.error { "Auth0Exception ${e.message}" }
         } catch (e: APIException) {
-            logger.error { e.message }
+            logger.error { "APIException ${e.message} status code ${e.statusCode}" }
         }
     }
 
