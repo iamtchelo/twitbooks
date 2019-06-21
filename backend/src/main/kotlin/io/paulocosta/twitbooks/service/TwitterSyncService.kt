@@ -20,7 +20,7 @@ class TwitterSyncService @Autowired constructor(
     fun sync(user: User) {
         logger.info { "Starting Twitter Sync" }
         syncFriends(user)
-//        syncMessages()
+        syncMessages(user)
     }
 
     private fun syncMessages(user: User) {
@@ -35,7 +35,7 @@ class TwitterSyncService @Autowired constructor(
 
         val rateLimitWatcher = RateLimitWatcher(rateLimit)
 
-        for (it in friendService.getAllFriends()) {
+        for (it in friendService.getAllFriends(user.id)) {
             val result = messageService.syncMessages(user, it, rateLimitWatcher)
             when (result) {
                 SyncResult.ERROR -> {

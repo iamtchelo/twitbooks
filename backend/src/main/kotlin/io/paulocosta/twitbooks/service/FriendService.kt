@@ -11,7 +11,11 @@ import javax.transaction.Transactional
 class FriendService @Autowired constructor(
         private val friendsRepository: FriendsRepository) {
 
-    fun getAllFriends(): List<Friend> = friendsRepository.findAll()
+    fun getAllFriends(userId: Long?): List<Friend> {
+        return userId?.let {
+            friendsRepository.findByUserId(userId)
+        } ?: emptyList()
+    }
 
     @Transactional
     fun saveFriends(friends: List<Friend>): List<Friend> = friendsRepository.saveAll(friends)

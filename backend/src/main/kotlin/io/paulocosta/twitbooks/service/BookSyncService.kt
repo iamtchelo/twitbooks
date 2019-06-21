@@ -2,6 +2,7 @@ package io.paulocosta.twitbooks.service
 
 import io.paulocosta.twitbooks.entity.Book
 import io.paulocosta.twitbooks.entity.Message
+import io.paulocosta.twitbooks.entity.User
 import io.paulocosta.twitbooks.extensions.fdiv
 import io.paulocosta.twitbooks.goodreads.GoodreadsResponse
 import io.paulocosta.twitbooks.goodreads.GoodreadsService
@@ -41,14 +42,13 @@ class BookSyncService @Autowired constructor(
         const val pageSize: Int = 50
     }
 
-    fun sync() {
+    fun sync(user: User) {
         logger.info { "Starting books sync" }
-        process()
-
+        process(user)
     }
 
-    fun process() {
-        val users = friendService.getAllFriends()
+    fun process(user: User) {
+        val users = friendService.getAllFriends(user.id)
         users.forEach { friend ->
             val friendId = friend.id ?: throw IllegalStateException("User not found")
             val messageCount = messageService.getCountByFriend(friendId).toInt()

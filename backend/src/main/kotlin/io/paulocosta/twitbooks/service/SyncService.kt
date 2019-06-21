@@ -44,9 +44,9 @@ class SyncService @Autowired constructor(
         }
     }
 
-    private fun bookSync() {
+    private fun bookSync(user: User) {
         if (bookSyncEnabled) {
-            bookSyncService.sync()
+            bookSyncService.sync(user)
         } else {
             logger.info { "Book sync disabled by config property" }
         }

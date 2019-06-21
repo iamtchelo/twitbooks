@@ -14,7 +14,7 @@ class BookSyncController @Autowired constructor(val bookSyncService: BookSyncSer
 
     @GetMapping
     fun test() {
-        bookSyncService.process()
+        // bookSyncService.process()
     }
 
 }
