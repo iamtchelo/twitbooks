@@ -188,12 +188,8 @@ class BookPage extends Component {
     }
 
     onClick(book) {
-        if (process.env.NODE_ENV === 'development') {
-            return () => {this.props.history.push(`/messages/${book.id}`)}
-        } else {
-            const url = encodeURI(`https://www.goodreads.com/book/title?id=${book.title}`);
-            return () => { window.open(url) }
-        }
+        const url = encodeURI(`https://www.goodreads.com/book/title?id=${book.title}`);
+        return () => { window.open(url) }
     }
 
 }
