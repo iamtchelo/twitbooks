@@ -5,6 +5,7 @@ import io.paulocosta.twitbooks.auth.TwitterApiProvider
 import io.paulocosta.twitbooks.entity.*
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.social.twitter.api.TwitterProfile
 import org.springframework.stereotype.Service
 
@@ -17,6 +18,9 @@ class FriendSyncService @Autowired constructor(
         val rateLimitService: RateLimitService,
         val twitterApiProvider: TwitterApiProvider
 ) {
+
+    @Value("\${spring.profiles.active}")
+    lateinit var activeProfile: String
 
     fun sync(user: User): SyncResult {
         logger.info { "Starting to sync users" }
@@ -77,7 +81,15 @@ class FriendSyncService @Autowired constructor(
                 profile.name,
                 profile.screenName,
                 profile.profileImageUrl,
-                MessageSyncStrategy.DEPTH, setOf(user))
+                getDefaultMessageSyncStrategy(), setOf(user))
+    }
+
+    private fun getDefaultMessageSyncStrategy(): MessageSyncStrategy {
+        return if (activeProfile == "prod") {
+            MessageSyncStrategy.DEPTH
+        } else {
+            MessageSyncStrategy.NEWEST
+        }
     }
 
 }
