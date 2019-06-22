@@ -13,7 +13,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import java.util.*
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = false)
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Value("\${auth0.app.client.id}")
