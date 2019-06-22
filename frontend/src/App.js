@@ -40,10 +40,10 @@ class App extends Component {
             <Provider {...stores}>
                 <BrowserRouter>
                     <Switch>
-                        <SecuredRoute path="/messages/:bookId" component={MessagePage}/>
+                        <SecuredRoute path="/messages/:bookId" component={MessagePage} checkingSession={this.state.checkingSession}/>
                         <Route path="/login" component={LoginPage}/>
                         <Route path="/callback" component={Callback}/>
-                        <SecuredRoute path="/" component={BookPage}/>
+                        <SecuredRoute path="/" component={BookPage} checkingSession={this.state.checkingSession}/>
                     </Switch>
                 </BrowserRouter>
             </Provider>
