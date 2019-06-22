@@ -25,16 +25,26 @@ spec:
               memory: "1.5Gi"
           imagePullPolicy: Always
           env:
-            - name: TWITTER_ACCESS_TOKEN_SECRET
+            - name: AUTH0_API_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: api-env
-                  key: TWITTER_ACCESS_TOKEN_SECRET
-            - name: TWITTER_ACCESS_TOKEN
+                  key: AUTH0_API_CLIENT_SECRET
+            - name: AUTH0_API_CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: api-env
-                  key: TWITTER_ACCESS_TOKEN
+                  key: AUTH0_API_CLIENT_ID
+            - name: AUTH0_AUDIENCE
+              valueFrom:
+                secretKeyRef:
+                  name: api-env
+                  key: AUTH0_AUDIENCE
+            - name: AUTH0_APP_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: api-env
+                  key: AUTH0_APP_CLIENT_ID
             - name: TWITTER_CONSUMER_SECRET
               valueFrom:
                 secretKeyRef:
@@ -68,7 +78,7 @@ spec:
             - name: BOOK_SYNC_ENABLED
               value: "true"
             - name: TWITTER_SYNC_ENABLED
-              value: "false"
+              value: "true"
             - name: ACTIVE_PROFILE
               value: prod
             - name: NER_CLIENT_URL

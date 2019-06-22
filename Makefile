@@ -21,8 +21,9 @@ push-api: registry-login
 	docker run -it --rm -v ~/.m2:/root/.m2 -v $(shell pwd)/backend/target:$(shell pwd)/target -v /var/run/docker.sock:/var/run/docker.sock -v $(shell pwd)/backend:$(shell pwd) -w $(shell pwd) maven:3-jdk-10-slim mvn package -DskipTests
 	docker build -t registry.gitlab.com/paulombcosta/twitbooks/api:latest backend/
 	docker push registry.gitlab.com/paulombcosta/twitbooks/api:latest
-create-secrets:
+create-registry-secret:
 	kubectl create secret docker-registry gitlab-registry --docker-server=registry.gitlab.com --docker-username=${GITLAB_USER} --docker-password=${GITLAB_PASS} --docker-email=${GITLAB_USER}
+create-credentials-secret:
 	kubectl create secret generic api-env \
 		--from-literal=DB_URL=${DB_URL} \
 		--from-literal=DB_USER=${DB_USER} \
@@ -30,8 +31,13 @@ create-secrets:
 		--from-literal=GOODREADS_KEY=${GOODREADS_KEY} \
 		--from-literal=TWITTER_CONSUMER_KEY=${TWITTER_CONSUMER_KEY} \
 		--from-literal=TWITTER_CONSUMER_SECRET=${TWITTER_CONSUMER_SECRET} \
-		--from-literal=TWITTER_ACCESS_TOKEN=${TWITTER_ACCESS_TOKEN} \
-		--from-literal=TWITTER_ACCESS_TOKEN_SECRET=${TWITTER_ACCESS_TOKEN_SECRET}
+		--from-literal=AUTH0_APP_CLIENT_ID=${AUTH0_APP_CLIENT_ID} \
+		--from-literal=AUTH0_AUDIENCE=${AUTH0_AUDIENCE} \
+		--from-literal=AUTH0_API_CLIENT_ID=${AUTH0_API_CLIENT_ID} \
+		--from-literal=AUTH0_API_CLIENT_SECRET=${AUTH0_API_CLIENT_SECRET}
+delete-credentials-secret:
+	kubectl delete secret api-env
+create-secrets: create-registry-secret create-credentials-secret
 build-front:
 	cd frontend && npm install && npm run build
 	cp frontend/_redirects frontend/build/_redirects
