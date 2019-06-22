@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 private val logger = KotlinLogging.logger {}
 
 @Service
-class SyncFriendsService @Autowired constructor(
+class FriendSyncService @Autowired constructor(
         val friendService: FriendService,
         val friendSyncStatusService: FriendSyncStatusService,
         val rateLimitService: RateLimitService,
@@ -36,8 +36,8 @@ class SyncFriendsService @Autowired constructor(
                     doSync(user, rateLimit, null)
                 }
                 Status.SUCCESS -> {
-                    logger.info { "Previous user sync was successful. Skipping further synchronization" }
-                    SyncResult.SUCCESS
+                    logger.info { "Previous user sync was successful. Checking if there are new friends" }
+                    doSync(user, rateLimit, latestSync.cursor)
                 }
                 Status.FAILED -> {
                     logger.info { "Previous sync failed. Attempt to synchronize with previous cursor" }
@@ -63,7 +63,7 @@ class SyncFriendsService @Autowired constructor(
             lastCursor = profiles.nextCursor
 
             if (!profiles.hasNext()) {
-                friendSyncStatusService.createSuccessEvent(user)
+                friendSyncStatusService.createSuccessEvent(user, lastCursor)
                 return SyncResult.SUCCESS
             }
         }

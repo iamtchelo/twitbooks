@@ -13,7 +13,7 @@ private val logger = KotlinLogging.logger {}
 @Service
 class TwitterSyncService @Autowired constructor(
         val friendService: FriendService,
-        val syncFriendsService: SyncFriendsService,
+        val friendSyncService: FriendSyncService,
         val messageService: MessageService,
         val rateLimitService: RateLimitService) {
 
@@ -51,7 +51,7 @@ class TwitterSyncService @Autowired constructor(
     }
 
     private fun syncFriends(user: User) {
-        when (syncFriendsService.sync(user)) {
+        when (friendSyncService.sync(user)) {
             SyncResult.SUCCESS -> {
                 logger.info { "User sync finished successfully" }
             }

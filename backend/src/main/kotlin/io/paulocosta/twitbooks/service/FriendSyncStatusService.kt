@@ -24,8 +24,8 @@ class FriendSyncStatusService @Autowired constructor(val friendSyncStatusReposit
         friendSyncStatusRepository.save(status)
     }
 
-    fun createSuccessEvent(user: User) {
-        val status = FriendSyncStatus(null, Status.SUCCESS, null, user)
+    fun createSuccessEvent(user: User, cursorId: Long?) {
+        val status = FriendSyncStatus(null, Status.SUCCESS, cursorId, user)
         friendSyncStatusRepository.save(status)
     }
 

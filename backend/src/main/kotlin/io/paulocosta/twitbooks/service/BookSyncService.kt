@@ -12,7 +12,6 @@ import io.reactivex.Observable
 import mu.KotlinLogging
 import opennlp.tools.util.normalizer.TwitterCharSequenceNormalizer
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.lang.IllegalStateException
@@ -35,9 +34,6 @@ class BookSyncService @Autowired constructor(
         val bookService: BookService) {
 
 
-    @Value("\${spring.profiles.active}")
-    lateinit var activeProfile: String
-
     companion object {
         const val pageSize: Int = 50
     }
@@ -51,12 +47,12 @@ class BookSyncService @Autowired constructor(
         val users = friendService.getAllFriends(user.id)
         users.forEach { friend ->
             val friendId = friend.id ?: throw IllegalStateException("User not found")
-            val messageCount = messageService.getCountByFriend(friendId).toInt()
+            val messageCount = messageService.getUnprocesedCount(friendId).toInt()
             logger.info { "Processing $messageCount messages from user ${friend.screenName}" }
             val pageCount = Math.ceil(messageCount.fdiv(pageSize)).toInt()
             for (currentPage in 1 until pageCount) {
                 logger.info { "Progress $currentPage/$pageCount" }
-                val page = messageService.getAllMessages(friendId, PageRequest.of(currentPage, pageCount))
+                val page = messageService.getUnprocessedMessages(friendId, PageRequest.of(currentPage, pageCount))
                 val messages = page.content
                 Observable.fromIterable(messages)
                         .map { normalizeMessage(it) }
@@ -105,16 +101,16 @@ class BookSyncService @Autowired constructor(
                 }
             } else {
                 logger.info { "Cross validation dismissed books from message ${message.id}" }
+                toggleMessageProcessed(message)
             }
+        } else {
+            toggleMessageProcessed(message)
         }
-        toggleMessageProcessed(message)
     }
 
     fun toggleMessageProcessed(message: Message) {
-        if (activeProfile == "prod") {
-            logger.info { "Deleting message with id ${message.id }" }
-            messageService.deleteMessage(message)
-        }
+        logger.info { "Deleting message with id ${message.id }" }
+        messageService.deleteMessage(message)
     }
 
     fun normalizeMessage(message: Message): Message {

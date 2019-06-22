@@ -6,7 +6,6 @@ import io.paulocosta.twitbooks.ratelimit.RateLimitWatcher
 import io.paulocosta.twitbooks.repository.MessageRepository
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -23,21 +22,18 @@ class MessageService @Autowired constructor(
         val messageSyncStateService: MessageSyncStateService,
         val friendService: FriendService) {
 
-    @Value("\${spring.profiles.active}")
-    lateinit var activeProfile: String
-
     companion object {
         // 200 is the max pages supported
         const val TIMELINE_PAGE_SIZE = 200
         const val MINIMUM_DEPTH_ALLOWED_ID = 0L
     }
 
-    fun getAllMessages(friendId: Long, pageable: Pageable): Page<Message> {
-        return messageRepository.getAllByFriendIdOrderByIdAsc(friendId, pageable)
+    fun getUnprocessedMessages(friendId: Long, pageable: Pageable): Page<Message> {
+        return messageRepository.getUnprocessedMessages(friendId, pageable)
     }
 
-    fun getCountByFriend(friendId: Long): Long {
-        return messageRepository.countByFriendId(friendId)
+    fun getUnprocesedCount(friendId: Long): Long {
+        return messageRepository.getUnprocessedCount(friendId)
     }
 
     fun getCount(): Long {
@@ -130,10 +126,6 @@ class MessageService @Autowired constructor(
 
     fun deleteMessage(message: Message) {
         messageRepository.delete(message)
-    }
-
-    fun update(message: Message) {
-        messageRepository.save(message)
     }
 
     private fun getCurrentUserTimeline(user: User, friend: Friend): MessageResult {

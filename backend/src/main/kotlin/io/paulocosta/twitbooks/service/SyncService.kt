@@ -4,8 +4,7 @@ import io.paulocosta.twitbooks.entity.User
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.stereotype.Service
+import org.springframework.scheduling.annotation.Scheduled import org.springframework.stereotype.Service
 
 private val logger = KotlinLogging.logger {}
 
@@ -31,7 +30,7 @@ class SyncService @Autowired constructor(
     fun sync() {
         userService.getSyncableUsers().forEach {
             twitterSync(it)
-//          bookSync()
+            bookSync(it)
         }
     }
 
