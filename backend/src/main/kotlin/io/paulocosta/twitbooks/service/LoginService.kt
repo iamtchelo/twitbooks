@@ -3,6 +3,7 @@ package io.paulocosta.twitbooks.service
 import com.auth0.exception.APIException
 import com.auth0.exception.Auth0Exception
 import io.paulocosta.twitbooks.auth.Auth0Provider
+import io.paulocosta.twitbooks.auth.SecurityHelper
 import io.paulocosta.twitbooks.entity.User
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,7 +22,7 @@ class LoginService @Autowired constructor(
 
     fun login() {
         try {
-            val id = SecurityContextHolder.getContext().authentication.principal as String
+            val id = SecurityHelper.getTwitterId()
             updateUserInfo(id)
             logger.info { "Login successful" }
         } catch (e: Auth0Exception) {
@@ -34,7 +35,7 @@ class LoginService @Autowired constructor(
     fun updateUserInfo(twitterId: String) {
         val user = userService.findByTwitterId(twitterId)
 
-        if (user?.accessToken == null) {
+        if (user == null) {
             val userData = auth0Provider.geUserData(getApiToken(), twitterId)
             val identity = userData.identities[0]
             val accessToken = identity.accessToken
