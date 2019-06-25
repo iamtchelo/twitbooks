@@ -86,9 +86,9 @@ class FriendSyncService @Autowired constructor(
 
     private fun getDefaultMessageSyncStrategy(): MessageSyncStrategy {
         return if (activeProfile == "prod") {
-            MessageSyncStrategy.DEPTH
-        } else {
             MessageSyncStrategy.NEWEST
+        } else {
+            MessageSyncStrategy.DEPTH
         }
     }
 
