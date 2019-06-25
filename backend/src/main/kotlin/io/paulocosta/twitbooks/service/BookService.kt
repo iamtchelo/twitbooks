@@ -1,7 +1,9 @@
 package io.paulocosta.twitbooks.service
 
+import io.paulocosta.twitbooks.auth.SecurityHelper
 import io.paulocosta.twitbooks.entity.Book
 import io.paulocosta.twitbooks.entity.Message
+import io.paulocosta.twitbooks.entity.User
 import io.paulocosta.twitbooks.extensions.toNullable
 import io.paulocosta.twitbooks.repository.BookRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,7 +23,8 @@ class BookService @Autowired constructor(private val bookRepository: BookReposit
     }
 
     fun getAllBooks(pageable: Pageable): Page<Book> {
-        return bookRepository.getAllBooks(pageable)
+        val twitterId = SecurityHelper.getTwitterId()
+        return bookRepository.getAllBooksByTwitterId(twitterId, pageable)
     }
 
     fun findById(bookId: Long): Book? {
@@ -32,8 +35,10 @@ class BookService @Autowired constructor(private val bookRepository: BookReposit
         return bookRepository.count()
     }
 
-    fun updateMessages(book: Book, messages: Set<Message>) {
-        bookRepository.save(book.copy(message = messages))
+    fun updateBook(book: Book, messages: Set<Message>, users: Set<User>) {
+        bookRepository.save(book.copy(
+                message = messages,
+                users = users))
     }
 
 }

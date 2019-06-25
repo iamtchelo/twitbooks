@@ -65,7 +65,7 @@ class BookSyncService @Autowired constructor(
                         .debounce(1, TimeUnit.SECONDS)
                         .flatMapSingle { goodreadsService.search(it.second.entities[0]).map { res -> SyncResponse(res, it.first, it.second.entities) } }
                         .subscribe(
-                                { processGoodreadsResponse(it.goodreadsResponse, it.message, it.entities)},
+                                { processGoodreadsResponse(it.goodreadsResponse, it.message, it.entities, user)},
                                 {
                                     logger.error(it.message)
                                 }
@@ -75,7 +75,7 @@ class BookSyncService @Autowired constructor(
     }
 
     @Transactional
-    fun processGoodreadsResponse(goodreadsResponse: GoodreadsResponse, message: Message, entities: List<String>) {
+    fun processGoodreadsResponse(goodreadsResponse: GoodreadsResponse, message: Message, entities: List<String>, user: User) {
         val results = goodreadsResponse.search.results.works
         if (!results.isNullOrEmpty() && results.size > 0) {
             val resultBook = results[0].bestGoodreadsBook
@@ -84,19 +84,19 @@ class BookSyncService @Autowired constructor(
                 return
             }
             if (resultBook != null) {
-                val existingBook = bookService.findById(resultBook.id)
-                when (existingBook) {
+                when (val existingBook = bookService.findById(resultBook.id)) {
                     null -> {
                         val book = Book(
                                 id = resultBook.id,
                                 title = resultBook.title,
                                 smallImageUrl = resultBook.smallImageUrl,
-                                imageUrl = resultBook.imageUrl)
+                                imageUrl = resultBook.imageUrl,
+                                message = setOf(message),
+                                users = setOf(user))
                         bookService.saveBook(book)
-                        bookService.updateMessages(book, setOf(message))
                     }
                     else -> {
-                        bookService.updateMessages(existingBook, existingBook.message.plus(message))
+                        bookService.updateBook(existingBook, setOf(message), setOf(user))
                     }
                 }
             } else {
