@@ -13,3 +13,24 @@
     color: azure;
     text-transform: capitalize;
 }
+
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.logout-conteiner {
+    display: inline-block;
+}
+
+.logout {
+    font-size: 1.6rem;
+    color: azure;
+    padding-bottom: 1px;
+}
+
+.logout:hover {
+    border-bottom: #e5d4ff 1px solid;
+    cursor: pointer;
+}
