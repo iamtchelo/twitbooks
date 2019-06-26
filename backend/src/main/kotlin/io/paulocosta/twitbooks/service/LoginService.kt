@@ -7,7 +7,6 @@ import io.paulocosta.twitbooks.auth.SecurityHelper
 import io.paulocosta.twitbooks.entity.User
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 private val logger = KotlinLogging.logger {}
@@ -17,7 +16,6 @@ class LoginService @Autowired constructor(
         private val auth0Provider: Auth0Provider,
         private val userService: UserService) {
 
-    // TODO Should cache this properly. And make it thread-safe.
     private var apiToken: String = ""
 
     fun login() {
@@ -28,7 +26,17 @@ class LoginService @Autowired constructor(
         } catch (e: Auth0Exception) {
             logger.error { "Auth0Exception ${e.message}" }
         } catch (e: APIException) {
-            logger.error { "APIException ${e.message} status code ${e.statusCode}" }
+            handleAuthAPIError(e)
+        }
+    }
+
+    fun handleAuthAPIError(e: APIException) {
+        if (e.statusCode == 401) {
+            logger.info { "API Token has expired, requesting a new one" }
+            this.apiToken = ""
+            login()
+        } else {
+            // TODO proper error handling
         }
     }
 
