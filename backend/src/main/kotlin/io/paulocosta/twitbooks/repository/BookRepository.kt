@@ -10,14 +10,7 @@ import javax.transaction.Transactional
 
 interface BookRepository : JpaRepository<Book, Long> {
 
-    @Query("""
-        select * from books
-        inner join book_user
-        on books.id = book_user.book_id
-        inner join users
-        on users.id = book_user.user_id
-        where users.twitter_id = :twitterId
-    """, nativeQuery = true)
+    @Query("select * from books inner join book_user on books.id = book_user.book_id inner join users on users.id = book_user.user_id where users.twitter_id = ?1", nativeQuery = true)
     fun getAllBooksByTwitterId(twitterId: String, pageable: Pageable): Page<Book>
 
     @Query("update Book book set book.ignored = '1' where book.id = :bookId")
