@@ -13,6 +13,7 @@ class BookCard extends Component {
     render() {
         return (
             <Card
+                style={this.props.style}
                 hoverable
                 className="card"
                 cover={<img onClick={() => this.props.onClickEvent()} className="card-img" alt="book" src={this.book.imageUrl} />}

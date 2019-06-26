@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react';
 import { Row, Col, Pagination, Card, Skeleton } from 'antd';
 import BookCard from "../../components/book/card/BookCard";
 import MainLayout from "../../components/layout/MainLayout";
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import  "./BookPage.css";
 
 @inject('bookStore') @observer
@@ -35,11 +36,7 @@ class BookPage extends Component {
     }
 
     initialRenderWindow() {
-        if (window.innerWidth < 400) {
-            return false;
-        } else {
-            return true;
-        }
+        return window.innerWidth >= 400;
     }
 
     resizeListener = () => {
@@ -157,34 +154,44 @@ class BookPage extends Component {
     renderBookGrid(books) {
         return (
             <Row>
+                <TransitionGroup>
                 {
                     books.map(i => {
                         return this.renderBookCard(i)
                     })
                 }
+                </TransitionGroup>
             </Row>
         )
     }
 
     renderBookList(books) {
         return (
-            <div style={{flex: 1, flexDirection: "column"}}>
-                {
-                    books.map(i => {
-                        return (
-                            <BookCard key={i.book.id} onClickEvent={this.onClick(i.book)} book={i.book}/>
-                        )
-                    })
-                }
-            </div>
+            <TransitionGroup>
+                <div style={{flex: 1, flexDirection: "column"}}>
+                    {
+                        books.map(i => {
+                            return (
+                                <CSSTransition key={i.book.id} timeout={500} classNames="grid-item">
+                                    <BookCard
+                                        onClickEvent={this.onClick(i.book)}
+                                        book={i.book}/>
+                                </CSSTransition>
+                            )
+                        })
+                    }
+                </div>
+            </TransitionGroup>
         )
     }
 
     renderBookCard(book) {
         return (
-            <Col key={book.id} className="book-card" span={this.state.spanSize}>
-                <BookCard onClickEvent={this.onClick(book)} book={book}/>
-            </Col>
+            <CSSTransition key={book.id} timeout={500} classNames="grid-item">
+                <Col className="book-card" span={this.state.spanSize}>
+                    <BookCard onClickEvent={this.onClick(book)} book={book}/>
+                </Col>
+            </CSSTransition>
         )
     }
 
