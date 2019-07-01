@@ -13,7 +13,7 @@ class FriendSyncStatusService @Autowired constructor(val friendSyncStatusReposit
 
     fun getLatestFriendSyncStatus(user: User): FriendSyncStatus {
         val userId = user.id ?: throw IllegalStateException("User not found")
-        return when (val status = friendSyncStatusRepository.findFirstByUserId(userId)) {
+        return when (val status = friendSyncStatusRepository.findFirstByUserIdOrderByIdDesc(userId)) {
             null -> FriendSyncStatus(status = Status.ABSENT)
             else -> status
         }
