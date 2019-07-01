@@ -167,21 +167,21 @@ class BookPage extends Component {
 
     renderBookList(books) {
         return (
-            <TransitionGroup>
-                <div style={{flex: 1, flexDirection: "column"}}>
+            <div style={{flex: 1, flexDirection: "column"}}>
+                <TransitionGroup>
                     {
                         books.map(i => {
                             return (
-                                <CSSTransition key={i.book.id} timeout={500} classNames="grid-item">
+                                <CSSTransition key={i.id} timeout={500} classNames="grid-item">
                                     <BookCard
-                                        onClickEvent={this.onClick(i.book)}
-                                        book={i.book}/>
+                                        onClickEvent={this.onClick(i)}
+                                        book={i}/>
                                 </CSSTransition>
                             )
                         })
                     }
-                </div>
-            </TransitionGroup>
+                </TransitionGroup>
+            </div>
         )
     }
 
