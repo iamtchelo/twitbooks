@@ -4,9 +4,11 @@ import com.amazonaws.services.comprehend.AmazonComprehend
 import com.amazonaws.services.comprehend.model.DetectEntitiesRequest
 import io.paulocosta.twitbooks.ner.NERService
 import io.reactivex.Single
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 
 @Service
+@Profile("comprehend")
 class AWSComprehendNERService(private val amazonComprehend: AmazonComprehend) : NERService {
 
     override fun detectEntities(text: String): Single<List<String>> {

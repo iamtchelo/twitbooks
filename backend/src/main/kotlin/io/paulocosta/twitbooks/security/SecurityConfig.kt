@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import java.util.*
 
 @Configuration @EnableWebSecurity(debug = false)
 class SecurityConfig : WebSecurityConfigurerAdapter() {
@@ -25,8 +24,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     fun corsConfigurationSource(): CorsConfigurationSource {
         val config = CorsConfiguration()
         val source = UrlBasedCorsConfigurationSource()
-        config.allowedOrigins = Arrays.asList("http://localhost:3000", "https://twitbooks.io", "https://www.twitbooks.io")
-        config.allowedMethods = Arrays.asList("GET","POST")
+        config.allowedOrigins = listOf("http://localhost:3000", "https://twitbooks.io", "https://www.twitbooks.io")
+        config.allowedMethods = listOf("GET", "POST", "PUT")
         config.allowCredentials = true
         config.addAllowedHeader("Authorization")
         config.addAllowedHeader("Content-Type")

@@ -19,4 +19,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-env.sh
+prod_env.sh
+dev_env.sh
