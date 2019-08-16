@@ -1,6 +1,6 @@
 package io.paulocosta.twitbooks.controller
 
-import io.paulocosta.twitbooks.nerclient.NERApiService
+import io.paulocosta.twitbooks.ner.spacy.SpacyNERApiClient
 import io.paulocosta.twitbooks.service.BookService
 import io.paulocosta.twitbooks.service.MessageService
 import io.reactivex.Single
@@ -17,14 +17,14 @@ data class Status(val nerApiStatus: String, val messageCount: Long, val bookCoun
 @CrossOrigin("*")
 class StatusController @Autowired constructor(
         val messageService: MessageService,
-        val nerApiService: NERApiService,
+        val spacyNerApiClient: SpacyNERApiClient,
         val bookService: BookService) {
 
     @GetMapping
     fun getStatus(): Single<Status> {
         val bookCount = bookService.getBookCount()
         val messageCount = messageService.getCount()
-        return nerApiService.status()
+        return spacyNerApiClient.status()
                 .toSingle { Status("ONLINE", messageCount, bookCount) }
                 .onErrorReturn { Status("OFFLINE", messageCount, bookCount) }
     }

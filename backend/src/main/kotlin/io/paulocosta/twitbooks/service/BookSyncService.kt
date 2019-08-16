@@ -6,8 +6,7 @@ import io.paulocosta.twitbooks.entity.User
 import io.paulocosta.twitbooks.extensions.fdiv
 import io.paulocosta.twitbooks.goodreads.GoodreadsResponse
 import io.paulocosta.twitbooks.goodreads.GoodreadsService
-import io.paulocosta.twitbooks.nerclient.NERApiPayload
-import io.paulocosta.twitbooks.nerclient.NERApiService
+import io.paulocosta.twitbooks.ner.NERService
 import io.reactivex.Observable
 import mu.KotlinLogging
 import opennlp.tools.util.normalizer.TwitterCharSequenceNormalizer
@@ -29,7 +28,7 @@ data class SyncResponse(
 class BookSyncService @Autowired constructor(
         val messageService: MessageService,
         val friendService: FriendService,
-        val nerApiService: NERApiService,
+        val nerService: NERService,
         val goodreadsService: GoodreadsService,
         val bookService: BookService) {
 
@@ -56,14 +55,14 @@ class BookSyncService @Autowired constructor(
                 val messages = page.content
                 Observable.fromIterable(messages)
                         .map { normalizeMessage(it) }
-                        .flatMapSingle { nerApiService.process(NERApiPayload(it.text)).map { entities -> Pair(it, entities) } }
+                        .flatMapSingle { nerService.detectEntities(it.text).map { entities -> Pair(it, entities) } }
                         .doOnNext {
                             logger.info { "No Entities found, toggling message as processed." }
-                            if (it.second.entities.isEmpty()) { toggleMessageProcessed(it.first)}
+                            if (it.second.isEmpty()) { toggleMessageProcessed(it.first)}
                         }
-                        .filter { it.second.entities.isNotEmpty() }
+                        .filter { it.second.isNotEmpty() }
                         .debounce(1, TimeUnit.SECONDS)
-                        .flatMapSingle { goodreadsService.search(it.second.entities[0]).map { res -> SyncResponse(res, it.first, it.second.entities) } }
+                        .flatMapSingle { goodreadsService.search(it.second[0]).map { res -> SyncResponse(res, it.first, it.second) } }
                         .subscribe(
                                 { processGoodreadsResponse(it.goodreadsResponse, it.message, it.entities, user)},
                                 {

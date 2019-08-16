@@ -1,4 +1,4 @@
-package io.paulocosta.twitbooks.nerclient
+package io.paulocosta.twitbooks.ner.spacy
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -8,7 +8,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.jackson.JacksonConverterFactory
 
 @Configuration
-class NERClientConfig {
+class SpacyNERClientConfig {
 
     @Value("\${ner.client.url}")
     lateinit var clientUrl: String
@@ -23,8 +23,8 @@ class NERClientConfig {
     }
 
     @Bean
-    fun provideNERApi(): NERApiService {
-        return provideNERRetrofitClient().create(NERApiService::class.java)
+    fun provideNERApi(): SpacyNERApiClient {
+        return provideNERRetrofitClient().create(SpacyNERApiClient::class.java)
     }
 
 }

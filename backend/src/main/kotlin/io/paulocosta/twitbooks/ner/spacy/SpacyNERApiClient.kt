@@ -1,4 +1,4 @@
-package io.paulocosta.twitbooks.nerclient
+package io.paulocosta.twitbooks.ner.spacy
 
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -6,10 +6,10 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
-interface NERApiService {
+interface SpacyNERApiClient {
 
     @POST("process")
-    fun process(@Body payload: NERApiPayload): Single<NERApiResult>
+    fun process(@Body payload: String): Single<List<String>>
 
     @GET("status")
     fun status(): Completable
