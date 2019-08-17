@@ -11,9 +11,6 @@ import org.springframework.stereotype.Service
 
 val logger = KotlinLogging.logger {}
 
-// NLP requests are measured in units of 100 characters, with a 3 unit (300 character) minimum charge per request.
-// Twitter's limit is 280
-
 @Service
 @Profile("comprehend")
 class AWSComprehendNERService(private val amazonComprehend: AmazonComprehend) : NERService {
@@ -28,8 +25,6 @@ class AWSComprehendNERService(private val amazonComprehend: AmazonComprehend) : 
                 .withText(text)
                 .withLanguageCode("en")
         val result = amazonComprehend.detectEntities(request)
-        result.entities[0].type
-        Thread.sleep(1000)
         logger.info { "Result from AWS Comprehend: $result" }
         return Single.just(result.entities.map { it.text })
     }
