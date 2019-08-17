@@ -4,6 +4,7 @@ import io.paulocosta.twitbooks.auth.TwitterApiProvider
 import io.paulocosta.twitbooks.entity.*
 import io.paulocosta.twitbooks.ratelimit.RateLimitWatcher
 import io.paulocosta.twitbooks.repository.MessageRepository
+import io.reactivex.Single
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -36,8 +37,8 @@ class MessageService @Autowired constructor(
         return messageRepository.getUnprocessedCount(friendId)
     }
 
-    fun getCount(): Long {
-        return messageRepository.count()
+    fun getCount(): Single<Long> {
+        return Single.just(messageRepository.count())
     }
 
     fun syncMessages(user: User, friend: Friend, rateLimitWatcher: RateLimitWatcher): SyncResult {

@@ -6,6 +6,7 @@ import io.paulocosta.twitbooks.entity.Message
 import io.paulocosta.twitbooks.entity.User
 import io.paulocosta.twitbooks.extensions.toNullable
 import io.paulocosta.twitbooks.repository.BookRepository
+import io.reactivex.Single
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -31,8 +32,8 @@ class BookService @Autowired constructor(private val bookRepository: BookReposit
         return bookRepository.findById(bookId).toNullable()
     }
 
-    fun getBookCount(): Long {
-        return bookRepository.count()
+    fun getBookCount(): Single<Long> {
+        return Single.just(bookRepository.count())
     }
 
     fun updateBook(book: Book, messages: Set<Message>, users: Set<User>) {
