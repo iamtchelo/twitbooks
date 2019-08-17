@@ -14,8 +14,8 @@ class BookPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            spanSize: this.initialSpanSize(),
-            renderGrid: this.initialRenderWindow()
+            spanSize: this.calculateSpanSize(),
+            renderGrid: this.shouldRenderGrid()
         };
     }
 
@@ -27,32 +27,25 @@ class BookPage extends Component {
         window.addEventListener("resize", this.resizeListener)
     }
 
-    initialSpanSize() {
+    calculateSpanSize() {
         if (window.innerWidth < 600) {
             return 12;
-        } else {
-            return 6
+        } else if (window.innerWidth < 1500) {
+            return 6;
+        }
+        else {
+            return 3
         }
     }
 
-    initialRenderWindow() {
+    shouldRenderGrid() {
         return window.innerWidth >= 400;
     }
 
     resizeListener = () => {
-        if (window.innerWidth < 600 && this.state.spanSize !== 12) {
-            this.setState({spanSize: 12});
-        } else {
-            if (window.innerWidth > 600 && this.state.spanSize !== 6) {
-                this.setState({spanSize: 6})
-            }
-        }
-        if (window.innerWidth < 400 && this.state.renderGrid === true) {
-            this.setState({renderGrid: false})
-        }
-        if (window.innerWidth > 400 && this.state.renderGrid === false) {
-            this.setState({renderGrid: true})
-        }
+        this.setState({
+            spanSize: this.calculateSpanSize(),
+            renderGrid: this.shouldRenderGrid()})
     };
 
     componentWillUnmount(): void {
