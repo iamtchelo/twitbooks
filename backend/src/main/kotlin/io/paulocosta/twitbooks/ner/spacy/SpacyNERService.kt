@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service
 class SpacyNERService(private val spacyNERApiClient: SpacyNERApiClient) : NERService {
 
     override fun detectEntities(text: String): Single<List<String>> {
-        return spacyNERApiClient.process(text)
+        return spacyNERApiClient.process(SpacyNERPayload(text))
+                .map { it.entities }
     }
 
 }

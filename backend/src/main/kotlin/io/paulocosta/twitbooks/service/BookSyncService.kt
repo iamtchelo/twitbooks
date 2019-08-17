@@ -64,7 +64,8 @@ class BookSyncService @Autowired constructor(
                         .debounce(1, TimeUnit.SECONDS)
                         .flatMapSingle { goodreadsService.search(it.second[0]).map { res -> SyncResponse(res, it.first, it.second) } }
                         .subscribe(
-                                { processGoodreadsResponse(it.goodreadsResponse, it.message, it.entities, user)},
+                                {
+                                    processGoodreadsResponse(it.goodreadsResponse, it.message, it.entities, user)},
                                 {
                                     logger.error(it.message)
                                 }
@@ -76,9 +77,11 @@ class BookSyncService @Autowired constructor(
     @Transactional
     fun processGoodreadsResponse(goodreadsResponse: GoodreadsResponse, message: Message, entities: List<String>, user: User) {
         val results = goodreadsResponse.search.results.works
+        logger.info { "Processing response" }
         if (!results.isNullOrEmpty() && results.size > 0) {
             val resultBook = results[0].bestGoodreadsBook
             if (!crossValidation(resultBook.title, entities)) {
+                logger.info { "Message dismissed by cross validation" }
                 toggleMessageProcessed(message)
                 return
             }
@@ -93,9 +96,13 @@ class BookSyncService @Autowired constructor(
                                 message = setOf(message),
                                 users = setOf(user))
                         bookService.saveBook(book)
+                        toggleMessageProcessed(message)
+                        logger.info { "Book created" }
                     }
                     else -> {
+                        logger.info { "Book already existed. Updating" }
                         bookService.updateBook(existingBook, setOf(message), setOf(user))
+                        toggleMessageProcessed(message)
                     }
                 }
             } else {
@@ -103,6 +110,7 @@ class BookSyncService @Autowired constructor(
                 toggleMessageProcessed(message)
             }
         } else {
+            logger.info { "No matches. Marking book as processed" }
             toggleMessageProcessed(message)
         }
     }

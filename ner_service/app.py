@@ -6,6 +6,7 @@ app = Flask(__name__)
 
 @app.route('/process', methods=["POST"])
 def process():
+    print(request.json)
     message = request.json['message']
     doc = nlp(message)
     ents = [e.text for e in doc.ents if e.label_ == 'WORK_OF_ART']

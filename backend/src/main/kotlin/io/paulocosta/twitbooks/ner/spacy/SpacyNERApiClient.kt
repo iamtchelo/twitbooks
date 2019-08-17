@@ -9,7 +9,7 @@ import retrofit2.http.POST
 interface SpacyNERApiClient {
 
     @POST("process")
-    fun process(@Body payload: String): Single<List<String>>
+    fun process(@Body NERPayload: SpacyNERPayload): Single<SpacyNERApiResponse>
 
     @GET("status")
     fun status(): Completable
