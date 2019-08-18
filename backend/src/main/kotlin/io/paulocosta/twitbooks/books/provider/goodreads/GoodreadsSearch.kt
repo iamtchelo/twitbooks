@@ -1,4 +1,4 @@
-package io.paulocosta.twitbooks.goodreads
+package io.paulocosta.twitbooks.books.provider.goodreads
 
 import io.reactivex.Single
 import retrofit2.http.GET

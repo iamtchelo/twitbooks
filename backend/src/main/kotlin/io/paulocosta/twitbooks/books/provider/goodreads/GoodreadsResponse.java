@@ -1,4 +1,4 @@
-package io.paulocosta.twitbooks.goodreads;
+package io.paulocosta.twitbooks.books.provider.goodreads;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
@@ -22,4 +22,5 @@ public class GoodreadsResponse {
     public void setSearch(Search search) {
         this.search = search;
     }
+
 }

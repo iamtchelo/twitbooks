@@ -1,6 +1,6 @@
 package io.paulocosta.twitbooks.controller.v1
 
-import io.paulocosta.twitbooks.service.BookService
+import io.paulocosta.twitbooks.books.BookService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest

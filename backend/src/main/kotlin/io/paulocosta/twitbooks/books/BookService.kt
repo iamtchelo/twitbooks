@@ -1,4 +1,4 @@
-package io.paulocosta.twitbooks.service
+package io.paulocosta.twitbooks.books
 
 import io.paulocosta.twitbooks.auth.SecurityHelper
 import io.paulocosta.twitbooks.entity.Book

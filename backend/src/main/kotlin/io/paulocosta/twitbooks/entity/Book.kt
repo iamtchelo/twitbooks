@@ -10,7 +10,10 @@ import javax.persistence.*
 @Table(name = "books")
 data class Book(
         @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long,
+
+        val key: String,
 
         val title: String,
 

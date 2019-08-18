@@ -1,7 +1,7 @@
 package io.paulocosta.twitbooks.controller
 
 import io.paulocosta.twitbooks.ner.NERService
-import io.paulocosta.twitbooks.service.BookService
+import io.paulocosta.twitbooks.books.BookService
 import io.paulocosta.twitbooks.service.MessageService
 import io.reactivex.Single
 import io.reactivex.functions.Function3

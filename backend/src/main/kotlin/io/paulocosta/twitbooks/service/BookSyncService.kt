@@ -1,16 +1,16 @@
 package io.paulocosta.twitbooks.service
 
+import io.paulocosta.twitbooks.books.BookService
+import io.paulocosta.twitbooks.books.provider.BookProviderResponse
+import io.paulocosta.twitbooks.books.provider.BookProviderService
 import io.paulocosta.twitbooks.entity.Book
 import io.paulocosta.twitbooks.entity.Message
 import io.paulocosta.twitbooks.entity.User
 import io.paulocosta.twitbooks.extensions.fdiv
-import io.paulocosta.twitbooks.goodreads.GoodreadsResponse
-import io.paulocosta.twitbooks.goodreads.GoodreadsService
 import io.paulocosta.twitbooks.ner.NERService
 import io.reactivex.Observable
 import mu.KotlinLogging
 import opennlp.tools.util.normalizer.TwitterCharSequenceNormalizer
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.lang.IllegalStateException
@@ -20,18 +20,18 @@ import javax.transaction.Transactional
 private val logger = KotlinLogging.logger {}
 
 data class SyncResponse(
-        val goodreadsResponse: GoodreadsResponse,
+        val providerResponse: BookProviderResponse,
         val message: Message,
-        val entities: List<String>)
+        val entities: List<String>
+)
 
 @Service
-class BookSyncService @Autowired constructor(
+class BookSyncService(
         val messageService: MessageService,
         val friendService: FriendService,
         val nerService: NERService,
-        val goodreadsService: GoodreadsService,
+        val bookProviderService: BookProviderService,
         val bookService: BookService) {
-
 
     companion object {
         const val pageSize: Int = 50
@@ -65,7 +65,7 @@ class BookSyncService @Autowired constructor(
                         .flatMapSingle { goodreadsService.search(it.second[0]).map { res -> SyncResponse(res, it.first, it.second) } }
                         .subscribe(
                                 {
-                                    processGoodreadsResponse(it.goodreadsResponse, it.message, it.entities, user)},
+                                    processBookIntegrationResponse(it.goodreadsResponse, it.message, it.entities, user)},
                                 {
                                     logger.error(it.message)
                                 }
@@ -75,12 +75,12 @@ class BookSyncService @Autowired constructor(
     }
 
     @Transactional
-    fun processGoodreadsResponse(goodreadsResponse: GoodreadsResponse, message: Message, entities: List<String>, user: User) {
-        val results = goodreadsResponse.search.results.works
+    fun processBookIntegrationResponse(response: BookProviderResponse?, message: Message, entities: List<String>, user: User) {
+//        val results = goodreadsResponse.search.results.works
         logger.info { "Processing response" }
-        if (!results.isNullOrEmpty() && results.size > 0) {
-            val resultBook = results[0].bestGoodreadsBook
-            if (!crossValidation(resultBook.title, entities)) {
+        if (response != null) {
+            val resultBook = response.result
+            if (!crossValidation(resultBook, entities)) {
                 logger.info { "Message dismissed by cross validation" }
                 toggleMessageProcessed(message)
                 return

@@ -1,4 +1,4 @@
-package io.paulocosta.twitbooks.goodreads
+package io.paulocosta.twitbooks.books.provider.goodreads
 
 import okhttp3.Interceptor
 import okhttp3.Response
