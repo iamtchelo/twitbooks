@@ -6,4 +6,6 @@ interface BookProviderService {
 
     fun search(text: String): Single<BookProviderResponse?>
 
+    val provider: Provider
+
 }

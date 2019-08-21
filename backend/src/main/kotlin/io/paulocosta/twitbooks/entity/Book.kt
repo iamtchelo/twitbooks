@@ -1,5 +1,6 @@
 package io.paulocosta.twitbooks.entity
 
+import io.paulocosta.twitbooks.books.provider.Provider
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.util.*
@@ -40,5 +41,13 @@ data class Book(
                 joinColumns = [JoinColumn(name = "book_id")],
                 inverseJoinColumns = [JoinColumn(name = "user_id")]
         )
-        var users: Set<User> = emptySet()
+        var users: Set<User> = emptySet(),
+
+        @ManyToMany
+        @JoinTable(
+                name = "book_providers",
+                joinColumns = [JoinColumn(name = "book_id")],
+                inverseJoinColumns = [JoinColumn(name = "provider_id")]
+        )
+        var providers: Set<Provider> = emptySet()
 )

@@ -67,3 +67,19 @@ create table book_user(
     FOREIGN KEY (book_id) REFERENCES books(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+CREATE TABLE providers(
+                          id BIGINT PRIMARY KEY,
+                          key TEXT
+);
+
+INSERT INTO providers VALUES(1, 'GOODREADS');
+INSERT INTO providers VALUES(2, 'AMAZON');
+INSERT INTO providers VALUES(3, 'GOOGLE_BOOKS');
+
+CREATE TABLE book_providers(
+                               book_id BIGINT,
+                               provider_id BIGINT,
+                               FOREIGN KEY (book_id) REFERENCES books(id),
+                               FOREIGN KEY (provider_id) REFERENCES providers(id)
+)

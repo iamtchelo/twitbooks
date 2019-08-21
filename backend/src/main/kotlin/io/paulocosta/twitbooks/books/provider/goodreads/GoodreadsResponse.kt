@@ -8,19 +8,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @Root(name = "GoodreadsResponse", strict = false)
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GoodreadsResponse {
-
-    public GoodreadsResponse() {}
+class GoodreadsResponse {
 
     @Element(name = "search")
-    private Search search;
-
-    public Search getSearch() {
-        return search;
-    }
-
-    public void setSearch(Search search) {
-        this.search = search;
-    }
-
+    var search: Search? = null
 }
