@@ -8,8 +8,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @Root(name = "GoodreadsResponse", strict = false)
 @XmlAccessorType(XmlAccessType.FIELD)
-class GoodreadsResponse {
-
-    @Element(name = "search")
-    var search: Search? = null
-}
+data class GoodreadsResponse @JvmOverloads constructor(
+        @field:Element(name = "search")
+        @param:Element(name = "search")
+        var search: Search? = null
+)
