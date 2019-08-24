@@ -43,6 +43,7 @@ class BookService @Autowired constructor(private val bookRepository: BookReposit
     }
 
     fun findByProvider(key: String, providerId: Long): Book? {
+        return bookRepository.findByProvider(key, providerId)
     }
 
 }

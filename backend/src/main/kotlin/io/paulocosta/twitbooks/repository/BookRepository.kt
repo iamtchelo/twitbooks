@@ -18,4 +18,7 @@ interface BookRepository : JpaRepository<Book, Long> {
     @Transactional
     fun ignoreBook(bookId: Long)
 
+    @Query("select * from book inner join book_providers on book.id = book_providers.book_id where book_providers.provider_id = :providerId and book.key = :key limit 1", nativeQuery = true)
+    fun findByProvider(key: String, providerId: Long): Book?
+
 }

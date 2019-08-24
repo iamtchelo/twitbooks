@@ -10,14 +10,13 @@ import org.springframework.stereotype.Service
 
 @Service
 @Profile("goodreads")
-class GoodreadsService(private val goodreadsSearch: GoodreadsSearch) : BookProviderService {
+class GoodreadsService(private val goodreadsSearch: GoodreadsSearch) : BookProviderService() {
+
+    override fun getBooks(text: String): Single<BookProviderResponse> {
+        return goodreadsSearch.search(text).map(this::processResponse)
+    }
 
     override val provider: Provider = Provider.GOODREADS
-
-    override fun search(text: String): Single<BookProviderResponse?> {
-        return goodreadsSearch.search(text)
-                .map(this::processResponse)
-    }
 
     fun processResponse(response: GoodreadsResponse): BookProviderResponse? {
         val books = response.search?.results?.works?.map {

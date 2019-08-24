@@ -1,5 +1,7 @@
 package io.paulocosta.twitbooks.controller.debug
 
+import io.paulocosta.twitbooks.books.provider.BookProviderResponse
+import io.paulocosta.twitbooks.books.provider.BookProviderService
 import io.paulocosta.twitbooks.books.provider.goodreads.GoodreadsResponse
 import io.paulocosta.twitbooks.books.provider.goodreads.GoodreadsService
 import io.reactivex.Single
@@ -13,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/debug/search")
 @Profile("dev")
-class GoodreadController @Autowired constructor(val goodreadsService: GoodreadsService) {
+class BookProviderController @Autowired constructor(private val bookProviderService: BookProviderService) {
 
     @GetMapping
-    fun search(@RequestParam(name = "q") query: String): Single<GoodreadsResponse> {
-        return goodreadsService.search(query)
+    fun search(@RequestParam(name = "q") query: String): Single<BookProviderResponse> {
+        return bookProviderService.search(query)
     }
 
 }
