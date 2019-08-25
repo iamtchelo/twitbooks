@@ -54,7 +54,7 @@ class BookSyncService(
                 val page = messageService.getUnprocessedMessages(friendId, PageRequest.of(currentPage, pageCount))
                 val messages = page.content
                 Observable.fromIterable(messages)
-                        .flatMapSingle { nerService.detectEntities(it.text).map { entities -> Pair(it, entities) } }
+                        .flatMapSingle { nerService.detectEntities(it.text!!).map { entities -> Pair(it, entities) } }
                         .doOnNext {
                             logger.info { "No Entities found, toggling message as processed." }
                             if (it.second.isEmpty()) { toggleMessageProcessed(it.first)}
@@ -106,7 +106,7 @@ class BookSyncService(
 
     fun toggleMessageProcessed(message: Message) {
         logger.info { "Deleting message with id ${message.id }" }
-        messageService.deleteMessage(message)
+        messageService.deleteMessage(message.id)
     }
 
 }

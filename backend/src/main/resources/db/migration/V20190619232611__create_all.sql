@@ -33,8 +33,8 @@ create table messages(
     text       VARCHAR(300) NOT NULL,
     retweet    BOOLEAN NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    friend_id  BIGINT NOT NULL,
-    foreign key (friend_id) references friends(id)
+    friend_id  BIGINT,
+    FOREIGN KEY (friend_id) REFERENCES friends(id)
 );
 
 create table message_sync_state(
@@ -46,8 +46,9 @@ create table message_sync_state(
 );
 
 create table books(
-    id              BIGINT NOT NULL PRIMARY KEY ,
+    id              BIGSERIAL NOT NULL PRIMARY KEY ,
     title           VARCHAR(255),
+    key             TEXT,
     small_image_url TEXT,
     image_url       TEXT,
     ignored         BOOLEAN NOT NULL DEFAULT '0',

@@ -30,7 +30,9 @@ class MessageService @Autowired constructor(
     }
 
     fun getUnprocessedMessages(friendId: Long, pageable: Pageable): Page<Message> {
-        return messageRepository.getUnprocessedMessages(friendId, pageable)
+        return messageRepository.getUnprocessedMessages(friendId, pageable).map {
+            Message(it.id, it.text, null, null, null)
+        }
     }
 
     fun getUnprocesedCount(friendId: Long): Long {
@@ -125,8 +127,8 @@ class MessageService @Autowired constructor(
         return SyncResult.SUCCESS
     }
 
-    fun deleteMessage(message: Message) {
-        messageRepository.delete(message)
+    fun deleteMessage(messageId: Long) {
+        messageRepository.deleteById(messageId)
     }
 
     private fun getCurrentUserTimeline(user: User, friend: Friend): MessageResult {
