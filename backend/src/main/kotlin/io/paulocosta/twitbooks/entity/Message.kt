@@ -2,7 +2,6 @@ package io.paulocosta.twitbooks.entity
 
 import java.util.*
 import javax.persistence.*
-import kotlin.jvm.Transient
 
 @Entity
 @Table(name = "messages")
@@ -14,6 +13,8 @@ data class Message(
         val retweet: Boolean?,
 
         val createdAt: Date?,
+
+        val processed: Boolean? = false,
 
         @ManyToOne
         var friend: Friend? = null

@@ -25,6 +25,14 @@ data class SyncResponse(
         val entities: List<String>
 )
 
+fun main() {
+    val pages = ceil(152.0/50L).toInt()
+    println(pages)
+//    for (page in 0 until pages) {
+//        println(page)
+//    }
+}
+
 @Service
 class BookSyncService(
         val messageService: MessageService,
@@ -34,7 +42,7 @@ class BookSyncService(
         val bookService: BookService) {
 
     companion object {
-        const val pageSize: Int = 50
+        const val PAGE_SIZE: Int = 50
     }
 
     fun sync(user: User) {
@@ -48,10 +56,10 @@ class BookSyncService(
             val friendId = friend.id ?: throw IllegalStateException("User not found")
             val messageCount = messageService.getUnprocesedCount(friendId).toInt()
             logger.info { "Processing $messageCount messages from user ${friend.screenName}" }
-            val pageCount = ceil(messageCount.fdiv(pageSize)).toInt()
-            for (currentPage in 1 until pageCount) {
-                logger.info { "Progress $currentPage/$pageCount" }
-                val page = messageService.getUnprocessedMessages(friendId, PageRequest.of(currentPage, pageCount))
+            val pageCount = ceil(messageCount.fdiv(PAGE_SIZE)).toInt()
+            for (currentPage in 0 until pageCount) {
+                logger.info { "Progress $currentPage/${pageCount-1}" }
+                val page = messageService.getUnprocessedMessages(friendId, PageRequest.of(currentPage, PAGE_SIZE))
                 val messages = page.content
                 Observable.fromIterable(messages)
                         .flatMapSingle { nerService.detectEntities(it.text!!).map { entities -> Pair(it, entities) } }
@@ -106,7 +114,7 @@ class BookSyncService(
 
     fun toggleMessageProcessed(message: Message) {
         logger.info { "Deleting message with id ${message.id }" }
-        messageService.deleteMessage(message.id)
+        messageService.toggleProcessed(message.id)
     }
 
 }

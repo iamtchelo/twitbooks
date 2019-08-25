@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.social.twitter.api.Tweet
 import org.springframework.stereotype.Service
 import java.lang.IllegalStateException
+import javax.transaction.Transactional
 
 private val logger = KotlinLogging.logger {}
 
@@ -127,8 +128,9 @@ class MessageService @Autowired constructor(
         return SyncResult.SUCCESS
     }
 
-    fun deleteMessage(messageId: Long) {
-        messageRepository.deleteById(messageId)
+    @Transactional
+    fun toggleProcessed(messageId: Long) {
+        messageRepository.toggleProcessed(messageId)
     }
 
     private fun getCurrentUserTimeline(user: User, friend: Friend): MessageResult {
@@ -151,7 +153,7 @@ class MessageService @Autowired constructor(
     }
 
     private fun toMessage(tweet: Tweet, friend: Friend): Message {
-        return Message(tweet.id, tweet.text, tweet.isRetweet, tweet.createdAt, friend)
+        return Message(tweet.id, tweet.text, tweet.isRetweet, tweet.createdAt, false, friend = friend)
     }
 
 }
