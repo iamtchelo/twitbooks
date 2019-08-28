@@ -1,5 +1,6 @@
 package io.paulocosta.twitbooks.books.provider.goodreads
 
+import arrow.core.Option
 import io.paulocosta.twitbooks.books.provider.BookProviderResponse
 import io.paulocosta.twitbooks.books.provider.BookProviderService
 import io.paulocosta.twitbooks.books.provider.Provider
@@ -12,22 +13,25 @@ import org.springframework.stereotype.Service
 @Profile("goodreads")
 class GoodreadsService(private val goodreadsSearch: GoodreadsSearch) : BookProviderService() {
 
-    override fun getBooks(text: String): Single<BookProviderResponse> {
+    override fun getBooks(text: String): Single<Option<BookProviderResponse>> {
         return goodreadsSearch.search(text).map(this::processResponse)
     }
 
     override val provider: Provider = Provider.GOODREADS
 
-    fun processResponse(response: GoodreadsResponse): BookProviderResponse? {
+    fun processResponse(response: GoodreadsResponse): Option<BookProviderResponse> {
         val books = response.search?.results?.works?.map {
             it.bestGoodreadsBook
         }
         books?.let { books ->
             if (books.isNotEmpty()) {
-                return books[0]?.let { BookProviderResponse(processBook(it)) }
+                val book = books[0]
+                if (book != null) {
+                    return Option.just(BookProviderResponse(processBook(book)))
+                }
             }
         }
-        return null
+        return Option.empty()
     }
 
     fun processBook(goodreadsBook: GoodreadsBook): Book {

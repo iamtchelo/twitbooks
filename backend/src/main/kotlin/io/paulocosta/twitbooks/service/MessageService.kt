@@ -36,10 +36,6 @@ class MessageService @Autowired constructor(
         }
     }
 
-    fun getUnprocesedCount(friendId: Long): Long {
-        return messageRepository.getUnprocessedCount(friendId)
-    }
-
     fun getCount(): Single<Long> {
         return Single.just(messageRepository.count())
     }

@@ -1,5 +1,6 @@
 package io.paulocosta.twitbooks.books.provider.google
 
+import arrow.core.Option
 import io.paulocosta.twitbooks.books.provider.BookProviderResponse
 import io.paulocosta.twitbooks.books.provider.BookProviderService
 import io.paulocosta.twitbooks.books.provider.Provider
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service
 @Profile("google-books")
 class GoogleBooksService : BookProviderService() {
 
-    override fun getBooks(text: String): Single<BookProviderResponse> {
+    override fun getBooks(text: String): Single<Option<BookProviderResponse>> {
         return Single.never()
     }
 

@@ -1,15 +1,16 @@
 package io.paulocosta.twitbooks.books.provider
 
+import arrow.core.Option
 import io.reactivex.Single
 import opennlp.tools.util.normalizer.TwitterCharSequenceNormalizer
 
 abstract class BookProviderService {
 
-    fun search(text: String): Single<BookProviderResponse> {
+    fun search(text: String): Single<Option<BookProviderResponse>> {
         return getBooks(normalize(text))
     }
 
-    abstract fun getBooks(text: String): Single<BookProviderResponse>
+    abstract fun getBooks(text: String): Single<Option<BookProviderResponse>>
 
     abstract val provider: Provider
 
