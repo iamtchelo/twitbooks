@@ -24,7 +24,7 @@ class GoogleBooksService(private val googleBooksApi: GoogleBooksApi) : BookProvi
     }
 
     fun processResponse(res: GoogleBooksApiResponse): Option<BookProviderResponse> {
-        val items = res.items
+        val items = res.items ?: emptyList()
         if (items.isNotEmpty()) {
             return Option.just(BookProviderResponse(toBook(items[0])))
         }
@@ -36,8 +36,8 @@ class GoogleBooksService(private val googleBooksApi: GoogleBooksApi) : BookProvi
                 id = 0,
                 key = item.id,
                 title = item.volumeInfo.title,
-                smallImageUrl = item.imageLinks.smallThumbnail,
-                imageUrl = item.imageLinks.thumbnail,
+                smallImageUrl = item.imageLinks?.smallThumbnail ?: "",
+                imageUrl = item.imageLinks?.thumbnail ?: "",
                 ignored = false,
                 providers = setOf(provider)
         )

@@ -8,13 +8,14 @@ import io.paulocosta.twitbooks.entity.Book
 import io.reactivex.Single
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
+import java.util.concurrent.TimeUnit
 
 @Service
 @Profile("goodreads")
 class GoodreadsService(private val goodreadsSearchApi: GoodreadsSearchApi) : BookProviderService() {
 
     override fun getBooks(text: String): Single<Option<BookProviderResponse>> {
-        return goodreadsSearchApi.search(text).map(this::processResponse)
+        return goodreadsSearchApi.search(text).map(this::processResponse).delay(1, TimeUnit.SECONDS)
     }
 
     override val provider: Provider = Provider.GOODREADS

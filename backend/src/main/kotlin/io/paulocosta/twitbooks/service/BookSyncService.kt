@@ -16,7 +16,6 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.lang.IllegalStateException
-import java.util.concurrent.TimeUnit
 import javax.transaction.Transactional
 
 private val logger = KotlinLogging.logger {}
@@ -71,7 +70,6 @@ class BookSyncService(
                     if (it.second.isEmpty()) { toggleMessageProcessed(it.first)}
                 }
                 .filter { it.second.isNotEmpty() }
-                .debounce(1, TimeUnit.SECONDS)
                 .flatMapSingle {
                     bookProviderService.search(it.second[0]).map { res -> SyncResponse(res, it.first, it.second) }
                 }
@@ -79,7 +77,7 @@ class BookSyncService(
                         {
                             processBookIntegrationResponse(it.providerResponse, it.message, it.entities, user)},
                         {
-                            logger.error(it.message, it.stackTrace)
+                            logger.error("Error during sync", it)
                         }
                 )
     }
