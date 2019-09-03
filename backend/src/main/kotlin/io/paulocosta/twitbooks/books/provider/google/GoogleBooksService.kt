@@ -36,8 +36,8 @@ class GoogleBooksService(private val googleBooksApi: GoogleBooksApi) : BookProvi
                 id = 0,
                 key = item.id,
                 title = item.volumeInfo.title,
-                smallImageUrl = item.imageLinks?.smallThumbnail ?: "",
-                imageUrl = item.imageLinks?.thumbnail ?: "",
+                smallImageUrl = item.volumeInfo.imageLinks?.smallThumbnail ?: "",
+                imageUrl = item.volumeInfo.imageLinks?.thumbnail ?: "",
                 ignored = false,
                 providers = setOf(provider)
         )
