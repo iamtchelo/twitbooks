@@ -18,8 +18,9 @@
 }
 
 .loginText {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 100;
+    font-family: 'Modak', cursive;
+    user-select: none;
+    color: #3498DB;
     font-size: 4.8rem;
     text-transform: uppercase;
 }

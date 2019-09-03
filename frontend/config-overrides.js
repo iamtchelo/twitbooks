@@ -9,9 +9,6 @@ module.exports = override(
         }),
     addLessLoader({
         javascriptEnabled: true,
-        modifyVars: {
-            '@font-family': 'Raleway, sans-serif'
-        },
     }),
     addBabelPresets(["mobx"]),
 );

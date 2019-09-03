@@ -9,8 +9,9 @@
 }
 
 .title {
+    font-family: 'Modak', cursive;
     font-size: 2.4rem;
-    color: azure;
+    color: #ECECFF;
     text-transform: capitalize;
 }
 
@@ -19,6 +20,7 @@
     flex-direction: row;
     justify-content: space-between;
     background-image: linear-gradient(to right, #2C3E50, #3498DB);
+    user-select: none;
 }
 
 .logout-conteiner {
@@ -27,7 +29,7 @@
 
 .logout {
     font-size: 1.6rem;
-    color: azure;
+    color: #ECECFF;
     padding-bottom: 1px;
 }
 

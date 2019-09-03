@@ -1,5 +1,5 @@
 html {
-    font-size: 62.5%
+    font-size: 62.5%;
 }
 
 /*phone - 600px*/
@@ -37,6 +37,7 @@ body {
   font-style: normal;
   font-size: 4rem;
   line-height: 3.6rem;
+  font-family: 'Roboto', sans-serif !important;
 
 }
 
