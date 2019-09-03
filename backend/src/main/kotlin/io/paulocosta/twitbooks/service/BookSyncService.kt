@@ -90,17 +90,7 @@ class BookSyncService(
                 val resultBook = response.t.result
                 when (val existingBook = bookService.findByProvider(resultBook.key, resultBook.providers.elementAt(0).id)) {
                     null -> {
-                        val book = Book(
-                                id = existingBook?.id ?: 0,
-                                key = resultBook.id.toString(),
-                                title = resultBook.title,
-                                smallImageUrl = resultBook.smallImageUrl,
-                                imageUrl = resultBook.imageUrl,
-                                message = setOf(message),
-                                detailsUrl = resultBook.detailsUrl,
-                                users = setOf(user)
-                        )
-                        bookService.saveBook(book)
+                        bookService.saveBook(resultBook.copy(message = setOf(message), users = setOf(user)))
                         toggleMessageProcessed(message)
                         logger.info { "Book created" }
                     }
