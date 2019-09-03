@@ -16,11 +16,24 @@ class BookCard extends Component {
                 style={this.props.style}
                 hoverable
                 className="card"
-                cover={<img onClick={() => this.props.onClickEvent()} className="card-img" alt="book" src={this.book.imageUrl} />}
+                // cover={<img onClick={() => this.props.onClickEvent()} className="card-cover" alt="book" src={this.book.imageUrl} />}
+                cover={this.renderCardCover(this.book.imageUrl, () => this.props.onClickEvent())}
                 actions={[this.deleteAction()]}>
                 <Meta onClick={() => this.props.onClickEvent()} title={this.book.title}/>
             </Card>
         )
+    }
+
+    renderCardCover(imageUrl, clickEvent) {
+        if (imageUrl === undefined || imageUrl === "") {
+            return (
+                <div onClick={clickEvent} className="empty-cover">
+                    <span className="empty-text">NO IMAGE</span>
+                </div>
+            )
+        } else {
+            return <img onClick={clickEvent} className="card-cover" alt="book" src={this.book.imageUrl} />
+        }
     }
 
     deleteAction() {

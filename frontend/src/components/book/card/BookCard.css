@@ -2,7 +2,20 @@
     width: 20rem;
 }
 
-.card-img {
+.card-cover {
     width: 20rem;
     height: 30rem;
+}
+
+.empty-cover {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    width: 20rem;
+    height: 30rem;
+}
+
+.empty-text {
+    font-size: 2.4rem;
 }
