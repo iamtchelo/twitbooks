@@ -8,7 +8,9 @@ import io.paulocosta.twitbooks.entity.Book
 import io.reactivex.Single
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
+import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
+import kotlin.text.Charsets.UTF_8
 
 @Service
 @Profile("goodreads")
@@ -43,6 +45,7 @@ class GoodreadsService(private val goodreadsSearchApi: GoodreadsSearchApi) : Boo
                 smallImageUrl = goodreadsBook.smallImageUrl!!,
                 imageUrl = goodreadsBook.imageUrl!!,
                 ignored = false,
+                detailsUrl = URLEncoder.encode("https://www.goodreads.com/book/title?id=${goodreadsBook.title}", UTF_8.name()),
                 providers = setOf(provider)
         )
     }

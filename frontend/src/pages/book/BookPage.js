@@ -189,7 +189,7 @@ class BookPage extends Component {
     }
 
     onClick(book) {
-        const url = encodeURI(`https://www.goodreads.com/book/title?id=${book.title}`);
+        const url = book.detailsUrl;
         return () => { window.open(url) }
     }
 

@@ -24,6 +24,8 @@ data class Book(
 
         val ignored: Boolean = false,
 
+        val detailsUrl: String,
+
         @CreatedDate
         var createdDate: Date? = null,
 

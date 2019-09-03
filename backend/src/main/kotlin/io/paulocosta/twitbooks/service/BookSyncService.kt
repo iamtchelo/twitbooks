@@ -97,7 +97,9 @@ class BookSyncService(
                                 smallImageUrl = resultBook.smallImageUrl,
                                 imageUrl = resultBook.imageUrl,
                                 message = setOf(message),
-                                users = setOf(user))
+                                detailsUrl = resultBook.detailsUrl,
+                                users = setOf(user)
+                        )
                         bookService.saveBook(book)
                         toggleMessageProcessed(message)
                         logger.info { "Book created" }

@@ -3,7 +3,8 @@ import { types, flow, getEnv } from 'mobx-state-tree';
 export const Book = types.model({
     id: types.integer,
     title: types.string,
-    imageUrl: types.string
+    imageUrl: types.string,
+    detailsUrl: types.string,
 });
 
 export const BookStore = types.model({
