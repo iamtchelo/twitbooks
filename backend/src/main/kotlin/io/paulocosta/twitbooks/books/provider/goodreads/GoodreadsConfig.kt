@@ -32,8 +32,8 @@ class GoodreadsConfig {
     }
 
     @Bean
-    fun searchApi(): GoodreadsSearch {
-        return retrofitClient().create(GoodreadsSearch::class.java)
+    fun searchApi(): GoodreadsSearchApi {
+        return retrofitClient().create(GoodreadsSearchApi::class.java)
     }
 
 }

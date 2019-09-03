@@ -4,7 +4,7 @@ import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface GoodreadsSearch {
+interface GoodreadsSearchApi     {
 
     @GET("search")
     fun search(@Query("q") query: String): Single<GoodreadsResponse>
