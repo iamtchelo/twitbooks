@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*
 data class BookApiResponse(
         val id: Long,
         val title: String,
-        val imageUrl: String
+        val imageUrl: String,
+        val detailsUrl: String
 )
 
 @RestController
@@ -20,7 +21,7 @@ class BooksController @Autowired constructor(private val bookService: BookServic
     fun getBooks(@RequestParam("page") page: Int?): Page<BookApiResponse> {
         return bookService.getAllBooks(PageRequest.of(page ?: 0, 50))
                 .map {
-                    BookApiResponse(it.id, it.title, it.imageUrl)
+                    BookApiResponse(it.id, it.title, it.imageUrl, it.detailsUrl)
                 }
     }
 
