@@ -11,7 +11,7 @@ export default class MainLayout extends Component {
         return (
             <Layout className="App">
                 <Header className="header">
-                    <span className="title">TWIT BOOKS</span>
+                    <span className="title">TWITBOOKS</span>
                     <div className="logout-container" onClick={this.logoutAction}>
                         <span className="logout">Logout</span>
                     </div>
