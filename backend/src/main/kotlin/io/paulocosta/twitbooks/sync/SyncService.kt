@@ -1,12 +1,11 @@
-package io.paulocosta.twitbooks.service
+package io.paulocosta.twitbooks.sync
 
 import io.paulocosta.twitbooks.entity.User
+import io.paulocosta.twitbooks.service.UserService
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled import org.springframework.stereotype.Service
-
-private val logger = KotlinLogging.logger {}
 
 @Service
 class SyncService @Autowired constructor(
@@ -18,6 +17,8 @@ class SyncService @Autowired constructor(
         // One hour
         const val SYNC_DELAY_MILLIS = 3600000L
     }
+
+    private val logger = KotlinLogging.logger {}
 
     @Value("\${twitter.sync.enabled}")
     var twitterSyncEnabled: Boolean = false

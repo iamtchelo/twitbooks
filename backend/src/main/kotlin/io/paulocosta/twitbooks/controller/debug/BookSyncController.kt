@@ -1,6 +1,6 @@
 package io.paulocosta.twitbooks.controller.debug
 
-import io.paulocosta.twitbooks.service.BookSyncService
+import io.paulocosta.twitbooks.sync.BookSyncService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Profile
 import org.springframework.web.bind.annotation.GetMapping

@@ -1,4 +1,4 @@
-package io.paulocosta.twitbooks.service
+package io.paulocosta.twitbooks.sync
 
 import io.paulocosta.twitbooks.entity.FriendSyncStatus
 import io.paulocosta.twitbooks.entity.Status

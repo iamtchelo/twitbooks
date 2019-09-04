@@ -1,15 +1,15 @@
-package io.paulocosta.twitbooks.service
+package io.paulocosta.twitbooks.sync
 
 import arrow.core.Either
 import io.paulocosta.twitbooks.auth.TwitterApiProvider
 import io.paulocosta.twitbooks.entity.*
+import io.paulocosta.twitbooks.service.FriendService
+import io.paulocosta.twitbooks.service.RateLimitService
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.social.twitter.api.TwitterProfile
 import org.springframework.stereotype.Service
-
-private val logger = KotlinLogging.logger {}
 
 @Service
 class FriendSyncService @Autowired constructor(
@@ -21,6 +21,8 @@ class FriendSyncService @Autowired constructor(
 
     @Value("\${spring.profiles.active}")
     lateinit var activeProfile: String
+
+    private val logger = KotlinLogging.logger {}
 
     fun sync(user: User): SyncResult {
         logger.info { "Starting to sync users" }

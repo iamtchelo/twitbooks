@@ -1,14 +1,15 @@
-package io.paulocosta.twitbooks.service
+package io.paulocosta.twitbooks.sync
 
 import arrow.core.Either
 import io.paulocosta.twitbooks.entity.SyncResult
 import io.paulocosta.twitbooks.entity.User
 import io.paulocosta.twitbooks.ratelimit.RateLimitWatcher
+import io.paulocosta.twitbooks.service.FriendService
+import io.paulocosta.twitbooks.service.MessageService
+import io.paulocosta.twitbooks.service.RateLimitService
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-
-private val logger = KotlinLogging.logger {}
 
 @Service
 class TwitterSyncService @Autowired constructor(
@@ -16,6 +17,8 @@ class TwitterSyncService @Autowired constructor(
         val friendSyncService: FriendSyncService,
         val messageService: MessageService,
         val rateLimitService: RateLimitService) {
+
+    private val logger = KotlinLogging.logger {}
 
     fun sync(user: User) {
         logger.info { "Starting Twitter Sync" }

@@ -1,4 +1,4 @@
-package io.paulocosta.twitbooks.service
+package io.paulocosta.twitbooks.sync
 
 import arrow.core.None
 import arrow.core.Option
@@ -6,10 +6,11 @@ import arrow.core.Some
 import io.paulocosta.twitbooks.books.BookService
 import io.paulocosta.twitbooks.books.provider.BookProviderResponse
 import io.paulocosta.twitbooks.books.provider.BookProviderService
-import io.paulocosta.twitbooks.entity.Book
 import io.paulocosta.twitbooks.entity.Message
 import io.paulocosta.twitbooks.entity.User
 import io.paulocosta.twitbooks.ner.NERService
+import io.paulocosta.twitbooks.service.FriendService
+import io.paulocosta.twitbooks.service.MessageService
 import io.reactivex.Observable
 import mu.KotlinLogging
 import org.springframework.data.domain.PageRequest
@@ -17,8 +18,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.lang.IllegalStateException
 import javax.transaction.Transactional
-
-private val logger = KotlinLogging.logger {}
 
 data class SyncResponse(
         val providerResponse: Option<BookProviderResponse>,
@@ -37,6 +36,8 @@ class BookSyncService(
     companion object {
         const val PAGE_SIZE: Int = 50
     }
+
+    private val logger = KotlinLogging.logger {}
 
     fun sync(user: User) {
         logger.info { "Starting books sync" }
