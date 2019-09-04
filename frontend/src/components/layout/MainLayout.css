@@ -1,3 +1,7 @@
+.app {
+    background-image: url("/papyrus.png");
+}
+
 .content-root {
     background-color: #FFF;
 }
@@ -5,7 +9,6 @@
 .content {
     padding: 2rem;
     margin: 2rem;
-    background: #f2f2f2;
 }
 
 .title {

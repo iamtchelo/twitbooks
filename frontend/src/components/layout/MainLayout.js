@@ -9,7 +9,7 @@ export default class MainLayout extends Component {
 
     render() {
         return (
-            <Layout className="App">
+            <Layout className="app">
                 <Header className="header">
                     <span className="title">TWITBOOKS</span>
                     <div className="logout-container" onClick={this.logoutAction}>
