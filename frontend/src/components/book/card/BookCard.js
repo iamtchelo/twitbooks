@@ -16,7 +16,6 @@ class BookCard extends Component {
                 style={this.props.style}
                 hoverable
                 className="card"
-                // cover={<img onClick={() => this.props.onClickEvent()} className="card-cover" alt="book" src={this.book.imageUrl} />}
                 cover={this.renderCardCover(this.book.imageUrl, () => this.props.onClickEvent())}
                 actions={[this.deleteAction()]}>
                 <Meta onClick={() => this.props.onClickEvent()} title={this.book.title}/>
