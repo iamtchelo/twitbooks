@@ -1,6 +1,7 @@
 package io.paulocosta.twitbooks.sync
 
 import io.paulocosta.twitbooks.auth.SecurityHelper
+import io.paulocosta.twitbooks.service.FriendService
 import io.reactivex.Single
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
@@ -10,7 +11,7 @@ import java.time.temporal.ChronoUnit
 typealias TwitterId = String
 
 @Service
-class SyncProgressService {
+class SyncProgressService constructor(private val friendService: FriendService) {
 
     val logger = KotlinLogging.logger {}
 
