@@ -50,7 +50,7 @@ class SyncProgress extends Component {
         const data = this.props.data;
         const totalMessages = data.totalMessages || 0;
         const syncedMessages = data.syncedMessages || 0;
-        return <span className="sync-item">{`${syncedMessages} of ${totalMessages} friends`}</span>
+        return <span className="sync-item">{`${syncedMessages} of ${totalMessages} messages`}</span>
     }
 
     renderBookSync() {
