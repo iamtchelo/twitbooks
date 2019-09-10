@@ -1,0 +1,26 @@
+.sync-progress-root {
+    width: 60rem;
+    height: 50rem;
+    display: flex;
+    justify-content: center;
+    background-color: #FFF;
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+}
+
+.sync-content {
+    background-color: #FFF;
+    display: flex;
+    flex-direction: column;
+}
+
+.sync-title {
+    display: inline-block;
+    width: 200px;
+    margin-top: 10px;
+    font-size: 2.6rem;
+}
+
+.sync-item {
+    margin-top: 5px;
+    font-size: 1.8rem;
+}

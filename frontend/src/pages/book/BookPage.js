@@ -5,6 +5,7 @@ import BookCard from "../../components/book/card/BookCard";
 import MainLayout from "../../components/layout/MainLayout";
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import  "./BookPage.css";
+import SyncProgress from "../../components/sync/SyncProgress";
 
 @inject('bookStore') @observer
 class BookPage extends Component {
@@ -55,10 +56,23 @@ class BookPage extends Component {
     render() {
         return(
             <MainLayout>
-                { this.renderBooks(this.store.data) }
-                { this.renderPagination(this.store.count) }
+                {this.renderBooksOrSync()}
             </MainLayout>
         )
+    }
+
+    renderBooksOrSync() {
+        const books = this.store.data;
+        if (books && books.length === 0) {
+            return <SyncProgress data={{}}/>
+        } else {
+            return(
+                <Card>
+                    { this.renderBooks(this.store.data) }
+                    { this.renderPagination(this.store.count) }
+                </Card>
+            )
+        }
     }
 
     renderPagination(totalElements) {
@@ -134,14 +148,24 @@ class BookPage extends Component {
     renderBooks(books) {
 
         if (!books) {
-            return this.renderLoading()
-        } else {
+            return this.renderLoading();
+        }
+        else if (books.length === 0) {
+            return <div/>
+        }
+        else {
+            console.log("render grid");
+            console.log("books", books.toJSON());
             if (this.state.renderGrid) {
-                return this.renderBookGrid(books)
+                return this.renderBookGrid(books);
             } else {
-                return this.renderBookList(books)
+                return this.renderBookList(books);
             }
         }
+    }
+
+    renderSyncProgress() {
+        return <SyncProgress />
     }
 
     renderBookGrid(books) {

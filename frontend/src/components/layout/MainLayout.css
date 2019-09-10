@@ -1,5 +1,6 @@
 .app {
     background-image: url("/papyrus.png");
+    height: 100vh;
 }
 
 .content-root {
@@ -9,6 +10,8 @@
 .content {
     padding: 2rem;
     margin: 2rem;
+    display: flex;
+    justify-content: center;
 }
 
 .title {

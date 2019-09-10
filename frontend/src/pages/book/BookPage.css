@@ -1,3 +1,7 @@
+.main-layout {
+    height: 100vh;
+}
+
 .book-card {
     margin-bottom: 15px;
 }

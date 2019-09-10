@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Layout } from 'antd';
+import { Layout } from 'antd';
 import "./MainLayout.css"
 import auth0Client from '../../auth/Auth'
 
@@ -17,9 +17,7 @@ export default class MainLayout extends Component {
                     </div>
                 </Header>
                     <Content className="content">
-                        <Card>
-                            {this.props.children}
-                        </Card>
+                        {this.props.children}
                     </Content>
             </Layout>
         );
