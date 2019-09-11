@@ -31,7 +31,6 @@ class SyncProgress extends Component {
             <div className="sync-progress-root">
                 <div className="sync-content">
                     <span className="sync-title">{`Syncing data${this.state.syncDisplay}`}</span>
-                    {this.renderFriendSync()}
                     {this.renderMessageSync()}
                     {this.renderBookSync()}
                 </div>
@@ -39,18 +38,11 @@ class SyncProgress extends Component {
         )
     }
 
-    renderFriendSync() {
-        const data = this.props.data;
-        const totalFriends = data.totalFriends || 0;
-        const syncedFriends = data.syncedFriends || 0;
-        return <span className="sync-item">{`${syncedFriends} of ${totalFriends} friends`}</span>
-    }
-
     renderMessageSync() {
         const data = this.props.data;
         const totalMessages = data.totalMessages || 0;
         const syncedMessages = data.syncedMessages || 0;
-        return <span className="sync-item">{`${syncedMessages} of ${totalMessages} messages`}</span>
+        return <span className="sync-item">{`${syncedMessages} of ${totalMessages} messages processed`}</span>
     }
 
     renderBookSync() {

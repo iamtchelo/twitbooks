@@ -1,7 +1,6 @@
 package io.paulocosta.twitbooks.sync
 
 import io.paulocosta.twitbooks.auth.SecurityHelper
-import io.paulocosta.twitbooks.service.FriendService
 import io.reactivex.Single
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
@@ -11,7 +10,7 @@ import java.time.temporal.ChronoUnit
 typealias TwitterId = String
 
 @Service
-class SyncProgressService constructor(private val friendService: FriendService) {
+class SyncProgressService constructor() {
 
     val logger = KotlinLogging.logger {}
 
@@ -33,7 +32,7 @@ class SyncProgressService constructor(private val friendService: FriendService) 
             val now = Instant.now()
             val elapsed = cacheTime.until(now, ChronoUnit.SECONDS)
             logger.info { "$elapsed seconds until next progress sync for user $id" }
-            if (elapsed > 10) {
+            if (elapsed > CACHE_EXPIRATION_ELAPSED_TIME_SECONDS) {
                 return true
             }
         }
@@ -42,6 +41,10 @@ class SyncProgressService constructor(private val friendService: FriendService) 
 
     fun rebuildCache(id: TwitterId): Single<SyncProgress> {
         return Single.never()
+    }
+
+    companion object {
+        const val CACHE_EXPIRATION_ELAPSED_TIME_SECONDS = 10
     }
 
 }
