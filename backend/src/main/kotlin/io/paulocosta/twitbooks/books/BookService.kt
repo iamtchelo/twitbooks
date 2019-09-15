@@ -23,9 +23,12 @@ class BookService @Autowired constructor(private val bookRepository: BookReposit
         bookRepository.ignoreBook(bookId)
     }
 
-    fun getAllBooks(pageable: Pageable): Page<Book> {
-        val twitterId = SecurityHelper.getTwitterId()
-        return bookRepository.getAllBooksByTwitterId(twitterId, pageable)
+    fun getAllBooks(id: String, pageable: Pageable): Page<Book> {
+        return bookRepository.getAllBooksByTwitterId(id, pageable)
+    }
+
+    fun getAllBooksCount(userId: String): Single<Long> {
+        return Single.just(bookRepository.getBookCountByTwitterId(userId))
     }
 
     fun findById(bookId: Long): Book? {

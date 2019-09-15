@@ -40,6 +40,14 @@ class MessageService @Autowired constructor(
         return Single.just(messageRepository.count())
     }
 
+    fun getCount(userId: String): Single<Long> {
+        return Single.just(messageRepository.getMessageCountByUser(userId))
+    }
+
+    fun getProcessedCount(userId: String): Single<Long> {
+        return Single.just(messageRepository.getProcessedCountByUser(userId))
+    }
+
     fun syncMessages(user: User, friend: Friend, rateLimitWatcher: RateLimitWatcher): SyncResult {
         logger.info { "Starting message sync" }
 

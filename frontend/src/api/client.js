@@ -30,6 +30,12 @@ const client = (baseUrl) => ({
             method: "GET",
             headers: baseHeaders()
         })
+    },
+    getSyncProgress() {
+        return window.fetch(`${baseUrl}/sync_progress`, {
+            method: "GET",
+            headers: baseHeaders()
+        })
     }
 });
 

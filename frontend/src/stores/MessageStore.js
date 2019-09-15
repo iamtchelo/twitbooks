@@ -32,7 +32,7 @@ export const MessageStore = types.model({
             self.totalPages = data.totalPages;
             self.messages = data.content;
         } catch(e) {
-            console.log(e);
+            // TODO error handling
         }
     })
 }));

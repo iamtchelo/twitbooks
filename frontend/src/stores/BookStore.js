@@ -31,7 +31,7 @@ export const BookStore = types.model({
             self.apiData.get(self.currentPage).remove(book);
             yield getEnv(self).client.ignoreBook(bookId);
         } catch(e) {
-            console.log("ERROR", e);
+            // TODO error handling
         }
     }),
     getBooks: flow(function*() {
@@ -44,7 +44,7 @@ export const BookStore = types.model({
             self.totalPages = responseData.totalPages;
             self.apiData.set(self.currentPage,responseData.content);
         } catch(e) {
-            console.log("ERROR", e);
+            // TODO error handling
         }
     })
 }));

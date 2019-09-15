@@ -1,5 +1,6 @@
 package io.paulocosta.twitbooks.controller.v1
 
+import io.paulocosta.twitbooks.auth.SecurityHelper
 import io.paulocosta.twitbooks.books.BookService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -19,7 +20,8 @@ class BooksController @Autowired constructor(private val bookService: BookServic
 
     @GetMapping
     fun getBooks(@RequestParam("page") page: Int?): Page<BookApiResponse> {
-        return bookService.getAllBooks(PageRequest.of(page ?: 0, 50))
+        val twitterId = SecurityHelper.getTwitterId()
+        return bookService.getAllBooks(twitterId, PageRequest.of(page ?: 0, 50))
                 .map {
                     BookApiResponse(it.id, it.title, it.imageUrl, it.detailsUrl)
                 }

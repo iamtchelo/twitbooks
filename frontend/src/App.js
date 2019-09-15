@@ -30,7 +30,9 @@ class App extends Component {
             await auth0Client.silentAuth();
             this.forceUpdate();
         } catch (err) {
-            if (err.error !== 'login_required') console.log(err.error);
+            if (err.error !== 'login_required') {
+                // TODO error handling
+            }
         }
         this.setState({checkingSession: false})
     }

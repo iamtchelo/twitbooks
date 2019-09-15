@@ -10,7 +10,7 @@ import SyncProgress from "../../components/sync/SyncProgress";
 @inject('bookStore') @observer
 class BookPage extends Component {
 
-    store = this.props.bookStore;
+    bookStore = this.props.bookStore;
 
     constructor(props) {
         super(props);
@@ -21,7 +21,7 @@ class BookPage extends Component {
     }
 
     componentDidMount(): void {
-        this.store.getBooks();
+        this.bookStore.getBooks();
     }
 
     componentWillMount(): void {
@@ -62,14 +62,14 @@ class BookPage extends Component {
     }
 
     renderBooksOrSync() {
-        const books = this.store.data;
+        const books = this.bookStore.data;
         if (books && books.length === 0) {
-            return <SyncProgress data={{}}/>
+            return this.renderSyncProgress();
         } else {
             return(
                 <Card>
-                    { this.renderBooks(this.store.data) }
-                    { this.renderPagination(this.store.count) }
+                    { this.renderBooks(this.bookStore.data) }
+                    { this.renderPagination(this.bookStore.count) }
                 </Card>
             )
         }
@@ -90,7 +90,7 @@ class BookPage extends Component {
 
     doOnChange(page) {
         window.scrollTo(0, 0);
-        this.store.setCurrentPage(page);
+        this.bookStore.setCurrentPage(page);
     }
 
     renderLoading() {
@@ -154,8 +154,6 @@ class BookPage extends Component {
             return <div/>
         }
         else {
-            console.log("render grid");
-            console.log("books", books.toJSON());
             if (this.state.renderGrid) {
                 return this.renderBookGrid(books);
             } else {

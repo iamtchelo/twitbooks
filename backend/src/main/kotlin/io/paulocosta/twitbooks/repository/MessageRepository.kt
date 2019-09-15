@@ -31,4 +31,18 @@ interface MessageRepository : JpaRepository<Message, Long> {
     """, nativeQuery = true)
     fun getMessagesByBookId(bookId: Long, pageable: Pageable): Page<Message>
 
+    @Query("" +
+            "select count(messages.id) from messages" +
+            " inner join user_friends on user_friends.friend_id = messages.friend_id" +
+            " inner join users on users.id = user_friends.user_id" +
+            " where users.twitter_id = ?1", nativeQuery = true)
+    fun getMessageCountByUser(userId: String): Long?
+
+    @Query("" +
+            "select count(messages.id) from messages" +
+            " inner join user_friends on user_friends.friend_id = messages.friend_id" +
+            " inner join users on users.id = user_friends.user_id" +
+            " where users.twitter_id = ?1 and messages.processed = true", nativeQuery = true)
+    fun getProcessedCountByUser(userId: String): Long?
+
 }
