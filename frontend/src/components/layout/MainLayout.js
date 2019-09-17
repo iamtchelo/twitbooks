@@ -20,8 +20,7 @@ export default class MainLayout extends Component {
             <Layout className="app">
                 <Header className="header">
                     <span className="title">TWITBOOKS</span>
-                    <div className="logout-container" onClick={this.logoutAction}>
-                        {/*<span className="logout">Logout</span>*/}
+                    <div className="logout-container">
                         {this.renderMenu()}
                     </div>
                 </Header>
@@ -34,6 +33,9 @@ export default class MainLayout extends Component {
 
     handleMenuClick = e => {
         console.log('click', e);
+        if (e.key === 'logout') {
+            this.logoutAction();
+        }
         this.setState({
             current: e.key,
         })
@@ -45,8 +47,8 @@ export default class MainLayout extends Component {
                 <SubMenu className="sub-menu"
                     title={<Icon style={{fontSize: "3.6rem", color: "#ECECFF"}} type="more"/>}
                 >
-                    <Menu.Item key="more:1">Sync Progress</Menu.Item>
-                    <Menu.Item key="more:2">Logout</Menu.Item>
+                    <Menu.Item key="progress">Sync Progress</Menu.Item>
+                    <Menu.Item key="logout">Logout</Menu.Item>
                 </SubMenu>
             </Menu>
         )
