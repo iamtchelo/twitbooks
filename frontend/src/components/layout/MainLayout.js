@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { inject } from 'mobx-react';
 import { Layout, Menu, Icon } from 'antd';
 import "./MainLayout.css"
 import auth0Client from '../../auth/Auth'
@@ -6,7 +7,8 @@ import auth0Client from '../../auth/Auth'
 const { SubMenu } = Menu;
 const { Header, Content } = Layout;
 
-export default class MainLayout extends Component {
+@inject('pageStore')
+class MainLayout extends Component {
 
     constructor(props) {
        super(props);
@@ -36,6 +38,10 @@ export default class MainLayout extends Component {
         if (e.key === 'logout') {
             this.logoutAction();
         }
+        if (e.key === 'progress') {
+            console.log("HAI");
+            this.props.pageStore.showProgress();
+        }
         this.setState({
             current: e.key,
         })
@@ -59,3 +65,5 @@ export default class MainLayout extends Component {
     };
 
 }
+
+export default MainLayout;

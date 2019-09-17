@@ -7,7 +7,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import  "./BookPage.css";
 import SyncProgress from "../../components/sync/SyncProgress";
 
-@inject('bookStore') @observer
+@inject('bookStore', 'pageStore') @observer
 class BookPage extends Component {
 
     bookStore = this.props.bookStore;
@@ -63,7 +63,8 @@ class BookPage extends Component {
 
     renderBooksOrSync() {
         const books = this.bookStore.data;
-        if (books && books.length === 0) {
+        console.log("SHOW PROGRESS", this.props.pageStore.progress);
+        if ((books && books.length === 0) || this.props.pageStore.progress) {
             return this.renderSyncProgress();
         } else {
             return(
