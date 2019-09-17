@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
-import { Layout } from 'antd';
+import { Layout, Menu, Icon } from 'antd';
 import "./MainLayout.css"
 import auth0Client from '../../auth/Auth'
 
+const { SubMenu } = Menu;
 const { Header, Content } = Layout;
 
 export default class MainLayout extends Component {
+
+    constructor(props) {
+       super(props);
+        this.state = {
+            current: ''
+        };
+    }
 
     render() {
         return (
@@ -13,7 +21,8 @@ export default class MainLayout extends Component {
                 <Header className="header">
                     <span className="title">TWITBOOKS</span>
                     <div className="logout-container" onClick={this.logoutAction}>
-                        <span className="logout">Logout</span>
+                        {/*<span className="logout">Logout</span>*/}
+                        {this.renderMenu()}
                     </div>
                 </Header>
                     <Content className="content">
@@ -23,7 +32,28 @@ export default class MainLayout extends Component {
         );
     }
 
+    handleMenuClick = e => {
+        console.log('click', e);
+        this.setState({
+            current: e.key,
+        })
+    };
+
+    renderMenu() {
+        return(
+            <Menu className="menu" onClick={this.handleMenuClick} selectedKeys={[this.state.current]} mode="horizontal">
+                <SubMenu className="sub-menu"
+                    title={<Icon style={{fontSize: "3.6rem", color: "#ECECFF"}} type="more"/>}
+                >
+                    <Menu.Item key="more:1">Sync Progress</Menu.Item>
+                    <Menu.Item key="more:2">Logout</Menu.Item>
+                </SubMenu>
+            </Menu>
+        )
+    }
+
     logoutAction = () => {
         auth0Client.signOut();
     };
+
 }

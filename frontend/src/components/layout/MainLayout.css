@@ -29,8 +29,10 @@
     user-select: none;
 }
 
-.logout-conteiner {
-    display: inline-block;
+.logout-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .logout {
@@ -42,4 +44,27 @@
 .logout:hover {
     border-bottom: #e5d4ff 1px solid;
     cursor: pointer;
+}
+
+.menu {
+    background: transparent;
+    border-bottom: none;
+    margin-top: 10px;
+}
+
+.menu > .ant-menu-submenu-open {
+    background: transparent;
+    border-bottom: transparent 2px solid !important;
+}
+
+/*.menu > .ant-menu-submenu-open {*/
+/*    background: transparent;*/
+/*    border-bottom: transparent 2px solid !important;*/
+/*}*/
+
+.sub-menu {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
 }
