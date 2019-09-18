@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { inject, observer } from 'mobx-react';
 import "./SyncProgress.css"
+import {Button} from "antd";
 
 const TEXT_REFRESH_INTERVAL_MS = 1000;
 const UPDATE_DATA_INTERVAL_MS = 5000;
 
-@inject('syncProgressStore') @observer
+@inject('syncProgressStore', 'pageStore') @observer
 class SyncProgress extends Component {
 
     constructor(props) {
@@ -44,9 +45,26 @@ class SyncProgress extends Component {
                     <span className="sync-title">{`Syncing data${this.state.syncDisplay}`}</span>
                     {this.renderMessageSync()}
                     {this.renderBookSync()}
+                    {this.renderBookNavigation()}
                 </div>
             </div>
         )
+    }
+
+    renderBookNavigation() {
+        const books = this.props.syncProgressStore.progress.bookCount || 0;
+        if (books === 0) {
+            return <div />
+        }
+        return(
+            <Button type="primary" className="" onClick={() => this.navigateToBooks()}>
+                Go to Books
+            </Button>
+        )
+    }
+
+    navigateToBooks() {
+        this.props.pageStore.hideProgress();
     }
 
     renderMessageSync() {
