@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { inject, observer } from 'mobx-react';
 import "./SyncProgress.css"
-import {Button} from "antd";
+import { Button, Spin } from "antd";
 
 const TEXT_REFRESH_INTERVAL_MS = 1000;
 const UPDATE_DATA_INTERVAL_MS = 5000;
@@ -11,7 +11,7 @@ class SyncProgress extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { syncDisplay: "", textChangeIntervalId: undefined, dataSyncIntervalId: undefined };
+        this.state = { syncDisplay: "", textChangeIntervalId: undefined, dataSyncIntervalId: undefined, loading: true };
     }
 
     componentDidMount(): void {
@@ -36,20 +36,46 @@ class SyncProgress extends Component {
 
     dataProgressUpdate = async () => {
         await this.props.syncProgressStore.getProgress();
+        this.setState({loading: false})
+    };
+
+    getContent = () => {
+        const loading = this.state.loading;
+        let content;
+        if (loading) {
+            content = this.renderSyncProgress();
+        } else {
+            content = this.renderContent();
+        }
+        return content;
     };
 
     render() {
         return(
             <div className="sync-progress-root">
-                <div className="sync-content">
-                    <span className="sync-title">{`Syncing data${this.state.syncDisplay}`}</span>
-                    {this.renderMessageSync()}
-                    {this.renderBookSync()}
-                    {this.renderBookNavigation()}
-                </div>
+                {this.getContent()}
             </div>
         )
     }
+
+    renderContent = () => {
+        return(
+            <div className="sync-content">
+                <span className="sync-title">{`Syncing data${this.state.syncDisplay}`}</span>
+                {this.renderMessageSync()}
+                {this.renderBookSync()}
+                {this.renderBookNavigation()}
+            </div>
+        )
+    };
+
+    renderSyncProgress = () => {
+        return(
+            <div className="sync-loading">
+                <Spin tip="Loading" size="large"/>
+            </div>
+        )
+    };
 
     renderBookNavigation() {
         const books = this.props.syncProgressStore.progress.bookCount || 0;

@@ -13,6 +13,15 @@
     flex-direction: column;
 }
 
+.sync-loading {
+    flex: 1;
+    background-color: #FFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .sync-title {
     display: inline-block;
     width: 200px;
