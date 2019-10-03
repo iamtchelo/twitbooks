@@ -6,7 +6,7 @@ import { Button, Spin } from "antd";
 const TEXT_REFRESH_INTERVAL_MS = 1000;
 const UPDATE_DATA_INTERVAL_MS = 5000;
 
-@inject('syncProgressStore', 'pageStore') @observer
+@inject('syncProgressStore', 'pageStore', 'bookStore') @observer
 class SyncProgress extends Component {
 
     constructor(props) {
@@ -88,15 +88,16 @@ class SyncProgress extends Component {
             return <div />
         }
         return(
-            <Button type="primary" className="" onClick={() => this.navigateToBooks()}>
+            <Button type="primary" className="" onClick={this.navigateToBooks}>
                 Go to Books
             </Button>
         )
     }
 
-    navigateToBooks() {
+    navigateToBooks = () => {
+        this.props.bookStore.getBooks();
         this.props.pageStore.hideProgress();
-    }
+    };
 
     renderMessageSync() {
         const data = this.props.syncProgressStore.progress;

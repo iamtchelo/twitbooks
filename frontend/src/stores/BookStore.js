@@ -35,7 +35,8 @@ export const BookStore = types.model({
         }
     }),
     getBooks: flow(function*() {
-        if (self.apiData.get(self.currentPage)) {
+        const data = self.apiData.get(self.currentPage);
+        if (data && data.length > 0) {
             return;
         }
         try {
