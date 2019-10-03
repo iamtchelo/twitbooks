@@ -2,7 +2,6 @@ package io.paulocosta.twitbooks.controller.v1
 
 import io.paulocosta.twitbooks.entity.Message
 import io.paulocosta.twitbooks.repository.MessageRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.web.bind.annotation.*
@@ -10,7 +9,7 @@ import retrofit2.http.GET
 
 @RestController
 @RequestMapping("/api/v1/messages")
-class MessagesController @Autowired constructor(val messageRepository: MessageRepository) {
+class MessagesController(val messageRepository: MessageRepository) {
 
     @GET
     @RequestMapping("/{bookId}")

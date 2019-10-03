@@ -2,7 +2,6 @@ package io.paulocosta.twitbooks.controller.v1
 
 import io.paulocosta.twitbooks.auth.SecurityHelper
 import io.paulocosta.twitbooks.books.BookService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.web.bind.annotation.*
@@ -16,7 +15,7 @@ data class BookApiResponse(
 
 @RestController
 @RequestMapping("/api/v1/books")
-class BooksController @Autowired constructor(private val bookService: BookService) {
+class BooksController(private val bookService: BookService) {
 
     @GetMapping
     fun getBooks(@RequestParam("page") page: Int?): Page<BookApiResponse> {

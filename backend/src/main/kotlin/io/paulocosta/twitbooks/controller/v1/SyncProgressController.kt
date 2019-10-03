@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/sync_progress")
-class SyncProgressController constructor(private val syncProgressService: SyncProgressService) {
+class SyncProgressController(private val syncProgressService: SyncProgressService) {
 
     @GetMapping
     fun syncProgress(): Single<SyncProgress> {
