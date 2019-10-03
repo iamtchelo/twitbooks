@@ -68,7 +68,7 @@ class BookPage extends Component {
             return this.renderSyncProgress();
         } else {
             return(
-                <Card>
+                <Card className="books-container">
                     { this.renderBooks(this.bookStore.data) }
                     { this.renderPagination(this.bookStore.count) }
                 </Card>
