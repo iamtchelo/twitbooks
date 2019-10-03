@@ -13,5 +13,8 @@ export const SyncProgressStore = types.model({
         const response = yield getEnv(self).client.getSyncProgress();
         const responseData = yield response.json();
         self.progress = responseData;
+    }),
+    triggerSync: flow(function*() {
+        yield getEnv(self).client.triggerSync();
     })
 }));

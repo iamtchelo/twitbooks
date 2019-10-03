@@ -6,6 +6,7 @@ import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled import org.springframework.stereotype.Service
+import java.util.concurrent.locks.ReentrantLock
 
 @Service
 class SyncService @Autowired constructor(
@@ -26,12 +27,18 @@ class SyncService @Autowired constructor(
     @Value("\${book.sync.enabled}")
     var bookSyncEnabled: Boolean = false
 
+    private val reentrantLock = ReentrantLock()
 
     @Scheduled(fixedDelay = SYNC_DELAY_MILLIS)
     fun sync() {
-        userService.getSyncableUsers().forEach {
-            twitterSync(it)
-            bookSync(it)
+        reentrantLock.lock()
+        try {
+            userService.getSyncableUsers().forEach {
+                twitterSync(it)
+                bookSync(it)
+            }
+        } finally {
+            reentrantLock.unlock()
         }
     }
 

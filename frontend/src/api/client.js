@@ -36,6 +36,12 @@ const client = (baseUrl) => ({
             method: "GET",
             headers: baseHeaders()
         })
+    },
+    triggerSync() {
+        return window.fetch(`${baseUrl}/sync`, {
+            method: "GET",
+            headers: baseHeaders()
+        })
     }
 });
 

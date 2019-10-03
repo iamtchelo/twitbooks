@@ -18,7 +18,12 @@ class SyncProgress extends Component {
         const textChangeIntervalId = setInterval(this.syncProgressIndicatorUpdate, TEXT_REFRESH_INTERVAL_MS);
         const dataSyncIntervalId = setInterval(this.dataProgressUpdate, UPDATE_DATA_INTERVAL_MS);
         this.setState({textChangeIntervalId: textChangeIntervalId, dataSyncIntervalId: dataSyncIntervalId});
+        this.triggerSync();
     }
+
+    triggerSync = () => {
+        this.props.syncProgressStore.triggerSync();
+    };
 
     componentWillUnmount(): void {
         clearInterval(this.state.textChangeIntervalId);
