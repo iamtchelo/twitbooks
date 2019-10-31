@@ -45,6 +45,8 @@ key on the file `application-goodreads.properties` (or use the `GOODREADS_KEY` e
 NOTE: Goodreads imposes a restriction of 1 request per second which makes processing books quite slow, so keep
 that in mind if you're going to use it.
 
-### AWS Comprehend Setup
-
 ### Google Books Setup
+
+### SpaCy Setup
+
+### AWS Comprehend Setup
