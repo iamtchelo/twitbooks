@@ -35,6 +35,8 @@ For the books API you can use either `Goodreads` or `Google Books` by using eith
 
 The specific configuration for each profile (spacy, aws, google, goodreads) is described in their specific section.
 
+### Postgres Setup
+
 ### Add Twitter API Keys
 
 ### Goodreads Configuration
