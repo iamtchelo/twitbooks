@@ -42,10 +42,17 @@ The specific configuration for each profile (spacy, aws, google, goodreads) is d
 To use Goodreads you need to request a developer API [Here](https://www.goodreads.com/api/keys). Then put your
 key on the file `application-goodreads.properties` (or use the `GOODREADS_KEY` env variable).
 
-NOTE: Goodreads imposes a restriction of 1 request per second which makes processing books quite slow, so keep
+NOTE: Goodreads imposes a limitation of 1 request per second which makes processing books quite slow, so keep
 that in mind if you're going to use it.
 
 ### Google Books Setup
+
+The API used by Google Books doesn't need authentication. So just setting `google` on the active profiles and
+it will work.
+
+NOTE: I haven't found anywhere saying about rate limits for this API. During my tests it does have some
+throttling. The application itself doesn't handle rate limiting for this API, like it does for Goodreads,
+so be careful when using it!
 
 ### SpaCy Setup
 
