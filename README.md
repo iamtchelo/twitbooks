@@ -18,3 +18,33 @@ and returns any book names that could be extracted from it.
 The `frontend` directory contains a React client app for visualizing the books that were found.
 
 ## Running the whole thing
+
+### Configure the Profile
+
+You have a few options for both NER and for the books API. You specify which version of each
+through Spring profiles. Here's an example using `spaCy` for NER and Google Books for book data:
+
+edit `application.properties` on the `backend` project and edit `active.profiles` to
+```
+dev,spacy,google
+```
+
+For NER you have the option to use `spaCy` or [AWS Comprehend]() by using either the `spacy` or the `aws` profiles
+
+For the books API you can use either `Goodreads` or `Google Books` by using either the `google` or the `goodreads` profiles.
+
+The specific configuration for each profile (spacy, aws, google, goodreads) is described in their specific section.
+
+### Add Twitter API Keys
+
+### Goodreads Configuration
+
+To use Goodreads you need to request a developer API [Here](https://www.goodreads.com/api/keys). Then put your
+key on the file `application-goodreads.properties` (or use the `GOODREADS_KEY` env variable).
+
+NOTE: Goodreads imposes a restriction of 1 request per second which makes processing books quite slow, so keep
+that in mind if you're going to use it.
+
+### AWS Comprehend Setup
+
+### Google Books Setup
