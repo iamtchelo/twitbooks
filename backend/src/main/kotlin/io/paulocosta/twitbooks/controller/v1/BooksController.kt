@@ -15,11 +15,12 @@ data class BookApiResponse(
 
 @RestController
 @RequestMapping("/api/v1/books")
-class BooksController(private val bookService: BookService) {
+class BooksController(private val securityHelper: SecurityHelper,
+                      private val bookService: BookService) {
 
     @GetMapping
     fun getBooks(@RequestParam("page") page: Int?): Page<BookApiResponse> {
-        val twitterId = SecurityHelper.getTwitterId()
+        val twitterId = securityHelper.getTwitterId()
         return bookService.getAllBooks(twitterId, PageRequest.of(page ?: 0, 50))
                 .map {
                     BookApiResponse(it.id, it.title, it.imageUrl, it.detailsUrl)

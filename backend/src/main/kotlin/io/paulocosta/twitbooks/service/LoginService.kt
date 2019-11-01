@@ -6,13 +6,14 @@ import io.paulocosta.twitbooks.auth.Auth0Provider
 import io.paulocosta.twitbooks.auth.SecurityHelper
 import io.paulocosta.twitbooks.entity.User
 import mu.KotlinLogging
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 private val logger = KotlinLogging.logger {}
 
 @Service
-class LoginService @Autowired constructor(
+class LoginService(
+        private val securityHelper: SecurityHelper,
         private val auth0Provider: Auth0Provider,
         private val userService: UserService) {
 
@@ -20,7 +21,7 @@ class LoginService @Autowired constructor(
 
     fun login() {
         try {
-            val id = SecurityHelper.getTwitterId()
+            val id = securityHelper.getTwitterId()
             updateUserInfo(id)
             logger.info { "Login successful" }
         } catch (e: Auth0Exception) {

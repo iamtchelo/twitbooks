@@ -1,6 +1,5 @@
 package io.paulocosta.twitbooks.books
 
-import io.paulocosta.twitbooks.auth.SecurityHelper
 import io.paulocosta.twitbooks.entity.Book
 import io.paulocosta.twitbooks.entity.Message
 import io.paulocosta.twitbooks.entity.User

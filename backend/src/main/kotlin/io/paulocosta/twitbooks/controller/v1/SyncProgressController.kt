@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/sync_progress")
-class SyncProgressController(private val syncProgressService: SyncProgressService) {
+class SyncProgressController(private val securityHelper: SecurityHelper,
+                             private val syncProgressService: SyncProgressService) {
 
     @GetMapping
     fun syncProgress(): Single<SyncProgress> {
-        val userId = SecurityHelper.getTwitterId()
+        val userId = securityHelper.getTwitterId()
         return syncProgressService.syncProgress(userId)
     }
 

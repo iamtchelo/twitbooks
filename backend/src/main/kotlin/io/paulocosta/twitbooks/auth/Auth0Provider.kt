@@ -4,13 +4,12 @@ import com.auth0.client.auth.AuthAPI
 import com.auth0.client.mgmt.ManagementAPI
 import com.auth0.client.mgmt.filter.UserFilter
 import io.paulocosta.twitbooks.entity.TwitterUser
-import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
-
-private val logger = KotlinLogging.logger {}
+import org.springframework.context.annotation.Profile
 
 @Configuration
+@Profile("prod")
 class Auth0Provider {
 
     @Value("\${auth0.audience}")
