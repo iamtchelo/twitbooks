@@ -29,10 +29,10 @@ edit `application.properties` on the `backend` project and edit `active.profiles
 dev,spacy,google
 ```
 
-For NER you have the option to use `spaCy` or [AWS Comprehend]() by using either the `spacy` or the `aws` profiles
+For NER you have the option to use `spaCy` or [AWS Comprehend](https://aws.amazon.com/comprehend/) by using either the `spacy` or the `aws` profiles
 
 For the books API you can use either `Goodreads` or `Google Books` by using either the `google` or the `goodreads` profiles.
-
+ 
 The specific configuration for each profile (spacy, aws, google, goodreads) is described in their specific section.
 
 ### Postgres Setup
@@ -58,4 +58,12 @@ so be careful when using it!
 
 ### SpaCy Setup
 
+Spin up the NER container using `docker-compose up -d` and configure the services address on
+`application-spacy.properties` or use the `NER_CLIENT_URL` env variable. If you're on linux the
+default value: `http://localhost:5000/` should work out of the box.
+
 ### AWS Comprehend Setup
+
+From their website: `Amazon Comprehend is a machine learning powered service that makes it easy to find insights and relationships in text.`
+As per usual, you need to provide access keys for consuming AWS services. Once you have your keys either edit the file `application-comprehend.properties`
+or have the `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION` environment variables.
