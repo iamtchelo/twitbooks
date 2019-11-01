@@ -21,8 +21,8 @@ class Auth0Provider {
     @Value("\${auth0.api.client.secret}")
     lateinit var clientSecret: String
 
-    fun geUserData(apiToken: String, userId: String): TwitterUser {
-        return ManagementAPI(audience, apiToken).users().get(userId, UserFilter()).execute()
+    fun geUserData(userId: String): TwitterUser {
+        return ManagementAPI(audience, getApiToken()).users().get(userId, UserFilter()).execute()
     }
 
     fun getApiToken(): String {
