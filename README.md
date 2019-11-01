@@ -17,7 +17,7 @@ and returns any book names that could be extracted from it.
 
 The `frontend` directory contains a React client app for visualizing the books that were found.
 
-## Running the whole thing
+## Running The Application
 
 ### Configure the Profile
 
@@ -37,7 +37,12 @@ The specific configuration for each profile (spacy, aws, google, goodreads) is d
 
 ### Postgres Setup
 
+A Postgres is used to store messages, user and book information. Spin up an instance by running `docker-compose up -d` on the
+project root.
+
 ### Add Twitter API Keys
+
+To read information from your Twitter account you need to create API keys.
 
 ### Goodreads Configuration
 
