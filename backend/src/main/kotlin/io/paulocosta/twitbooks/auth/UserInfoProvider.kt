@@ -1,5 +1,7 @@
 package io.paulocosta.twitbooks.auth
 
-interface UserInfoProvider {
+import io.paulocosta.twitbooks.entity.User
 
+interface UserInfoProvider {
+    fun getUser(): User
 }
