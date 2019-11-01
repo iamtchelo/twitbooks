@@ -29,11 +29,11 @@ edit `application.properties` on the `backend` project and edit `active.profiles
 dev,spacy,google
 ```
 
-For NER you have the option to use `spaCy` or [AWS Comprehend](https://aws.amazon.com/comprehend/) by using either the `spacy` or the `aws` profiles
+For NER you have the option to use `spaCy` or [AWS Comprehend](https://aws.amazon.com/comprehend/) by using either the `spacy` or the `comprehend` profiles
 
 For the books API you can use either `Goodreads` or `Google Books` by using either the `google` or the `goodreads` profiles.
  
-The specific configuration for each profile (spacy, aws, google, goodreads) is described in their specific section.
+The specific configuration for each profile (spacy, comprehend, google, goodreads) is described in their specific section.
 
 ### Postgres Setup
 
