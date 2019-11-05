@@ -19,7 +19,7 @@ You can choose between two NER engines:
 And two books APIs :
 
 * [Google Books](https://books.google.com/)
-* [Goodreads](`https://www.goodreads.com/)
+* [Goodreads](https://www.goodreads.com/)
 
 The `frontend` consists of a React SPA that uses mobx-state-tree to handle state. It shows
 the books that have been extracted from your feed and displays the synchronization progress.
