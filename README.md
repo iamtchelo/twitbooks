@@ -2,8 +2,8 @@
 
 ## About
 
-A lot of my book recommendations come from my Twitter feed. So Twitbooks was created for
-extracing book recommendations from Twitter feeds. It uses [Named Entity Recognition](https://en.wikipedia.org/wiki/Named-entity_recognition)
+A lot of my book recommendations come from my Twitter feed. So Twitbooks was created for extracing book recommendations from Twitter feeds.
+It uses [Named Entity Recognition](https://en.wikipedia.org/wiki/Named-entity_recognition)
 to extract book information from your feed and uses books APIs to grab book information to display.
 
 ## Architecture
@@ -41,7 +41,9 @@ to run the frontend enter the `frontend` folder and run `npm install`. After tha
 ### Goodreads Configuration
 
 To use Goodreads you need to request a developer API [Here](https://www.goodreads.com/api/keys). Then put your
-key on the file `application-goodreads.properties` (or use the `GOODREADS_KEY` env variable).
+key on the file `application-goodreads.properties` (or use the `GOODREADS_KEY` env variable). Then you need to
+set the `backend` app to use the Goodreads API by adding `goodreads` to `spring.active.profiles`. Note that the
+`google` and `goodreads` profiles are mutually exclusive.
 
 NOTE: Goodreads imposes a limitation of 1 request per second which makes processing books quite slow, so keep
 that in mind if you're going to use it.
@@ -49,7 +51,7 @@ that in mind if you're going to use it.
 ### Google Books Setup
 
 The API used by Google Books doesn't need authentication. So just setting `google` on the active profiles and
-it will work.
+it will work. Note that the `google` and `goodreads` profiles are mutually exclusive.
 
 NOTE: I haven't found anywhere saying about rate limits for this API. During my tests it does have some
 throttling. The application itself doesn't handle rate limiting for this API, like it does for Goodreads,
@@ -65,4 +67,5 @@ default value: `http://localhost:5000/` should work out of the box.
 
 From their website: `Amazon Comprehend is a machine learning powered service that makes it easy to find insights and relationships in text.`
 As per usual, you need to provide access keys for consuming AWS services. Once you have your keys either edit the file `application-comprehend.properties`
-or have the `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION` environment variables.
+or have the `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION` environment variables. Then you need to tell the `backend` app to use the
+Comprehend NER engine by adding `comprehend` to the `spring.active.profiles`.
