@@ -1,11 +1,17 @@
-import auth0Client from '../auth/Auth';
+import getAuthClient from '../auth/Auth';
 
 const baseUrl = process.env.REACT_APP_ENDPOINT || "http://localhost:8080/api/v1";
 
 const baseHeaders = () => {
-    return {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${auth0Client.getIdToken()}`
+    if (process.env.NODE_ENV === "production") {
+        return {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${getAuthClient().getIdToken()}`
+        }
+    } else {
+        return {
+            "Content-Type": "application/json",
+        }
     }
 };
 

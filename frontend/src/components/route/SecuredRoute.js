@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import auth0Client from '../../auth/Auth';
+import getAuthClient from '../../auth/Auth';
 import LoginPage from "../../pages/login/LoginPage";
 
 function SecuredRoute(props) {
@@ -10,7 +10,7 @@ function SecuredRoute(props) {
             if (checkingSession) {
                 return <h3 className="text-center">Validating session...</h3>
             }
-            if (!auth0Client.isAuthenticated()) {
+            if (!getAuthClient().isAuthenticated()) {
                 return <LoginPage/>;
             }
             return <Component />

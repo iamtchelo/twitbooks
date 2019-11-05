@@ -84,6 +84,13 @@ class Auth {
 
 }
 
-const auth0Client = new Auth();
+let auth0Client = undefined;
 
-export default auth0Client;
+const getAuthClient = () => {
+    if (auth0Client === undefined) {
+        auth0Client = new Auth();
+    }
+    return auth0Client;
+};
+
+export default getAuthClient;

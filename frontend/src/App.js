@@ -7,8 +7,9 @@ import { Switch, Route, BrowserRouter } from 'react-router-dom';
 import MessagePage from "./pages/message/MessagePage";
 import LoginPage from "./pages/login/LoginPage";
 import SecuredRoute from "./components/route/SecuredRoute";
-import auth0Client from './auth/Auth';
+import getAuthClient from './auth/Auth';
 import Callback from "./components/auth/Callback";
+import DevSecureRoute from "./components/route/DevSecureRoute";
 
 configure({
     enforceActions: 'always'
@@ -26,27 +27,52 @@ class App extends Component {
     }
 
     async componentDidMount(): void {
-        try {
-            await auth0Client.silentAuth();
-            this.forceUpdate();
-        } catch (err) {
-            if (err.error !== 'login_required') {
-                // TODO error handling
+        if (process.env.NODE_ENV === "production") {
+            try {
+                await getAuthClient().silentAuth();
+                this.forceUpdate();
+            } catch (err) {
+                if (err.error !== 'login_required') {
+                    // TODO error handling
+                }
             }
+            this.setState({checkingSession: false})
         }
-        this.setState({checkingSession: false})
     }
+
+    getRoutes = () => {
+        if (process.env.NODE_ENV === "production") {
+            return this.getProductionRoutes();
+        } else {
+            return this.getDevelopmentRoutes();
+        }
+    };
+
+    getProductionRoutes = () => {
+        return(
+            <Switch>
+                <Route path="/messages/:bookId" component={MessagePage} checkingSession={this.state.checkingSession}/>
+                <Route path="/login" component={LoginPage}/>
+                <Route path="/callback" component={Callback}/>
+                <SecuredRoute path="/" component={BookPage} checkingSession={this.state.checkingSession}/>
+            </Switch>
+        )
+    };
+
+    getDevelopmentRoutes = () => {
+        return(
+            <Switch>
+                <Route path="/messages/:bookId" component={MessagePage} />
+                <DevSecureRoute path="/" component={BookPage} />
+            </Switch>
+        )
+    };
 
     render() {
         return (
             <Provider {...stores}>
                 <BrowserRouter>
-                    <Switch>
-                        <SecuredRoute path="/messages/:bookId" component={MessagePage} checkingSession={this.state.checkingSession}/>
-                        <Route path="/login" component={LoginPage}/>
-                        <Route path="/callback" component={Callback}/>
-                        <SecuredRoute path="/" component={BookPage} checkingSession={this.state.checkingSession}/>
-                    </Switch>
+                    {this.getRoutes()}
                 </BrowserRouter>
             </Provider>
         );

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { inject } from 'mobx-react';
 import { Layout, Menu, Icon } from 'antd';
 import "./MainLayout.css"
-import auth0Client from '../../auth/Auth'
+import getAuthClient from '../../auth/Auth'
 
 const { SubMenu } = Menu;
 const { Header, Content } = Layout;
@@ -61,7 +61,7 @@ class MainLayout extends Component {
     }
 
     logoutAction = () => {
-        auth0Client.signOut();
+        getAuthClient().signOut();
     };
 
 }
