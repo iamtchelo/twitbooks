@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RestController
 class LoginController(val loginService: LoginService) {
 
     @GetMapping
-    fun login() {
-        loginService.login()
-    }
+    fun login() = loginService.login()
 
 }

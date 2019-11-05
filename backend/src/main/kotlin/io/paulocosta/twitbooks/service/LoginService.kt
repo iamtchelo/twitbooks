@@ -1,53 +1,36 @@
 package io.paulocosta.twitbooks.service
 
-import com.auth0.exception.APIException
-import com.auth0.exception.Auth0Exception
-import io.paulocosta.twitbooks.auth.Auth0Provider
+import arrow.core.Either
+import io.paulocosta.twitbooks.auth.LoginError
 import io.paulocosta.twitbooks.auth.SecurityHelper
+import io.paulocosta.twitbooks.auth.TokenExpired
+import io.paulocosta.twitbooks.auth.UserInfoProvider
 import io.paulocosta.twitbooks.entity.User
-import mu.KotlinLogging
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-
-private val logger = KotlinLogging.logger {}
+import org.springframework.web.server.ResponseStatusException
 
 @Service
 class LoginService(
         private val securityHelper: SecurityHelper,
-        private val auth0Provider: Auth0Provider,
+        private val userInfoProvider: UserInfoProvider,
         private val userService: UserService) {
 
     fun login() {
-        try {
-            val id = securityHelper.getTwitterId()
-            updateUserInfo(id)
-            logger.info { "Login successful" }
-        } catch (e: Auth0Exception) {
-            logger.error { "Auth0Exception ${e.message}" }
-        } catch (e: APIException) {
-            handleAuthAPIError(e)
+        val id = securityHelper.getTwitterId()
+        when (val userInfo = userInfoProvider.getUser(id)) {
+            is Either.Left -> updateUserInfo(userInfo.a)
+            is Either.Right -> handleLoginError(userInfo.b)
         }
     }
 
-    fun handleAuthAPIError(e: APIException) {
-        if (e.statusCode == 401) {
-            logger.info { "API Token has expired, requesting a new one" }
-            login()
-        } else {
-            // TODO proper error handling
+    fun handleLoginError(loginError: LoginError) {
+        when (loginError) {
+            is TokenExpired -> { login() }
+            else -> { throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR) }
         }
     }
 
-    fun updateUserInfo(twitterId: String) {
-        val user = userService.findByTwitterId(twitterId)
-
-        if (user == null) {
-            // TODO abstract this to get based on profile
-            val userData = auth0Provider.geUserData(twitterId)
-            val identity = userData.identities[0]
-            val accessToken = identity.accessToken
-            val accessTokenSecret = identity.values["access_token_secret"] as String
-            userService.saveUser(User(null, twitterId, accessToken, accessTokenSecret))
-        }
-    }
+    fun updateUserInfo(user: User) = userService.saveUser(user)
 
 }
