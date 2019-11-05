@@ -2,47 +2,41 @@
 
 ## About
 
-Twitbooks is an app that extracts book suggestions from your Twitter feed.
-It uses [Named Entity Recognition](https://spacy.io/usage/linguistic-features#named-entities)
-to extract book names from your feed and uses either [Goodreads](`https://www.goodreads.com/)
-or [Google Books](https://books.google.com/) to fetch book data.
+A lot of my book recommendations come from my Twitter feed. So Twitbooks was created for
+extracing book recommendations from Twitter feeds. It uses [Named Entity Recognition](https://en.wikipedia.org/wiki/Named-entity_recognition)
+to extract book information from your feed and uses books APIs to grab book information to display.
 
 ## Architecture
 
-The structure is simple. The `backend` is a Spring Boot project that interfaces with the Twitter API
-and saves Twitter data in a Postgres database. A job periodically hits the `ner` service which is a
-Flask application that uses `spaCy` which contains a pre trained model for identifying works of art
-through named entity recognition. The `ner` service exposes a single API which receives the message
-and returns any book names that could be extracted from it.
+The `backend` consists of a Spring Boot application with a job that synchronizes Twitter data,
+sends that data to a NER engine to extract book names and uses a book API to retrieve book information.
 
-The `frontend` directory contains a React client app for visualizing the books that were found.
+You can choose between two NER engines:
 
-## Running The Application
+* A self-hosted Flask application that uses [spaCy](https://spacy.io/)
+* A PaaS solution from AWS aka [AWS Comprehend](https://aws.amazon.com/comprehend/)
 
-### Configure the Profile
+And two books APIs :
 
-You have a few options for both NER and for the books API. You specify which version of each
-through Spring profiles. Here's an example using `spaCy` for NER and Google Books for book data:
+* [Google Books](https://books.google.com/)
+* [Goodreads](`https://www.goodreads.com/)
 
-edit `application.properties` on the `backend` project and edit `active.profiles` to
-```
-dev,spacy,google
-```
+The `frontend` consists of a React SPA that uses mobx-state-tree to handle state. It shows
+the books that have been extracted from your feed and displays the synchronization progress.
 
-For NER you have the option to use `spaCy` or [AWS Comprehend](https://aws.amazon.com/comprehend/) by using either the `spacy` or the `comprehend` profiles
+### Quickstart
 
-For the books API you can use either `Goodreads` or `Google Books` by using either the `google` or the `goodreads` profiles.
- 
-The specific configuration for each profile (spacy, comprehend, google, goodreads) is described in their specific section.
+The quickest way to get up and running is to use the default profiles `dev,spacy,google`.
+Go to the [Twitter Developer page](https://developer.twitter.com/en/apps) and create a new
+application. After creating the app, enter it and on the tab `Keys and tokens` you should
+see four keys (2 consumer keys and 2 api keys).
 
-### Postgres Setup
+Either put them directly on your `application.properties` or add the following variables
+to your PATH: `TWITTER_CONSUMER_KEY`, `TWITTER_CONSUMER_SECRET`, `TWITTER_ACCESS_TOKEN` and `TWITTER_ACCESS_TOKEN_SECRET`
 
-A Postgres is used to store messages, user and book information. Spin up an instance by running `docker-compose up -d` on the
-project root.
+after that run `docker-compose up -d` to start the Postgres and the NER service and run the backend app.
 
-### Add Twitter API Keys
-
-To read information from your Twitter account you need to create API keys.
+to run the frontend enter the `frontend` folder and run `npm install`. After that just run `npm start`.
 
 ### Goodreads Configuration
 
