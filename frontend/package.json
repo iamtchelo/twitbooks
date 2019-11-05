@@ -15,7 +15,7 @@
     "react-transition-group": "^4.1.1"
   },
   "scripts": {
-    "start": "react-app-rewired start",
+    "start": "REACT_APP_ENDPOINT=http://localhost:8080/api/v1 react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
