@@ -38,5 +38,5 @@ uWSGI==2.0.18
 waitress==1.2.1
 wasabi==0.2.1
 wcwidth==0.1.7
-Werkzeug==0.15.3
+Werkzeug==0.16.0
 wrapt==1.11.1
