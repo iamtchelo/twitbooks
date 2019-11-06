@@ -34,9 +34,7 @@ see four keys (2 consumer keys and 2 api keys).
 Either put them directly on your `application.properties` or add the following variables
 to your PATH: `TWITTER_CONSUMER_KEY`, `TWITTER_CONSUMER_SECRET`, `TWITTER_ACCESS_TOKEN` and `TWITTER_ACCESS_TOKEN_SECRET`
 
-after that run `docker-compose up -d` to start the Postgres and the NER service and run the backend app.
-
-to run the frontend enter the `frontend` folder and run `npm install`. After that just run `npm start`.
+after that run `docker-compose up -d` to start the Postgres, Frontend app and the NER service and run the backend app.
 
 ### Goodreads Configuration
 
